@@ -7,7 +7,7 @@ function MySceneGraph(filename, scene) {
 
     // File reading
     this.reader = new CGFXMLreader();
-
+    this.rootId;
     /*
      * Read the contents of the xml file, and refer to this class for loading and error handlers.
      * After the file is read, the reader calls onXMLReady on this object.
@@ -25,7 +25,7 @@ MySceneGraph.prototype.onXMLReady = function() {
     var rootElement = this.reader.xmlDoc.documentElement;
 
     // Here should go the calls for different functions to parse the various blocks
-    var error = this.parseGlobalsExample(rootElement);
+    var error = this.parseDsx(rootElement);
 
     if (error != null) {
         this.onXMLError(error);
@@ -38,18 +38,84 @@ MySceneGraph.prototype.onXMLReady = function() {
     this.scene.onGraphLoaded();
 };
 
-MySceneGraph.prototype.parseVec3 = function(tag) {
-  var x = this.reader.getFloat(tag, 'x', true);
-  var y = this.reader.getFloat(tag, 'y', true);
-  var z = this.reader.getFloat(tag, 'z', true);
+MySceneGraph.prototype.parseDsx = function(dsx) {
+    //NOTE: There cannot be a carriage return between the 'return' keyword and
+    //the OR statement, otherwise the functions are not called.
+    return (this.parseScene(dsx) || this.parseViews(dsx));
+}
 
-  return [x, y, z];
+/**
+  Parses the given tag and returns a Vec3 with the result.
+  TODO:Check if the read values are valid
+*/
+MySceneGraph.prototype.parseVec3 = function(tag) {
+    var x = this.reader.getFloat(tag, 'x', true);
+    var y = this.reader.getFloat(tag, 'y', true);
+    var z = this.reader.getFloat(tag, 'z', true);
+
+    return [x, y, z];
+}
+
+/**
+  Parses the scene tag
+*/
+MySceneGraph.prototype.parseScene = function(dsx) {
+  var scene = dsx.getElementsByTagName('scene')[0];
+
+  this.rootId = this.reader.getString(scene, 'root', true);
+
+  if(this.rootId == null)
+    return 'Scene tag must define a root component.';
+
+  var axisLength = this.reader.getFloat(scene, 'axis_length', false);
+
+  if(axisLength == null || isNaN(axisLength))
+    axisLength = 0;
+}
+
+/**
+  Parses the views tag and its children and sets the scene's cameras accordingly.
+*/
+MySceneGraph.prototype.parseViews = function(dsx) {
+    var views = dsx.getElementsByTagName('views');
+    var defaultCamera;
+
+    var defaultPerspectiveId = this.reader.getString(views[0], 'default', true);
+
+    if (!(views[0].children.length > 0))
+        return 'You need to have at least one perspective defined.';
+
+    for (let perspective of views[0].children) {
+        //Parse perspective attributes
+        var id = this.reader.getString(perspective, 'id', true);
+        var fov = this.reader.getFloat(perspective, 'angle', true);
+        var near = this.reader.getFloat(perspective, 'near', true);
+        var far = this.reader.getFloat(perspective, 'far', true);
+
+        //Parse perspective elements
+        var fromTag = perspective.getElementsByTagName('from')[0];
+        var fromVector = this.parseVec3(fromTag);
+
+        var toTag = perspective.getElementsByTagName('to')[0];
+        var toVector = this.parseVec3(toTag);
+
+        //Sets the default camera
+        if (defaultPerspectiveId === id)
+            this.scene.defaultCamera = this.scene.cameras.length;
+
+        this.scene.cameras.push(new CGFcamera(fov, near, far, fromVector, toVector));
+    }
+
+    if (this.scene.defaultCamera == null)
+        return 'The default perspective is not a child of views.';
+
+    //this.scene.camera = this.cameras[defaultCamera];
 }
 
 /*
  * Example of method that parses elements of one block and stores information in a specific data structure
  */
-MySceneGraph.prototype.parseGlobalsExample = function(rootElement) {
+/*MySceneGraph.prototype.parseGlobalsExample = function(rootElement) {
 
     var elems = rootElement.getElementsByTagName('globals');
     if (elems == null) {
@@ -86,7 +152,7 @@ MySceneGraph.prototype.parseGlobalsExample = function(rootElement) {
         console.log("Read list item id " + e.id + " with value " + this.list[e.id]);
     };
 
-};
+};*/
 
 /*
  * Callback to be executed on any read error
