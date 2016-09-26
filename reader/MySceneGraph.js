@@ -27,7 +27,7 @@
       // Here should go the calls for different functions to parse the various blocks
       //var error = this.parseGlobalsExample(rootElement);
 
-      var error = this.parseTransformations(rootElement);
+      var error = this.storeTransformations(rootElement);
       if (error != null) {
           this.onXMLError(error);
           return;
@@ -49,8 +49,9 @@
 
   /*
    * Parses transformation element of DSX
+   * stores transformations for future reference
    */
-  MySceneGraph.prototype.parseTransformations = function(rootElement){
+  MySceneGraph.prototype.storeTransformations = function(rootElement){
 
       var transformations = rootElement.getElementsByTagName('transformations');
       if(transformations == null)
@@ -59,27 +60,33 @@
       if(transformations.length != 1) 
           return "invalid number of transformations elements"
 
-      if(transformations.children.length < 1)
+      if(transformations[0].children.length < 1)
           return 'there should be one or more "transformation" blocks';
-
-      var idVec = [];
+      
+      this.transfVec = [];
+      var duplicate = false;
 
       for(let transf of transformations[0].children){
 
-        this.transfID = this.reader.getString(transf, 'id', true);
-        if(this.transfID == null)
+        duplicate = false;
+        var transfID = this.reader.getString(transf, 'id', true);
+        if(transfID == null)
             return "missing transformation ID";
 
-        for(id of idVec){
-          if (id == this.transfID)
-              return 'transformation id "' + this.transfID +'" already in use';
+        for(let storedTransf of this.transfVec){    //check if a transformation with the same ID has already been stored
+            var usedID = this.reader.getString(storedTransf, 'id', true);
+            if(usedID == transfID){
+                console.log("transformation ID " + transfID + " already in use");
+                duplicate = true;
+            }
         }
 
-        idVec.push(this.transfID);
-
-        
-
+        if(!duplicate)
+            this.transfVec.push(transf);
       }
+
+      for(let transf of this.transfVec)
+          console.log(transf);
   }
 
   /*
