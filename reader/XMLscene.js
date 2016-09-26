@@ -19,7 +19,6 @@ XMLscene.prototype.init = function(application) {
     this.gl.enable(this.gl.CULL_FACE);
     this.gl.depthFunc(this.gl.LEQUAL);
 
-    this.axis = new CGFaxis(this);
     this.cameras = [];
 };
 
@@ -44,9 +43,16 @@ XMLscene.prototype.setDefaultAppearance = function() {
 // Handler called when the graph is finally loaded.
 // As loading is asynchronous, this may be called already after the application has started the run loop
 XMLscene.prototype.onGraphLoaded = function() {
-    this.gl.clearColor(this.graph.background[0], this.graph.background[1], this.graph.background[2], this.graph.background[3]);
+    //TODO: Uncomment.
+    //this.gl.clearColor(this.graph.background[0], this.graph.background[1], this.graph.background[2], this.graph.background[3]);
     this.lights[0].setVisible(true);
     this.lights[0].enable();
+
+    //Sets the axis
+    this.axis = new CGFaxis(this, this.axisLength);
+
+    //Sets default camera
+    //this.camera = this.cameras[this.defaultCamera];
 };
 
 XMLscene.prototype.display = function() {
@@ -63,8 +69,6 @@ XMLscene.prototype.display = function() {
     // Apply transformations corresponding to the camera position relative to the origin
     this.applyViewMatrix();
 
-    // Draw axis
-    this.axis.display();
 
     this.setDefaultAppearance();
 
@@ -74,7 +78,10 @@ XMLscene.prototype.display = function() {
     // only get executed after the graph has loaded correctly.
     // This is one possible way to do it
     if (this.graph.loadedOk) {
+        //Update lights
         this.lights[0].update();
-        //this.camera = this.cameras[this.defaultCamera];
+
+        // Draw axis
+        this.axis.display();
     };
 };

@@ -32,10 +32,9 @@ MySceneGraph.prototype.onXMLReady = function() {
         return;
     }
 
-    this.loadedOk = true;
-
     // As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
     this.scene.onGraphLoaded();
+    this.loadedOk = true;
 };
 
 MySceneGraph.prototype.parseDsx = function(dsx) {
@@ -67,25 +66,22 @@ MySceneGraph.prototype.parseScene = function(dsx) {
     if (this.rootId == null)
         return 'Scene tag must define a root component.';
 
-    var axisLength = this.reader.getFloat(scene, 'axis_length', false);
-
-    if (axisLength == null || isNaN(axisLength))
-        axisLength = 0;
+    this.scene.axisLength = this.reader.getFloat(scene, 'axis_length', false);
 }
 
 /**
   Parses the views tag and its children and sets the scene's cameras accordingly.
 */
 MySceneGraph.prototype.parseViews = function(dsx) {
-    var views = dsx.getElementsByTagName('views');
+    var views = dsx.getElementsByTagName('views')[0];
     var defaultCamera;
 
-    var defaultPerspectiveId = this.reader.getString(views[0], 'default', true);
+    var defaultPerspectiveId = this.reader.getString(views, 'default', true);
 
-    if (!(views[0].children.length > 0))
+    if (!(views.children.length > 0))
         return 'You need to have at least one perspective defined.';
 
-    for (let perspective of views[0].children) {
+    for (let perspective of views.children) {
         //Parse perspective attributes
         var id = this.reader.getString(perspective, 'id', true);
         var fov = this.reader.getFloat(perspective, 'angle', true);

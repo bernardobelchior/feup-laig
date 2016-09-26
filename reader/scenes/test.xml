@@ -16,7 +16,7 @@
     <!-- deve definir-se um objeto para raiz do grafo , assim -->
     <!-- como o comprimento dos tres eixos (cilindros) -->
 
-    <scene root="ss" axis_length=""/>
+    <scene root="ss" axis_length="1"/>
 
     <views default="ss">
 
