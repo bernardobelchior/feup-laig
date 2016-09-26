@@ -75,7 +75,7 @@
               return 'transformation id "' + this.transfID +'" already in use';
         }
 
-        this.
+        idVec.push(this.transfID);
 
         
 
