@@ -56,15 +56,28 @@
       if(transformations == null)
           return "transformations element is missing";
 
-      if(transformations.length != 1)
+      if(transformations.length != 1) 
           return "invalid number of transformations elements"
 
+      if(transformations.children.length < 1)
+          return 'there should be one or more "transformation" blocks';
+
+      var idVec = [];
+
       for(let transf of transformations[0].children){
+
         this.transfID = this.reader.getString(transf, 'id', true);
         if(this.transfID == null)
             return "missing transformation ID";
 
-        console.log(this.transfID);
+        for(id of idVec){
+          if (id == this.transfID)
+              return 'transformation id "' + this.transfID +'" already in use';
+        }
+
+        this.
+
+        
 
       }
   }
@@ -72,7 +85,7 @@
   /*
    * Example of method that parses elements of one block and stores information in a specific data structure
    */
-  MySceneGraph.prototype.parseGlobalsExample = function(rootElement) {/*
+  MySceneGraph.prototype.parseGlobalsExample = function(rootElement) {
 
       var elems = rootElement.getElementsByTagName('globals');
       if (elems == null) {
@@ -107,7 +120,7 @@
           // process each element and store its information
           this.list[e.id] = e.attributes.getNamedItem("coords").value;
           console.log("Read list item id " + e.id + " with value " + this.list[e.id]);
-      };*/
+      };
 
   };
 
