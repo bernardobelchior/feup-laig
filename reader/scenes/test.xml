@@ -19,7 +19,6 @@
     <!-- como o comprimento dos tres eixos (cilindros) -->
     <scene root="ss" axis_length="ff" />
 
-
     <views default="ss" >
 
         <!-- declaracao obrigatoria de pelo menos uma vista; -->

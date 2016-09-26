@@ -38,7 +38,13 @@ MySceneGraph.prototype.onXMLReady = function() {
     this.scene.onGraphLoaded();
 };
 
+MySceneGraph.prototype.parseVec3 = function(tag) {
+  var x = this.reader.getFloat(tag, 'x', true);
+  var y = this.reader.getFloat(tag, 'y', true);
+  var z = this.reader.getFloat(tag, 'z', true);
 
+  return [x, y, z];
+}
 
 /*
  * Example of method that parses elements of one block and stores information in a specific data structure
