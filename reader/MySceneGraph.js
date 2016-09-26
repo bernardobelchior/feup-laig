@@ -60,17 +60,17 @@ MySceneGraph.prototype.parseVec3 = function(tag) {
   Parses the scene tag
 */
 MySceneGraph.prototype.parseScene = function(dsx) {
-  var scene = dsx.getElementsByTagName('scene')[0];
+    var scene = dsx.getElementsByTagName('scene')[0];
 
-  this.rootId = this.reader.getString(scene, 'root', true);
+    this.rootId = this.reader.getString(scene, 'root', true);
 
-  if(this.rootId == null)
-    return 'Scene tag must define a root component.';
+    if (this.rootId == null)
+        return 'Scene tag must define a root component.';
 
-  var axisLength = this.reader.getFloat(scene, 'axis_length', false);
+    var axisLength = this.reader.getFloat(scene, 'axis_length', false);
 
-  if(axisLength == null || isNaN(axisLength))
-    axisLength = 0;
+    if (axisLength == null || isNaN(axisLength))
+        axisLength = 0;
 }
 
 /**
