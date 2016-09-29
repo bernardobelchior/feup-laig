@@ -20,6 +20,7 @@ XMLscene.prototype.init = function(application) {
     this.gl.depthFunc(this.gl.LEQUAL);
 
     this.cameras = [];
+    this.primitives = {};
 };
 
 XMLscene.prototype.initLights = function() {
@@ -83,5 +84,10 @@ XMLscene.prototype.display = function() {
 
         // Draw axis
         this.axis.display();
+
+        //for .. in iterates through all the properties of this.primitives
+        for(let id in this.primitives) {
+          this.primitives[id].display();
+        }
     };
 };

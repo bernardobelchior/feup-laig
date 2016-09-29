@@ -40,19 +40,32 @@ MySceneGraph.prototype.onXMLReady = function() {
 MySceneGraph.prototype.parseDsx = function(dsx) {
     //NOTE: There cannot be a carriage return between the 'return' keyword and
     //the OR statement, otherwise the functions are not called.
-    return (this.parseScene(dsx) || this.parseViews(dsx));
+    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parsePrimitives(dsx));
 }
 
 /**
-  Parses the given tag and returns a Vec3 with the result.
-  TODO:Check if the read values are valid
-*/
-MySceneGraph.prototype.parseVec3 = function(tag) {
-    var x = this.reader.getFloat(tag, 'x', true);
-    var y = this.reader.getFloat(tag, 'y', true);
-    var z = this.reader.getFloat(tag, 'z', true);
+ *Parses the given tag and returns a Vec3 with the result.
+ * Attributes are named x, y and z concatenated with the number.
+ *TODO:Check if the read values are valid
+ */
+MySceneGraph.prototype.parseVec3 = function(tag, number) {
+    let z = this.reader.getFloat(tag, 'z' + number, true);
 
-    return [x, y, z];
+    let vec3 = this.parseVec2(tag, number);
+    vec3.push(z);
+
+    return vec3;
+}
+
+/**
+ * Parses the vector from the given tag attributes.
+ * Attributes are named x and y concatenated with the number.
+ */
+MySceneGraph.prototype.parseVec2 = function(tag, number) {
+    let x = this.reader.getFloat(tag, 'x' + number, true);
+    let y = this.reader.getFloat(tag, 'y' + number, true);
+
+    return [x, y];
 }
 
 /**
@@ -90,10 +103,10 @@ MySceneGraph.prototype.parseViews = function(dsx) {
 
         //Parse perspective elements
         var fromTag = perspective.getElementsByTagName('from')[0];
-        var fromVector = this.parseVec3(fromTag);
+        var fromVector = this.parseVec3(fromTag, '');
 
         var toTag = perspective.getElementsByTagName('to')[0];
-        var toVector = this.parseVec3(toTag);
+        var toVector = this.parseVec3(toTag, '');
 
         //Sets the default camera
         if (defaultPerspectiveId === id)
@@ -105,7 +118,56 @@ MySceneGraph.prototype.parseViews = function(dsx) {
     if (this.scene.defaultCamera == null)
         return 'The default perspective is not a child of views.';
 
+
     //this.scene.camera = this.cameras[defaultCamera];
+}
+
+
+/**
+  Parses the primitives from the dsx root element.
+*/
+MySceneGraph.prototype.parsePrimitives = function(dsx) {
+    var primitives = dsx.getElementsByTagName('primitives')[0];
+    console.log(primitives);
+
+    for (let primitive of primitives.children) {
+        let shape = primitive.children[0];
+        let id = this.reader.getString(primitive, 'id', true);
+        let object;
+
+        switch (shape.nodeName) {
+            case 'rectangle':
+                object = new Rectangle(this.scene,
+                  this.parseVec2(shape, '1'),
+                  this.parseVec2(shape, '2')
+              );
+                break;
+            case 'triangle':
+                object = new Triangle(this.scene,
+                  this.parseVec3(shape, '1'),
+                  this.parseVec3(shape, '2'),
+                  this.parseVec3(shape, '3'));
+                break;
+            case 'cylinder':
+              console.log('Cylinder');
+                break;
+            case 'sphere':
+              console.log('Sphere');
+                break;
+            case 'torus':
+              console.log('Torus');
+                break;
+            default:
+                return ('Unknown primitive found ' + shape.nodeName + '.');
+                break;
+        }
+
+        if (this.scene.primitives[id])
+            return ('There are two primitives with the same id: ' + id + '.');
+
+              console.log(object);
+        this.scene.primitives[id] = object;
+    }
 }
 
 /*
