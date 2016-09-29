@@ -49,6 +49,9 @@ MySceneGraph.prototype.parseDsx = function(dsx) {
  *TODO:Check if the read values are valid
  */
 MySceneGraph.prototype.parseVec3 = function(tag, number) {
+    if (!number)
+        number = '';
+
     let z = this.reader.getFloat(tag, 'z' + number, true);
 
     let vec3 = this.parseVec2(tag, number);
@@ -62,6 +65,9 @@ MySceneGraph.prototype.parseVec3 = function(tag, number) {
  * Attributes are named x and y concatenated with the number.
  */
 MySceneGraph.prototype.parseVec2 = function(tag, number) {
+    if (!number)
+        number = '';
+
     let x = this.reader.getFloat(tag, 'x' + number, true);
     let y = this.reader.getFloat(tag, 'y' + number, true);
 
@@ -103,10 +109,10 @@ MySceneGraph.prototype.parseViews = function(dsx) {
 
         //Parse perspective elements
         var fromTag = perspective.getElementsByTagName('from')[0];
-        var fromVector = this.parseVec3(fromTag, '');
+        var fromVector = this.parseVec3(fromTag);
 
         var toTag = perspective.getElementsByTagName('to')[0];
-        var toVector = this.parseVec3(toTag, '');
+        var toVector = this.parseVec3(toTag);
 
         //Sets the default camera
         if (defaultPerspectiveId === id)
@@ -128,7 +134,6 @@ MySceneGraph.prototype.parseViews = function(dsx) {
 */
 MySceneGraph.prototype.parsePrimitives = function(dsx) {
     var primitives = dsx.getElementsByTagName('primitives')[0];
-    console.log(primitives);
 
     for (let primitive of primitives.children) {
         let shape = primitive.children[0];
@@ -138,24 +143,31 @@ MySceneGraph.prototype.parsePrimitives = function(dsx) {
         switch (shape.nodeName) {
             case 'rectangle':
                 object = new Rectangle(this.scene,
-                  this.parseVec2(shape, '1'),
-                  this.parseVec2(shape, '2')
-              );
+                    this.parseVec2(shape, '1'),
+                    this.parseVec2(shape, '2')
+                );
                 break;
             case 'triangle':
                 object = new Triangle(this.scene,
-                  this.parseVec3(shape, '1'),
-                  this.parseVec3(shape, '2'),
-                  this.parseVec3(shape, '3'));
+                    this.parseVec3(shape, '1'),
+                    this.parseVec3(shape, '2'),
+                    this.parseVec3(shape, '3'));
                 break;
             case 'cylinder':
-              console.log('Cylinder');
+                console.log('Cylinder');
+                let base = this.reader.getFloat(shape, 'base', true);
+                let top = this.reader.getFloat(shape, 'top', true);
+                let height = this.reader.getFloat(shape, 'height', true);
+                let slices = this.reader.getFloat(shape, 'slices', true);
+                let stacks = this.reader.getFloat(shape, 'stacks', true);
+
+                object = new Cylinder(this.scene, base, top, height, slices, stacks);
                 break;
             case 'sphere':
-              console.log('Sphere');
+                console.log('Sphere');
                 break;
             case 'torus':
-              console.log('Torus');
+                console.log('Torus');
                 break;
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');
@@ -165,8 +177,8 @@ MySceneGraph.prototype.parsePrimitives = function(dsx) {
         if (this.scene.primitives[id])
             return ('There are two primitives with the same id: ' + id + '.');
 
-              console.log(object);
-        this.scene.primitives[id] = object;
+        if (object)
+            this.scene.primitives[id] = object;
     }
 }
 
