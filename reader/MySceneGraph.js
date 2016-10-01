@@ -1,72 +1,197 @@
-  function MySceneGraph(filename, scene) {
-      this.loadedOk = null;
+function MySceneGraph(filename, scene) {
+    this.loadedOk = null;
 
-      // Establish bidirectional references between scene and graph
-      this.scene = scene;
-      scene.graph = this;
+    // Establish bidirectional references between scene and graph
+    this.scene = scene;
+    scene.graph = this;
 
-      // File reading
-      this.reader = new CGFXMLreader();
+    // File reading
+    this.reader = new CGFXMLreader();
+    this.rootId;
+    /*
+     * Read the contents of the xml file, and refer to this class for loading and error handlers.
+     * After the file is read, the reader calls onXMLReady on this object.
+     * If any error occurs, the reader calls onXMLError on this object, with an error message
+     */
 
-      /*
-       * Read the contents of the xml file, and refer to this class for loading and error handlers.
-       * After the file is read, the reader calls onXMLReady on this object.
-       * If any error occurs, the reader calls onXMLError on this object, with an error message
-       */
+    this.reader.open('scenes/' + filename, this);
+}
 
-      this.reader.open('scenes/' + filename, this);
-  }
+/*
+ * Callback to be executed after successful reading
+ */
+MySceneGraph.prototype.onXMLReady = function() {
+    console.log("XML Loading finished.");
+    var rootElement = this.reader.xmlDoc.documentElement;
 
-  /*
-   * Callback to be executed after successful reading
-   */
-  MySceneGraph.prototype.onXMLReady = function() {
-      console.log("XML Loading finished.");
-      var rootElement = this.reader.xmlDoc.documentElement;
+    // Here should go the calls for different functions to parse the various blocks
+    var error = this.parseDsx(rootElement);
 
-      // Here should go the calls for different functions to parse the various blocks
-      //var error = this.parseGlobalsExample(rootElement);
+    if (error != null) {
+        this.onXMLError(error);
+        return;
+    }
 
-      var error = this.storeTransformations(rootElement);
-      if (error != null) {
-          this.onXMLError(error);
-          return;
-      }
+    // As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
+    this.scene.onGraphLoaded();
+    this.loadedOk = true;
+};
 
-      this.loadedOk = true;
+MySceneGraph.prototype.parseDsx = function(dsx) {
+    //NOTE: There cannot be a carriage return between the 'return' keyword and
+    //the OR statement, otherwise the functions are not called.
+    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parsePrimitives(dsx) || this.parseTransformations(dsx));
+}
 
-      // As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
-      this.scene.onGraphLoaded();
-  };
+/**
+ *Parses the given tag and returns a Vec3 with the result.
+ * Attributes are named x, y and z concatenated with the number.
+ *TODO:Check if the read values are valid
+ */
+MySceneGraph.prototype.parseVec3 = function(tag, number) {
+    let z = this.reader.getFloat(tag, 'z' + number, true);
 
-  MySceneGraph.prototype.parseVec3 = function(tag) {
-    var x = this.reader.getFloat(tag, 'x', true);
-    var y = this.reader.getFloat(tag, 'y', true);
-    var z = this.reader.getFloat(tag, 'z', true);
+    let vec3 = this.parseVec2(tag, number);
+    vec3.push(z);
 
-    return [x, y, z];
-  }
+    return vec3;
+}
 
-  /*
-   * Parses transformation element of DSX
-   * stores transformations for future reference
-   */
-  MySceneGraph.prototype.storeTransformations = function(rootElement){
+/**
+ * Parses the vector from the given tag attributes.
+ * Attributes are named x and y concatenated with the number.
+ */
+MySceneGraph.prototype.parseVec2 = function(tag, number) {
+    let x = this.reader.getFloat(tag, 'x' + number, true);
+    let y = this.reader.getFloat(tag, 'y' + number, true);
 
-      var transformations = rootElement.getElementsByTagName('transformations');
-      if(transformations == null)
-          return "transformations element is missing";
+    return [x, y];
+}
 
-      if(transformations.length != 1) 
-          return "invalid number of transformations elements"
+/**
+  Parses the scene tag
+*/
+MySceneGraph.prototype.parseScene = function(dsx) {
+    var scene = dsx.getElementsByTagName('scene')[0];
 
-      if(transformations[0].children.length < 1)
-          return 'there should be one or more "transformation" blocks';
-      
-      this.transfVec = [];
-      var duplicate = false;
+    this.rootId = this.reader.getString(scene, 'root', true);
 
-      for(let transf of transformations[0].children){
+    if (this.rootId == null)
+        return 'Scene tag must define a root component.';
+
+    this.scene.axisLength = this.reader.getFloat(scene, 'axis_length', false);
+}
+
+/**
+  Parses the views tag and its children and sets the scene's cameras accordingly.
+*/
+MySceneGraph.prototype.parseViews = function(dsx) {
+    var views = dsx.getElementsByTagName('views')[0];
+    var defaultCamera;
+
+    var defaultPerspectiveId = this.reader.getString(views, 'default', true);
+
+    if (!(views.children.length > 0))
+        return 'You need to have at least one perspective defined.';
+
+    for (let perspective of views.children) {
+        //Parse perspective attributes
+        var id = this.reader.getString(perspective, 'id', true);
+        var fov = this.reader.getFloat(perspective, 'angle', true);
+        var near = this.reader.getFloat(perspective, 'near', true);
+        var far = this.reader.getFloat(perspective, 'far', true);
+
+        //Parse perspective elements
+        var fromTag = perspective.getElementsByTagName('from')[0];
+        var fromVector = this.parseVec3(fromTag, '');
+
+        var toTag = perspective.getElementsByTagName('to')[0];
+        var toVector = this.parseVec3(toTag, '');
+
+        //Sets the default camera
+        if (defaultPerspectiveId === id)
+            this.scene.defaultCamera = this.scene.cameras.length;
+
+        this.scene.cameras.push(new CGFcamera(fov, near, far, fromVector, toVector));
+    }
+
+    if (this.scene.defaultCamera == null)
+        return 'The default perspective is not a child of views.';
+
+
+    //this.scene.camera = this.cameras[defaultCamera];
+}
+
+
+/**
+  Parses the primitives from the dsx root element.
+*/
+MySceneGraph.prototype.parsePrimitives = function(dsx) {
+    var primitives = dsx.getElementsByTagName('primitives')[0];
+    console.log(primitives);
+
+    for (let primitive of primitives.children) {
+        let shape = primitive.children[0];
+        let id = this.reader.getString(primitive, 'id', true);
+        let object;
+
+        switch (shape.nodeName) {
+            case 'rectangle':
+                object = new Rectangle(this.scene,
+                  this.parseVec2(shape, '1'),
+                  this.parseVec2(shape, '2')
+              );
+                break;
+            case 'triangle':
+                object = new Triangle(this.scene,
+                  this.parseVec3(shape, '1'),
+                  this.parseVec3(shape, '2'),
+                  this.parseVec3(shape, '3'));
+                break;
+            case 'cylinder':
+              console.log('Cylinder');
+                break;
+            case 'sphere':
+              console.log('Sphere');
+                break;
+            case 'torus':
+              console.log('Torus');
+                break;
+            default:
+                return ('Unknown primitive found ' + shape.nodeName + '.');
+                break;
+        }
+
+        if (this.scene.primitives[id])
+            return ('There are two primitives with the same id: ' + id + '.');
+
+              console.log(object);
+        this.scene.primitives[id] = object;
+    }
+}
+
+/**
+ * Parses transformation element of DSX
+ * stores transformations for future reference
+ */
+MySceneGraph.prototype.parseTransformations = function(rootElement){
+
+    console.log("Parsing transformations");
+
+    var transformations = rootElement.getElementsByTagName('transformations');
+    if(transformations == null)
+        return "transformations element is missing";
+
+    if(transformations.length != 1)
+        return "invalid number of transformations elements"
+
+    if(transformations[0].children.length < 1)
+        return 'there should be one or more "transformation" blocks';
+
+    this.transfVec = [];
+    var duplicate = false;
+
+    for(let transf of transformations[0].children){
 
         duplicate = false;
         var transfID = this.reader.getString(transf, 'id', true);
@@ -83,59 +208,59 @@
 
         if(!duplicate)
             this.transfVec.push(transf);
-      }
+    }
 
-      for(let transf of this.transfVec)
-          console.log(transf);
-  }
+    for(let transf of this.transfVec)
+        console.log(transf);
+}
 
-  /*
-   * Example of method that parses elements of one block and stores information in a specific data structure
-   */
-  MySceneGraph.prototype.parseGlobalsExample = function(rootElement) {
+/*
+ * Example of method that parses elements of one block and stores information in a specific data structure
+ */
+/*MySceneGraph.prototype.parseGlobalsExample = function(rootElement) {
 
-      var elems = rootElement.getElementsByTagName('globals');
-      if (elems == null) {
-          return "globals element is missing.";
-      }
+    var elems = rootElement.getElementsByTagName('globals');
+    if (elems == null) {
+        return "globals element is missing.";
+    }
 
-      if (elems.length != 1) {
-          return "either zero or more than one 'globals' element found.";
-      }
+    if (elems.length != 1) {
+        return "either zero or more than one 'globals' element found.";
+    }
 
-      // various examples of different types of access
-      var globals = elems[0];
-      this.background = this.reader.getRGBA(globals, 'background');
-      this.drawmode = this.reader.getItem(globals, 'drawmode', ["fill", "line", "point"]);
-      this.cullface = this.reader.getItem(globals, 'cullface', ["back", "front", "none", "frontandback"]);
-      this.cullorder = this.reader.getItem(globals, 'cullorder', ["ccw", "cw"]);
+    // various examples of different types of access
+    var globals = elems[0];
+    this.background = this.reader.getRGBA(globals, 'background');
+    this.drawmode = this.reader.getItem(globals, 'drawmode', ["fill", "line", "point"]);
+    this.cullface = this.reader.getItem(globals, 'cullface', ["back", "front", "none", "frontandback"]);
+    this.cullorder = this.reader.getItem(globals, 'cullorder', ["ccw", "cw"]);
 
-      console.log("Globals read from file: {background=" + this.background + ", drawmode=" + this.drawmode + ", cullface=" + this.cullface + ", cullorder=" + this.cullorder + "}");
+    console.log("Globals read from file: {background=" + this.background + ", drawmode=" + this.drawmode + ", cullface=" + this.cullface + ", cullorder=" + this.cullorder + "}");
 
-      var tempList = rootElement.getElementsByTagName('list');
+    var tempList = rootElement.getElementsByTagName('list');
 
-      if (tempList == null || tempList.length == 0) {
-          return "list element is missing.";
-      }
+    if (tempList == null || tempList.length == 0) {
+        return "list element is missing.";
+    }
 
-      this.list = [];
-      // iterate over every element
-      var nnodes = tempList[0].children.length;
-      for (var i = 0; i < nnodes; i++) {
-          var e = tempList[0].children[i];
+    this.list = [];
+    // iterate over every element
+    var nnodes = tempList[0].children.length;
+    for (var i = 0; i < nnodes; i++) {
+        var e = tempList[0].children[i];
 
-          // process each element and store its information
-          this.list[e.id] = e.attributes.getNamedItem("coords").value;
-          console.log("Read list item id " + e.id + " with value " + this.list[e.id]);
-      };
+        // process each element and store its information
+        this.list[e.id] = e.attributes.getNamedItem("coords").value;
+        console.log("Read list item id " + e.id + " with value " + this.list[e.id]);
+    };
 
-  };
+};*/
 
-  /*
-   * Callback to be executed on any read error
-   */
+/*
+ * Callback to be executed on any read error
+ */
 
-  MySceneGraph.prototype.onXMLError = function(message) {
-      console.error("XML Loading Error: " + message);
-      this.loadedOk = false;
-  };
+MySceneGraph.prototype.onXMLError = function(message) {
+    console.error("XML Loading Error: " + message);
+    this.loadedOk = false;
+};
