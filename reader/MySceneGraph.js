@@ -4,7 +4,7 @@ function MySceneGraph(filename, scene) {
     // Establish bidirectional references between scene and graph
     this.scene = scene;
     scene.graph = this;
-
+    
     // File reading
     this.reader = new CGFXMLreader();
     this.rootId;
@@ -254,104 +254,93 @@ MySceneGraph.prototype.parsePrimitives = function(dsx) {
  * the first element of the value array is the function to be called (transtale/rotate/scale)
  * the remainder of the array are the arguments to the function
  */
-MySceneGraph.prototype.parseTransformations = function(rootElement){
-
-    console.log("Parsing transformations");
-
+MySceneGraph.prototype.parseTransformations = function(rootElement) {
     var transformations = rootElement.getElementsByTagName('transformations');
-    if(transformations == null)
+    if (transformations == null)
         return "transformations element is missing";
 
-    if(transformations.length != 1)
+    if (transformations.length != 1)
         return "invalid number of transformations elements"
 
-    if(transformations[0].children.length < 1)
+    if (transformations[0].children.length < 1)
         return 'there should be one or more "transformation" blocks';
 
-    this.transfDic = []; //dictionary
+    this.transformations = []; //dictionary
     var duplicate = false; //flag
 
     // this for loop gets the ID of the transformation and, if it is not already in use, stores it in the dictionary
-    for(let transf of transformations[0].children){
+    for (let transf of transformations[0].children) {
         duplicate = false;
         var transfID = this.reader.getString(transf, 'id', true);
-        if(transfID == null)
+        if (transfID == null)
             return "missing transformation ID";
 
-        for(let storedID of this.transfDic){    //check if a transformation with the same ID has already been stored
-            if(storedID == transfID){
+        for (let storedID of this.transformations) { //check if a transformation with the same ID has already been stored
+            if (storedID == transfID) {
                 console.log("transformation ID " + transfID + " already in use");
                 duplicate = true;
             }
         }
 
         var values;
-        
+
         /**
          * the parsing happens here
          * checks what transformation is called and stores the function
          * and its arguments on a vector
          */
-        for(let t of transf.children){
-        switch(t.nodeName){
-            case "translate":
-                console.log("translate");
-                vec = [this.scene.translate];
-                console.log
-                values = vec.concat(this.parseVec3(t));
-                console.log(values);
-                break;
-           
-            case "rotate":
-                console.log("rotate")
-                values = [this.scene.rotate]
-                let axis = this.reader.getString(t,"axis",true);
-                if(axis != "x" || axis != "y" || axis != "z")
-                    return "Invalid axis on transformation " + transfID;
-                values.push();
-                values.push(this.reader.getFloat(t,"angle",true));
-                console.log(values);
-                break;
+        /*  for (let t of transf.children) {
+              switch (t.nodeName) {
+                  case "translate":
+                      vec = [this.scene.translate];
+                      values = vec.concat(this.parseVec3(t));
+                      break;
 
-            case "scale":
-                console.log("scale");
-                vec = [this.scene.scale]
-                values= vec.concat(this.parseVec3(t));
-                console.log(values);
-        }
-        }
+                  case "rotate":
+                      values = [this.scene.rotate];
+                      let axis = this.reader.getString(t, "axis", true);
+                      if (axis != "x" || axis != "y" || axis != "z")
+                          return "Invalid axis on transformation " + transfID;
+                      values.push();
+                      values.push(this.reader.getFloat(t, "angle", true));
+                      break;
 
-        if(!duplicate)
-            this.transfDic.push({
-                key: transfID,
-                value: values
-            });
+                  case "scale":
+                      vec = [this.scene.scale];
+                      values = vec.concat(this.parseVec3(t));
+              }
+          }*/
+
+
+
+        /*if (!duplicate)
+            this.transformations[transfID] = parseTransformation(this.reader, );*/
     }
 }
 
 /*
  * Parses illumination in DSX
  */
-MySceneGraph.prototype.parseIllumination = function(rootElement){
+MySceneGraph.prototype.parseIllumination = function(rootElement) {
 
     var illumination = rootElement.getElementsByTagName('illumination');
 
     if (illumination == null)
         return "illumination element is missing";
-    
 
-    this.doublesided = this.reader.getBoolean(illumination[0],'doublesided', true);
-    this.local = this.reader.getBoolean(illumination[0],'local', true);
 
-    if(this.doublesided == null || this.local == null)
+    this.doublesided = this.reader.getBoolean(illumination[0], 'doublesided', true);
+    this.local = this.reader.getBoolean(illumination[0], 'local', true);
+
+    if (this.doublesided == null || this.local == null)
         return "boolean value(s) in illumination missing";
 
     console.log("Illumination settings read from file: {doublesided = " + this.doublesided + ", local = " + this.local + "}");
 
     this.ambient = this.parseRGBA(illumination[0].children[0]);
     this.background = this.parseRGBA(illumination[0].children[1]);
-    
-    if(this.ambient == null || this.background == null)
+
+    if (this.ambient == null || this.background == null)
         return "ambient and background illuminations missing";
 
 }
