@@ -43,7 +43,8 @@ MySceneGraph.prototype.onXMLReady = function() {
 MySceneGraph.prototype.parseDsx = function(dsx) {
     //NOTE: There cannot be a carriage return between the 'return' keyword and
     //the OR statement, otherwise the functions are not called.
-    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parseMaterials(dsx) || this.parsePrimitives(dsx));
+
+    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parsePrimitives(dsx) || this.parseTransformations(dsx) || this.parseMaterials(dsx));
 }
 
 /**
@@ -243,6 +244,88 @@ MySceneGraph.prototype.parsePrimitives = function(dsx) {
 
         if (object)
             this.scene.primitives[id] = object;
+    }
+}
+
+/**
+ * Parses transformation element of DSX
+ * stores transformations in a dictionary for future reference
+ * the dictionary keys are the ID strings, the values are arrays
+ * the first element of the value array is the function to be called (transtale/rotate/scale)
+ * the remainder of the array are the arguments to the function
+ */
+MySceneGraph.prototype.parseTransformations = function(rootElement){
+
+    console.log("Parsing transformations");
+
+    var transformations = rootElement.getElementsByTagName('transformations');
+    if(transformations == null)
+        return "transformations element is missing";
+
+    if(transformations.length != 1)
+        return "invalid number of transformations elements"
+
+    if(transformations[0].children.length < 1)
+        return 'there should be one or more "transformation" blocks';
+
+    this.transfDic = []; //dictionary
+    var duplicate = false; //flag
+
+    // this for loop gets the ID of the transformation and, if it is not already in use, stores it in the dictionary
+    for(let transf of transformations[0].children){
+        duplicate = false;
+        var transfID = this.reader.getString(transf, 'id', true);
+        if(transfID == null)
+            return "missing transformation ID";
+
+        for(let storedID of this.transfDic){    //check if a transformation with the same ID has already been stored
+            if(storedID == transfID){
+                console.log("transformation ID " + transfID + " already in use");
+                duplicate = true;
+            }
+        }
+
+        var values;
+        
+        /**
+         * the parsing happens here
+         * checks what transformation is called and stores the function
+         * and its arguments on a vector
+         */
+        for(let t of transf.children){
+        switch(t.nodeName){
+            case "translate":
+                console.log("translate");
+                vec = [this.scene.translate];
+                console.log
+                values = vec.concat(this.parseVec3(t));
+                console.log(values);
+                break;
+           
+            case "rotate":
+                console.log("rotate")
+                values = [this.scene.rotate]
+                let axis = this.reader.getString(t,"axis",true);
+                if(axis != "x" || axis != "y" || axis != "z")
+                    return "Invalid axis on transformation " + transfID;
+                values.push();
+                values.push(this.reader.getFloat(t,"angle",true));
+                console.log(values);
+                break;
+
+            case "scale":
+                console.log("scale");
+                vec = [this.scene.scale]
+                values= vec.concat(this.parseVec3(t));
+                console.log(values);
+        }
+        }
+
+        if(!duplicate)
+            this.transfDic.push({
+                key: transfID,
+                value: values
+            });
     }
 }
 
