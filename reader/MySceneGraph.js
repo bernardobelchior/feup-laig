@@ -9,6 +9,7 @@ function MySceneGraph(filename, scene) {
     this.reader = new CGFXMLreader();
     this.rootId;
     this.materials = {};
+    this.transformations = {};
     /*
      * Read the contents of the xml file, and refer to this class for loading and error handlers.
      * After the file is read, the reader calls onXMLReady on this object.
@@ -170,11 +171,16 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
 }
 
 MySceneGraph.prototype.parseComponentTransformations = function(component, tag) {
-    for (let transformation of tag.children) {
-        if (transformation.nodeName === 'transformationref') {
+    for (let transfTag of tag.children) {
+        if (transfTag.nodeName === 'transformationref') {
+            let id = this.reader.getString(transfTag, 'id', true);
 
+            if (!this.transformations[id])
+                return ('Transformation with id ' + id + ' does not exist.');
+
+            component.concatTransformations(this.transformations[id]);
         } else {
-            component.addTransformation(parseTransformation(this.reader, transformation));
+            component.addTransformation(parseTransformation(this.scene, this.reader, transfTag));
         }
     }
 }
@@ -341,8 +347,8 @@ MySceneGraph.prototype.parseIllumination = function(rootElement) {
 
     console.log("Illumination settings read from file: {doublesided = " + this.doublesided + ", local = " + this.local + "}");
 
-    this.ambient = this.parseRGBA(illumination[0].children[0]);
-    this.background = this.parseRGBA(illumination[0].children[1]);
+    this.ambient = parseRGBA(this.reader, illumination[0].children[0]);
+    this.background = parseRGBA(this.reader, illumination[0].children[1]);
 
     if (this.ambient == null || this.background == null)
         return "ambient and background illuminations missing";
