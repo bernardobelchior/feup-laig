@@ -191,30 +191,47 @@ MySceneGraph.prototype.parseTransformations = function(rootElement){
     if(transformations[0].children.length < 1)
         return 'there should be one or more "transformation" blocks';
 
-    this.transfVec = [];
-    var duplicate = false;
+    this.transfDic = []; //dictionary
+    var duplicate = false; //flag
 
+    // this for loop gets the ID of the transformation and, if it is not already in use, stores it in the dictionary
     for(let transf of transformations[0].children){
-
         duplicate = false;
         var transfID = this.reader.getString(transf, 'id', true);
         if(transfID == null)
             return "missing transformation ID";
 
-        for(let storedTransf of this.transfVec){    //check if a transformation with the same ID has already been stored
-            var usedID = this.reader.getString(storedTransf, 'id', true);
-            if(usedID == transfID){
+        for(let storedID of this.transfDic){    //check if a transformation with the same ID has already been stored
+            if(storedID == transfID){
                 console.log("transformation ID " + transfID + " already in use");
                 duplicate = true;
             }
         }
 
-        if(!duplicate)
-            this.transfVec.push(transf);
-    }
+        var values = [];
 
-    for(let transf of this.transfVec)
-        console.log(transf);
+        switch(transf.nodeName){
+            case "translate":
+                console.log("translate");
+                values.push(this.scene.translate());
+                break;
+           
+            case "rotate":
+                console.log("rotate")
+                values.push(this.scene.rotate());
+                break;
+
+            case "scale":
+                console.log("scale");
+                values.push(this.scene.scale());
+        }
+
+        if(!duplicate)
+            this.transfDic.push({
+                key: transfID,
+                value: [transfFunc,]
+            });
+    }
 }
 
 /*
