@@ -99,8 +99,8 @@
             <!-- instrucoes a usar sem limite nem ordem -->
             <!-- deve existir pelo menos uma transformacao -->
             <translate x="1" y="2" z="2"/>
-            <rotate axis="cc" angle="ff"/>
-            <scale x="ff" y="ff" z="ff"/>
+            <rotate axis="x" angle="1.5"/>
+            <scale x="2" y="2" z="2"/>
         </transformation>
     </transformations>
 
@@ -149,9 +149,9 @@
                 <!-- usando zero ou mais das instrucoes seguintes, sem -->
                 <!-- limite nem ordem -->
                 <!-- ex: bloco transformation pode ficar sem conteudo -->
-                <translate x="ff" y="ff" z="ff"/>
-                <rotate axis="cc" angle="ff"/>
-                <scale x="ff" y="ff" z="ff"/>
+                <translate x="2" y="-1" z="0"/>
+                <rotate axis="x" angle="1"/>
+                <scale x="3" y="3" z="3"/>
             </transformation>
 
             <!-- declaracao obrigatoria de pelo menos um material; -->
@@ -177,7 +177,7 @@
                 <!-- deve existir uma ou mais tags "componentref" e/ou -->
                 <!-- "primitiveref", identificando outros -->
                 <!-- componentes ou primitivas -->
-                <componentref id="ss"/>
+                <!--<componentref id="ss"/>-->
                 <primitiveref id="ss"/>
 
             </children>

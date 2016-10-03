@@ -46,25 +46,25 @@ function parseRGBA(reader, tag) {
 
 function parseTransformation(scene, reader, tag) {
     let transformation = [];
-    
+
     switch (tag.nodeName) {
         case 'translate':
             transformation[0] = scene.translate;
-            transformation = transformation.concat(parseVec3(tag));
+            transformation = transformation.concat(parseVec3(reader, tag));
             break;
         case 'rotate':
             transformation[0] = scene.rotate;
-            let axis = reader.getString(t, 'axis', true);
+            let axis = reader.getString(tag, 'axis', true);
 
-            if (axis != 'x' || axis != 'y' || axis != 'z')
+            if (axis != 'x' && axis != 'y' && axis != 'z')
                 return null;
 
             transformation.push(axis);
-            transformation.push(reader.getFloat(t, "angle", true));
+            transformation.push(reader.getFloat(tag, "angle", true));
             break;
         case 'scale':
             transformation[0] = scene.scale;
-            transformation = transformation.concat(parseVec3(t));
+            transformation = transformation.concat(parseVec3(reader, tag));
     }
 
     return transformation;

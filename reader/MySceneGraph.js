@@ -10,6 +10,7 @@ function MySceneGraph(filename, scene) {
     this.rootId;
     this.materials = {};
     this.transformations = {};
+    this.primitives = {};
     /*
      * Read the contents of the xml file, and refer to this class for loading and error handlers.
      * After the file is read, the reader calls onXMLReady on this object.
@@ -153,7 +154,6 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
 
     for (let compTag of compsTag.children) {
         let id = this.reader.getString(compTag, 'id', true);
-        let component = new Component();
 
         if (!id)
             return 'A component must have an id. Please provide one.';
@@ -161,15 +161,61 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
         if (components[id])
             return ('A component with id ' + id + ' already exists.');
 
-        this.parseComponentTransformations(component, compTag.getElementsByTagName('transformation')[0]);
-        this.parseComponentMaterials(component, compTag.getElementsByTagName('materials')[0]);
-        //parseTextures
-        this.parseComponentChildren(component, compTag.getElementsByTagName('children')[0]);
+        let component = new Component(id);
 
-        components[id] = component;
+        let transformationTag = compTag.getElementsByTagName('transformation')[0];
+        let materialsTag = compTag.getElementsByTagName('materials')[0];
+
+        //Error checking
+        let error = this.parseComponentTransformations(component, transformationTag);
+        if (error)
+            return error;
+
+        error = this.parseComponentMaterials(component, materialsTag)
+        if (error)
+            return error;
+
+        /*
+         * Texture parsing
+         */
+        console.log(compTag);
+        let texture = compTag.getElementsByClassName('texture')[0];
+        console.log(texture);
+        if (!texture)
+            return ('A component with id ' + id + ' does not have a texture tag.');
+
+        let textureId = this.reader.getString(texture, 'id', true);
+        console.log('oi');
+        if (textureId)
+            component.addTexture(this.textures[textureId]);
+        else
+            return ('A component with id ' + id + ' is missing a texture id');
+
+        //Children parsing
+        let childrenTag = compTag.getElementsByTagName('children')[0];
+
+        error = this.parseComponentChildren(components, component, childrenTag)
+        if (error)
+            return error;
     }
+    console.log('oi');
+
+
+    this.createSceneGraph(components);
 }
 
+/**
+ * Creates the scene graph used to display the scene
+ */
+MySceneGraph.prototype.createSceneGraph = function(components) {
+    for (let component of components) {
+        console.log(component);
+    }
+};
+
+/**
+ * Parses the transformations and adds it to the component.
+ */
 MySceneGraph.prototype.parseComponentTransformations = function(component, tag) {
     for (let transfTag of tag.children) {
         if (transfTag.nodeName === 'transformationref') {
@@ -185,17 +231,58 @@ MySceneGraph.prototype.parseComponentTransformations = function(component, tag) 
     }
 }
 
+/**
+ * Parses the component materials and adds it to the component.
+ */
 MySceneGraph.prototype.parseComponentMaterials = function(component, tag) {
+    if (!tag.children.length)
+        return 'A component does not have a material.';
 
-}
+    for (let materialTag of tag.children) {
+        let id = this.reader.getString(materialTag, 'id', true);
 
-MySceneGraph.prototype.parseComponentChildren = function(component, tag) {
+        if (!id)
+            return 'A material in a component is missing its id.';
 
+        component.addMaterial(this.materials[id]);
+    }
 }
 
 /**
-  Parses the primitives from the dsx root element.
-*/
+ * Parses the children of the given component and:
+ * If it is a primitive, adds it to the Component class;
+ * If it is another component, adds it to the children array;
+ *
+ * In the end, it adds the component and its children to the components dictionary.
+ */
+MySceneGraph.prototype.parseComponentChildren = function(components, component, tag) {
+    let children = [];
+
+    for (let child of tag.children) {
+        if (child.nodeName !== 'componentref' && child.nodeName !== 'primitiveref')
+            return ('There is a component with id ' + component.getId() + 'with an unexpected child tag.');
+
+        let id = this.reader.getString(child, 'id', true);
+
+        if (!id)
+            return ('There is a component with id ' + component.getId() + ' that has a child without id.');
+
+        if (child.nodeName === 'componentref') {
+
+            if (id === component.getId()) //Check for cylic dependency
+                return ('Cyclic dependency on component named ' + component.getId() + '.');
+
+            children.push(id);
+        } else
+            component.addChild(this.primitives[id]);
+    }
+
+    components[component.getId()] = [component, children];
+}
+
+/**
+ *  Parses the primitives from the dsx root element.
+ */
 MySceneGraph.prototype.parsePrimitives = function(dsx) {
     let primitives = dsx.getElementsByTagName('primitives')[0];
 
@@ -249,11 +336,11 @@ MySceneGraph.prototype.parsePrimitives = function(dsx) {
                 break;
         }
 
-        if (this.scene.primitives[id])
+        if (this.primitives[id])
             return ('There are two primitives with the same id: ' + id + '.');
 
         if (object)
-            this.scene.primitives[id] = object;
+            this.primitives[id] = object;
     }
 }
 
@@ -282,49 +369,18 @@ MySceneGraph.prototype.parseTransformations = function(rootElement) {
     for (let transf of transformations[0].children) {
         duplicate = false;
         var transfID = this.reader.getString(transf, 'id', true);
-        if (transfID == null)
-            return "missing transformation ID";
+        if (!transfID)
+            return 'missing transformation ID';
 
-        for (let storedID of this.transformations) { //check if a transformation with the same ID has already been stored
-            if (storedID == transfID) {
-                console.log("transformation ID " + transfID + " already in use");
-                duplicate = true;
-            }
+        //check if a transformation with the same ID has already been stored
+        if (this.transformations[transfID])
+            return ('Transformation with ID ' + transfID + ' already exists.');
+
+        this.transformations[transfID] = [];
+
+        for (let operations of transf.children) {
+            this.transformations[transfID].push(parseTransformation(this.scene, this.reader, operations));
         }
-
-        var values;
-
-        /**
-         * the parsing happens here
-         * checks what transformation is called and stores the function
-         * and its arguments on a vector
-         */
-        /*  for (let t of transf.children) {
-              switch (t.nodeName) {
-                  case "translate":
-                      vec = [this.scene.translate];
-                      values = vec.concat(this.parseVec3(t));
-                      break;
-
-                  case "rotate":
-                      values = [this.scene.rotate];
-                      let axis = this.reader.getString(t, "axis", true);
-                      if (axis != "x" || axis != "y" || axis != "z")
-                          return "Invalid axis on transformation " + transfID;
-                      values.push();
-                      values.push(this.reader.getFloat(t, "angle", true));
-                      break;
-
-                  case "scale":
-                      vec = [this.scene.scale];
-                      values = vec.concat(this.parseVec3(t));
-              }
-          }*/
-
-
-
-        /*if (!duplicate)
-            this.transformations[transfID] = parseTransformation(this.reader, );*/
     }
 }
 
@@ -344,8 +400,6 @@ MySceneGraph.prototype.parseIllumination = function(rootElement) {
 
     if (this.doublesided == null || this.local == null)
         return "boolean value(s) in illumination missing";
-
-    console.log("Illumination settings read from file: {doublesided = " + this.doublesided + ", local = " + this.local + "}");
 
     this.ambient = parseRGBA(this.reader, illumination[0].children[0]);
     this.background = parseRGBA(this.reader, illumination[0].children[1]);
