@@ -8,10 +8,11 @@ function Cylinder(scene, base, top, height, slices, stacks) {
     this.scene = scene;
     this.slices = slices;
     this.stacks = stacks;
+    this.height = height;
 
     //TODO: Height is not scaled properly.
 
-    this.baselessCylinder = new BaselessCylinder(scene, slices, stacks);
+    this.baselessCylinder = new BaselessCylinder(scene, height, slices, stacks);
     this.top = new Circle(scene, slices);
     this.bottom = new Circle(scene, slices);
 };
@@ -23,8 +24,7 @@ Cylinder.prototype.display = function() {
     this.baselessCylinder.display();
 
     this.scene.pushMatrix();
-    //FIXME: Not working correctly.
-    this.scene.translate(0, 0, this.stacks);
+    this.scene.translate(0, 0, this.height);
     this.top.display();
     this.scene.popMatrix();
 
