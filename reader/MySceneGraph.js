@@ -220,28 +220,46 @@ MySceneGraph.prototype.parseTransformations = function(rootElement){
             }
         }
 
-        var values = [];
-
-        switch(transf.nodeName){
+        var values;
+        
+        /**
+         * the parsing happens here
+         * checks what transformation is called and stores the function
+         * and its arguments on a vector
+         */
+        for(let t of transf.children){
+        switch(t.nodeName){
             case "translate":
                 console.log("translate");
-                values.push(this.scene.translate());
+                vec = [this.scene.translate];
+                console.log
+                values = vec.concat(this.parseVec3(t));
+                console.log(values);
                 break;
            
             case "rotate":
                 console.log("rotate")
-                values.push(this.scene.rotate());
+                values = [this.scene.rotate]
+                let axis = this.reader.getString(t,"axis",true);
+                if(axis != "x" || axis != "y" || axis != "z")
+                    return "Invalid axis on transformation " + transfID;
+                values.push();
+                values.push(this.reader.getFloat(t,"angle",true));
+                console.log(values);
                 break;
 
             case "scale":
                 console.log("scale");
-                values.push(this.scene.scale());
+                vec = [this.scene.scale]
+                values= vec.concat(this.parseVec3(t));
+                console.log(values);
+        }
         }
 
         if(!duplicate)
             this.transfDic.push({
                 key: transfID,
-                value: [transfFunc,]
+                value: values
             });
     }
 }
