@@ -8,6 +8,7 @@ function MySceneGraph(filename, scene) {
     // File reading
     this.reader = new CGFXMLreader();
     this.rootId;
+    this.materials = {};
     /*
      * Read the contents of the xml file, and refer to this class for loading and error handlers.
      * After the file is read, the reader calls onXMLReady on this object.
@@ -40,7 +41,8 @@ MySceneGraph.prototype.onXMLReady = function() {
 MySceneGraph.prototype.parseDsx = function(dsx) {
     //NOTE: There cannot be a carriage return between the 'return' keyword and
     //the OR statement, otherwise the functions are not called.
-    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parsePrimitives(dsx) || this.parseTransformations(dsx));
+
+    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parsePrimitives(dsx) || this.parseTransformations(dsx) || this.parseMaterials(dsx));
 }
 
 /**
@@ -72,6 +74,17 @@ MySceneGraph.prototype.parseVec2 = function(tag, number) {
     let y = this.reader.getFloat(tag, 'y' + number, true);
 
     return [x, y];
+}
+
+MySceneGraph.prototype.parseRGBA = function(tag) {
+    let r = this.reader.getFloat(tag, 'r', true);
+    let g = this.reader.getFloat(tag, 'g', true);
+    let b = this.reader.getFloat(tag, 'b', true);
+    let a = this.reader.getFloat(tag, 'a', true);
+
+    return [
+        r, g, b, a
+    ];
 }
 
 /**
@@ -128,6 +141,46 @@ MySceneGraph.prototype.parseViews = function(dsx) {
     //this.scene.camera = this.cameras[defaultCamera];
 }
 
+/**
+ * Parses the materials from the dsx root element.
+ */
+MySceneGraph.prototype.parseMaterials = function(dsx) {
+    var materials = dsx.getElementsByTagName('materials')[0];
+
+    for (let material of materials.children) {
+        let id = this.reader.getString(material, 'id', true);
+        if (!id)
+            return ('A material must have an id. One is missing.');
+
+        if (this.materials[id])
+            return ('Material with id ' + id + ' already exists.');
+
+        let emission = material.getElementsByTagName('emission')[0];
+        let emissionRGBA = this.parseRGBA(emission);
+
+        let ambient = material.getElementsByTagName('ambient')[0];
+        let ambientRGBA = this.parseRGBA(ambient);
+
+        let diffuse = material.getElementsByTagName('diffuse')[0];
+        let diffuseRGBA = this.parseRGBA(diffuse);
+
+        let specular = material.getElementsByTagName('specular')[0];
+        let specularRGBA = this.parseRGBA(specular);
+
+        let shininess = material.getElementsByTagName('shininess')[0];
+        let shininessValue = this.reader.getFloat(shininess, 'value', true);
+
+
+        let appearance = new CGFappearance(this.scene);
+        appearance.setEmission(emissionRGBA[0], emissionRGBA[1], emissionRGBA[2], emissionRGBA[3]);
+        appearance.setAmbient(ambientRGBA[0], ambientRGBA[1], ambientRGBA[2], ambientRGBA[3]);
+        appearance.setDiffuse(diffuseRGBA[0], diffuseRGBA[1], diffuseRGBA[2], diffuseRGBA[3]);
+        appearance.setSpecular(specularRGBA[0], specularRGBA[1], specularRGBA[2], specularRGBA[3]);
+        appearance.setShininess(shininessValue);
+
+        this.materials[id] = appearance;
+    }
+}
 
 /**
   Parses the primitives from the dsx root element.
@@ -138,6 +191,10 @@ MySceneGraph.prototype.parsePrimitives = function(dsx) {
     for (let primitive of primitives.children) {
         let shape = primitive.children[0];
         let id = this.reader.getString(primitive, 'id', true);
+
+        if (!id)
+            return 'A primitive must have an id. Please provide one.';
+
         let object;
 
         switch (shape.nodeName) {
@@ -154,20 +211,27 @@ MySceneGraph.prototype.parsePrimitives = function(dsx) {
                     this.parseVec3(shape, '3'));
                 break;
             case 'cylinder':
-                console.log('Cylinder');
-                let base = this.reader.getFloat(shape, 'base', true);
-                let top = this.reader.getFloat(shape, 'top', true);
-                let height = this.reader.getFloat(shape, 'height', true);
-                let slices = this.reader.getFloat(shape, 'slices', true);
-                let stacks = this.reader.getFloat(shape, 'stacks', true);
+                {
+                    let base = this.reader.getFloat(shape, 'base', true);
+                    let top = this.reader.getFloat(shape, 'top', true);
+                    let height = this.reader.getFloat(shape, 'height', true);
+                    let slices = this.reader.getFloat(shape, 'slices', true);
+                    let stacks = this.reader.getFloat(shape, 'stacks', true);
 
-                object = new Cylinder(this.scene, base, top, height, slices, stacks);
+                    object = new Cylinder(this.scene, base, top, height, slices, stacks);
+                }
                 break;
             case 'sphere':
-                console.log('Sphere');
+                {
+                    let radius = this.reader.getFloat(shape, 'radius', true);
+                    let slices = this.reader.getFloat(shape, 'slices', true);
+                    let stacks = this.reader.getFloat(shape, 'stacks', true);
+
+                    object = new Sphere(this.scene, radius, slices, stacks);
+                }
                 break;
             case 'torus':
-                console.log('Torus');
+                console.log('Torus found. Not implemented yet.');
                 break;
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');
@@ -265,51 +329,8 @@ MySceneGraph.prototype.parseTransformations = function(rootElement){
 }
 
 /*
- * Example of method that parses elements of one block and stores information in a specific data structure
- */
-/*MySceneGraph.prototype.parseGlobalsExample = function(rootElement) {
-
-    var elems = rootElement.getElementsByTagName('globals');
-    if (elems == null) {
-        return "globals element is missing.";
-    }
-
-    if (elems.length != 1) {
-        return "either zero or more than one 'globals' element found.";
-    }
-
-    // various examples of different types of access
-    var globals = elems[0];
-    this.background = this.reader.getRGBA(globals, 'background');
-    this.drawmode = this.reader.getItem(globals, 'drawmode', ["fill", "line", "point"]);
-    this.cullface = this.reader.getItem(globals, 'cullface', ["back", "front", "none", "frontandback"]);
-    this.cullorder = this.reader.getItem(globals, 'cullorder', ["ccw", "cw"]);
-
-    console.log("Globals read from file: {background=" + this.background + ", drawmode=" + this.drawmode + ", cullface=" + this.cullface + ", cullorder=" + this.cullorder + "}");
-
-    var tempList = rootElement.getElementsByTagName('list');
-
-    if (tempList == null || tempList.length == 0) {
-        return "list element is missing.";
-    }
-
-    this.list = [];
-    // iterate over every element
-    var nnodes = tempList[0].children.length;
-    for (var i = 0; i < nnodes; i++) {
-        var e = tempList[0].children[i];
-
-        // process each element and store its information
-        this.list[e.id] = e.attributes.getNamedItem("coords").value;
-        console.log("Read list item id " + e.id + " with value " + this.list[e.id]);
-    };
-
-};*/
-
-/*
  * Callback to be executed on any read error
  */
-
 MySceneGraph.prototype.onXMLError = function(message) {
     console.error("XML Loading Error: " + message);
     this.loadedOk = false;
