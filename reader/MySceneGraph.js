@@ -154,20 +154,27 @@ MySceneGraph.prototype.parsePrimitives = function(dsx) {
                     this.parseVec3(shape, '3'));
                 break;
             case 'cylinder':
-                console.log('Cylinder');
-                let base = this.reader.getFloat(shape, 'base', true);
-                let top = this.reader.getFloat(shape, 'top', true);
-                let height = this.reader.getFloat(shape, 'height', true);
-                let slices = this.reader.getFloat(shape, 'slices', true);
-                let stacks = this.reader.getFloat(shape, 'stacks', true);
+                {
+                    let base = this.reader.getFloat(shape, 'base', true);
+                    let top = this.reader.getFloat(shape, 'top', true);
+                    let height = this.reader.getFloat(shape, 'height', true);
+                    let slices = this.reader.getFloat(shape, 'slices', true);
+                    let stacks = this.reader.getFloat(shape, 'stacks', true);
 
-                object = new Cylinder(this.scene, base, top, height, slices, stacks);
+                    object = new Cylinder(this.scene, base, top, height, slices, stacks);
+                }
                 break;
             case 'sphere':
-                console.log('Sphere');
+                {
+                    let radius = this.reader.getFloat(shape, 'radius', true);
+                    let slices = this.reader.getFloat(shape, 'slices', true);
+                    let stacks = this.reader.getFloat(shape, 'stacks', true);
+
+                    object = new Sphere(this.scene, radius, slices, stacks);
+                }
                 break;
             case 'torus':
-                console.log('Torus');
+                console.log('Torus found. Not implemented yet.');
                 break;
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');
