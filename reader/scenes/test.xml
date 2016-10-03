@@ -32,7 +32,7 @@
 
     </views>
 
-    <illumination doublesided="tt" local="tt">
+    <illumination doublesided="1" local="1">
 
         <ambient r="ff" g="ff" b="ff" a="ff"/>
         <background r="ff" g="ff" b="ff" a="ff"/>

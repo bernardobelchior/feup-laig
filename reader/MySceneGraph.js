@@ -28,6 +28,8 @@ MySceneGraph.prototype.onXMLReady = function() {
     // Here should go the calls for different functions to parse the various blocks
     var error = this.parseDsx(rootElement);
 
+    error = this.parseIllumination(rootElement);
+
     if (error != null) {
         this.onXMLError(error);
         return;
@@ -52,7 +54,6 @@ MySceneGraph.prototype.parseDsx = function(dsx) {
 MySceneGraph.prototype.parseVec3 = function(tag, number) {
     if (!number)
         number = '';
-
     let z = this.reader.getFloat(tag, 'z' + number, true);
 
     let vec3 = this.parseVec2(tag, number);
@@ -243,6 +244,33 @@ MySceneGraph.prototype.parsePrimitives = function(dsx) {
         if (object)
             this.scene.primitives[id] = object;
     }
+}
+
+/*
+ * Parses illumination in DSX
+ */
+MySceneGraph.prototype.parseIllumination = function(rootElement){
+
+    var illumination = rootElement.getElementsByTagName('illumination');
+
+    if (illumination == null)
+        return "illumination element is missing";
+    
+
+    this.doublesided = this.reader.getBoolean(illumination[0],'doublesided', true);
+    this.local = this.reader.getBoolean(illumination[0],'local', true);
+
+    if(this.doublesided == null || this.local == null)
+        return "boolean value(s) in illumination missing";
+
+    console.log("Illumination settings read from file: {doublesided = " + this.doublesided + ", local = " + this.local + "}");
+
+    this.ambient = this.parseRGBA(illumination[0].children[0]);
+    this.background = this.parseRGBA(illumination[0].children[1]);
+    
+    if(this.ambient == null || this.background == null)
+        return "ambient and background illuminations missing";
+
 }
 
 /*
