@@ -83,13 +83,12 @@
         <!-- Deve existir um ou mais blocos "material" -->
         <!-- Os identificadores "id" nao podem ser repetidos -->
         <material id="ss">
-            <emission r="ff" g="ff" b="ff" a="ff"/>
-            <ambient r="ff" g="ff" b="ff" a="ff"/>
-            <diffuse r="ff" g="ff" b="ff" a="ff"/>
-            <specular r="ff" g="ff" b="ff" a="ff"/>
-            <shininess value="ff"/>
+            <emission r="0" g="0" b="0" a="1"/>
+            <ambient r="0.2" g="0.2" b="0.2" a="1"/>
+            <diffuse r="0.5" g="0.5" b="0.5" a="1"/>
+            <specular r="0.5" g="0.5" b="0.5" a="1"/>
+            <shininess value="10"/>
         </material>
-
     </materials>
 
     <transformations>
