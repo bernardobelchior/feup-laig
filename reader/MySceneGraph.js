@@ -172,7 +172,10 @@ MySceneGraph.prototype.parsePrimitives = function(dsx) {
 
 /**
  * Parses transformation element of DSX
- * stores transformations for future reference
+ * stores transformations in a dictionary for future reference
+ * the dictionary keys are the ID strings, the values are arrays
+ * the first element of the value array is the function to be called (transtale/rotate/scale)
+ * the remainder of the array are the arguments to the function
  */
 MySceneGraph.prototype.parseTransformations = function(rootElement){
 
