@@ -232,7 +232,14 @@ MySceneGraph.prototype.parsePrimitives = function(dsx) {
                 }
                 break;
             case 'torus':
-                console.log('Torus found. Not implemented yet.');
+                {
+                    let inner = this.reader.getFloat(shape, 'inner', true);
+                    let outer = this.reader.getFloat(shape, 'outer', true);
+                    let slices = this.reader.getInteger(shape, 'slices', true);
+                    let loops = this.reader.getInteger(shape, 'loops', true);
+
+                    object = new Torus(this.scene, inner, outer, slices, loops);
+                }
                 break;
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');
