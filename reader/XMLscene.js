@@ -21,8 +21,6 @@ XMLscene.prototype.init = function(application) {
 
     this.cameras = [];
     this.primitives = {};
-
-    this.torus = new Torus(this,1, 2, 10, 10);
 };
 
 XMLscene.prototype.initLights = function() {
@@ -92,7 +90,5 @@ XMLscene.prototype.display = function() {
         for(let id in this.primitives) {
           this.primitives[id].display();
         }*/
-
-        this.torus.display();
     };
 };
