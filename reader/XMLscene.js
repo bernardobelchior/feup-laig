@@ -21,6 +21,10 @@ XMLscene.prototype.init = function(application) {
 
     this.cameras = [];
     this.primitives = {};
+
+    this.tex = new CGFappearance(this);
+    this.tex.loadTexture('primitives/icing.jpg');
+    this.torus = new Torus(this,1,3,25,25);
 };
 
 XMLscene.prototype.initLights = function() {
@@ -87,8 +91,12 @@ XMLscene.prototype.display = function() {
 
         //for .. in iterates through all the properties of this.primitives
         
-        for(let id in this.primitives) {
+        /*for(let id in this.primitives) {
           this.primitives[id].display();
-        }
+        }*/
+
+        this.tex.apply();
+        this.torus.display();
+
     };
 };
