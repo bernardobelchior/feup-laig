@@ -11,6 +11,7 @@ function MySceneGraph(filename, scene) {
     this.materials = {};
     this.transformations = {};
     this.primitives = {};
+    this.textures = {};
     /*
      * Read the contents of the xml file, and refer to this class for loading and error handlers.
      * After the file is read, the reader calls onXMLReady on this object.
@@ -178,14 +179,11 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
         /*
          * Texture parsing
          */
-        console.log(compTag);
-        let texture = compTag.getElementsByClassName('texture')[0];
-        console.log(texture);
+        let texture = compTag.getElementsByTagName('texture')[0];
         if (!texture)
             return ('A component with id ' + id + ' does not have a texture tag.');
 
         let textureId = this.reader.getString(texture, 'id', true);
-        console.log('oi');
         if (textureId)
             component.addTexture(this.textures[textureId]);
         else
@@ -198,8 +196,6 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
         if (error)
             return error;
     }
-    console.log('oi');
-
 
     this.createSceneGraph(components);
 }
@@ -208,8 +204,8 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
  * Creates the scene graph used to display the scene
  */
 MySceneGraph.prototype.createSceneGraph = function(components) {
-    for (let component of components) {
-        console.log(component);
+    for (let id in components) {
+        console.log(components[id]);
     }
 };
 
@@ -260,7 +256,7 @@ MySceneGraph.prototype.parseComponentChildren = function(components, component, 
 
     for (let child of tag.children) {
         if (child.nodeName !== 'componentref' && child.nodeName !== 'primitiveref')
-            return ('There is a component with id ' + component.getId() + 'with an unexpected child tag.');
+            return ('There is a component with id ' + component.getId() + ' with an unexpected child tag.');
 
         let id = this.reader.getString(child, 'id', true);
 
