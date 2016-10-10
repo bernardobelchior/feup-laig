@@ -105,6 +105,50 @@ MySceneGraph.prototype.parseViews = function(dsx) {
 }
 
 /**
+ * Parses the textures from the dsx root element.
+ */
+MySceneGraph.prototype.parseTexture = function(dsx) {
+    let textures = dsx.getElementsByTagName('textures')[0];
+
+    for (let texture of textures.children) {
+
+        let id = this.reader.getString(texture, 'id', true);
+        if (!id)
+            return ('A texture must have an id. One is missing.');
+
+        if (this.textures[id])
+            return ('Texture with id ' + id + ' already exists.');
+
+
+
+        let file = this.reader.getString(texture, 'file', true);
+
+        if (!file)
+            return ('Texture with id ' + id + ' does not have a file associated.');
+
+
+
+        let length_s = this.reader.getFloat(texture, 'length_s', false);
+
+        if (!length_s) {
+            console.log('Texture with id ' + id + ' does not have length_s defined. Assuming 1.0.');
+            length_s = 1;
+        }
+
+
+
+        let length_t = this.reader.getFloat(texture, 'length_t', false);
+
+        if (!length_t) {
+            console.log('Texture with id ' + id + ' does not have length_t defined. Assuming 1.0.');
+            length_t = 1;
+        }
+
+        this.textures[id] = new Texture(file, length_s, length_t);
+    }
+}
+
+/**
  * Parses the materials from the dsx root element.
  */
 MySceneGraph.prototype.parseMaterials = function(dsx) {
