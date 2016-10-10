@@ -119,8 +119,8 @@ MySceneGraph.prototype.parseTextures = function(dsx) {
         if (this.textures[id])
             return ('Texture with id ' + id + ' already exists.');
 
-        if(id === 'none' || id === 'inherit')
-          return ('"none" and "inherit" are keywords and cannot be used as texture ids.');
+        if (id === 'none' || id === 'inherit')
+            return ('"none" and "inherit" are keywords and cannot be used as texture ids.');
 
 
         let file = this.reader.getString(texture, 'file', true);
@@ -155,6 +155,9 @@ MySceneGraph.prototype.parseTextures = function(dsx) {
  */
 MySceneGraph.prototype.parseMaterials = function(dsx) {
     var materials = dsx.getElementsByTagName('materials')[0];
+
+    if (!materials.children.length)
+        return ('There must be at least one material defined.');
 
     for (let material of materials.children) {
         let id = this.reader.getString(material, 'id', true);
@@ -264,10 +267,17 @@ MySceneGraph.prototype.createSceneGraph = function(components) {
 
     this.scene.rootNode = components[this.rootId].component;
 
-    if(this.scene.rootNode.texture === 'inherit')
-      return 'Root node cannot inherit a texture.';
+    /*
+     * Handle textures inheritance
+     */
+    if (this.scene.rootNode.texture === 'inherit')
+        return 'Root node cannot inherit a texture.';
 
     this.scene.rootNode.updateTextures(this.textures);
+
+    /*
+     * Handle materials inheritance
+     */
 };
 
 /**
@@ -296,13 +306,16 @@ MySceneGraph.prototype.parseComponentTransformations = function(component, tag) 
  */
 MySceneGraph.prototype.parseComponentMaterials = function(component, tag) {
     if (!tag.children.length)
-        return 'A component does not have a material.';
+        return 'There is a component that does not have a material.';
 
     for (let materialTag of tag.children) {
         let id = this.reader.getString(materialTag, 'id', true);
 
         if (!id)
             return 'A material in a component is missing its id.';
+
+        if (id === 'inherit')
+            component.inheritMaterial = true;
 
         component.addMaterial(this.materials[id]);
     }

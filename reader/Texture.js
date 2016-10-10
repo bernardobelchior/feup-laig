@@ -6,6 +6,9 @@ function Texture(file, length_s, length_t) {
 
 Texture.prototype.constructor = Texture;
 
+/**
+* Applies this texture to the given appearance.
+*/
 Texture.prototype.apply = function(appearance) {
   appearance.loadTexture(this.file);
   appearance.setTextureWrap(this.length_s, this.length_t);
