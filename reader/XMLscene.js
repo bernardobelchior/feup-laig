@@ -20,6 +20,7 @@ XMLscene.prototype.init = function(application) {
     this.gl.depthFunc(this.gl.LEQUAL);
 
     this.cameras = [];
+    this.rootNode;
 };
 
 XMLscene.prototype.initLights = function() {
@@ -69,7 +70,6 @@ XMLscene.prototype.display = function() {
     // Apply transformations corresponding to the camera position relative to the origin
     this.applyViewMatrix();
 
-
     this.setDefaultAppearance();
 
     // ---- END Background, camera and axis setup
@@ -80,6 +80,8 @@ XMLscene.prototype.display = function() {
     if (this.graph.loadedOk) {
         //Update lights
         this.lights[0].update();
+
+        this.rootNode.display();
 
         // Draw axis
         this.axis.display();

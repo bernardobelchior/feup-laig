@@ -162,7 +162,7 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
         if (components[id])
             return ('A component with id ' + id + ' already exists.');
 
-        let component = new Component(id);
+        let component = new Component(this.scene, id);
 
         let transformationTag = compTag.getElementsByTagName('transformation')[0];
         let materialsTag = compTag.getElementsByTagName('materials')[0];
@@ -197,7 +197,11 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
             return error;
     }
 
-    this.createSceneGraph(components);
+    let error = this.createSceneGraph(components);
+    console.log(this.scene.rootNode);
+
+    if (error)
+        return error;
 }
 
 /**
@@ -205,8 +209,15 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
  */
 MySceneGraph.prototype.createSceneGraph = function(components) {
     for (let id in components) {
-        console.log(components[id]);
+        for (let child of components[id].children) {
+            components[id].component.addChild(components[child].component);
+        }
     }
+
+    if (!components[this.rootId])
+        return 'There is no node with the root id provided.';
+
+    this.scene.rootNode = components[this.rootId].component;
 };
 
 /**
@@ -214,16 +225,19 @@ MySceneGraph.prototype.createSceneGraph = function(components) {
  */
 MySceneGraph.prototype.parseComponentTransformations = function(component, tag) {
     for (let transfTag of tag.children) {
+        let transformation;
+
         if (transfTag.nodeName === 'transformationref') {
             let id = this.reader.getString(transfTag, 'id', true);
 
             if (!this.transformations[id])
                 return ('Transformation with id ' + id + ' does not exist.');
 
-            component.concatTransformations(this.transformations[id]);
-        } else {
-            component.addTransformation(parseTransformation(this.scene, this.reader, transfTag));
-        }
+            transformation = this.transformations[id];
+        } else
+            transformation = parseTransformation(this.scene, this.reader, transfTag);
+
+        component.transform(transformation);
     }
 }
 
@@ -273,7 +287,10 @@ MySceneGraph.prototype.parseComponentChildren = function(components, component, 
             component.addChild(this.primitives[id]);
     }
 
-    components[component.getId()] = [component, children];
+    components[component.getId()] = {
+        'component': component,
+        'children': children
+    };
 }
 
 /**
@@ -364,7 +381,7 @@ MySceneGraph.prototype.parseTransformations = function(rootElement) {
     // this for loop gets the ID of the transformation and, if it is not already in use, stores it in the dictionary
     for (let transf of transformations[0].children) {
         duplicate = false;
-        var transfID = this.reader.getString(transf, 'id', true);
+        let transfID = this.reader.getString(transf, 'id', true);
         if (!transfID)
             return 'missing transformation ID';
 
@@ -372,10 +389,10 @@ MySceneGraph.prototype.parseTransformations = function(rootElement) {
         if (this.transformations[transfID])
             return ('Transformation with ID ' + transfID + ' already exists.');
 
-        this.transformations[transfID] = [];
+        this.transformations[transfID] = new Transformation(this.scene);
 
         for (let operations of transf.children) {
-            this.transformations[transfID].push(parseTransformation(this.scene, this.reader, operations));
+            this.transformations[transfID].multiply(parseTransformation(this.scene, this.reader, operations));
         }
     }
 }

@@ -1,23 +1,46 @@
-class Transformation {
-    var TYPE = {
-        TRANSLATE,
-        ROTATE,
-        SCALE
-    };
+function Transformation(scene) {
+    this.scene = scene;
 
-    constructor() {
-        this.transformations = [];
-    }
+    this.scene.pushMatrix();
+    this.scene.loadIdentity();
+    this.transformationMatrix = this.scene.getMatrix();
+    this.scene.popMatrix();
+}
 
-    rotate(angle, x, y, z) {
-        this.transformations.push([ROTATE, angle, x, y, z]);
-    }
+Transformation.prototype.constructor = Transformation;
 
-    translate(x, y, z) {
-        this.transformations.push([TRANSLATE, x, y, z]);
-    }
+Transformation.prototype.rotate = function(angle, x, y, z) {
+    this.scene.pushMatrix();
+    this.scene.setMatrix(this.transformationMatrix);
+    this.scene.rotate(angle, x, y, z);
+    this.transformationMatrix = this.scene.getMatrix();
+    this.scene.popMatrix();
+}
 
-    scale(x, y, z) {
-        this.transformations.push([SCALE, x, y, z]);
-    }
+Transformation.prototype.translate = function(x, y, z) {
+    this.scene.pushMatrix();
+    this.scene.setMatrix(this.transformationMatrix);
+    this.scene.translate(x, y, z);
+    this.transformationMatrix = this.scene.getMatrix();
+    this.scene.popMatrix();
+}
+
+Transformation.prototype.scale = function(x, y, z) {
+    this.scene.pushMatrix();
+    this.scene.setMatrix(this.transformationMatrix);
+    this.scene.scale(x, y, z);
+    this.transformationMatrix = this.scene.getMatrix();
+    this.scene.popMatrix();
+}
+
+Transformation.prototype.multiply = function(transformation) {
+    this.scene.pushMatrix();
+    this.scene.setMatrix(this.transformationMatrix);
+    this.scene.multMatrix(transformation.getMatrix());
+    this.transformationMatrix = this.scene.getMatrix();
+    this.scene.popMatrix();
+}
+
+Transformation.prototype.getMatrix = function() {
+    return this.transformationMatrix;
 }

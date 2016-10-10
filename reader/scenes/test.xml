@@ -98,9 +98,9 @@
         <transformation id="ss">
             <!-- instrucoes a usar sem limite nem ordem -->
             <!-- deve existir pelo menos uma transformacao -->
-            <translate x="1" y="2" z="2"/>
-            <rotate axis="x" angle="1.5"/>
-            <scale x="2" y="2" z="2"/>
+            <translate x="1" y="0" z="0"/>
+            <rotate axis="y" angle="1.5"/>
+            <scale x="2" y="2" z="1"/>
         </transformation>
     </transformations>
 
@@ -158,9 +158,9 @@
 
         <component id="test">
             <transformation>
-                <translate x="2" y="-1" z="0"/>
-                <rotate axis="x" angle="1"/>
-                <scale x="3" y="3" z="3"/>
+                <translate x="0" y="0" z="1"/>
+             <rotate axis="y" angle="1"/>
+                <scale x="0.5" y="0.5" z="0.5"/>
             </transformation>
 
             <materials>

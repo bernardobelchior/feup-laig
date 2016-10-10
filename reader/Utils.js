@@ -45,26 +45,43 @@ function parseRGBA(reader, tag) {
 }
 
 function parseTransformation(scene, reader, tag) {
-    let transformation = [];
+    let transformation = new Transformation(scene);
 
     switch (tag.nodeName) {
         case 'translate':
-            transformation[0] = scene.translate;
-            transformation = transformation.concat(parseVec3(reader, tag));
+            {
+                let vec = parseVec3(reader, tag);
+                transformation.translate(vec[0], vec[1], vec[2]);
+            }
             break;
         case 'rotate':
-            transformation[0] = scene.rotate;
             let axis = reader.getString(tag, 'axis', true);
+            let angle = reader.getFloat(tag, "angle", true);
 
-            if (axis != 'x' && axis != 'y' && axis != 'z')
-                return null;
-
-            transformation.push(axis);
-            transformation.push(reader.getFloat(tag, "angle", true));
+            switch (axis) {
+                case 'x':
+                    transformation.rotate(angle, 1, 0, 0);
+                    break;
+                case 'y':
+                    transformation.rotate(angle, 0, 1, 0);
+                    break;
+                case 'z':
+                    transformation.rotate(angle, 0, 0, 1);
+                    break;
+                default:
+                    throw new Error('Invalid rotation axis.');
+                    return null;
+            }
             break;
         case 'scale':
-            transformation[0] = scene.scale;
-            transformation = transformation.concat(parseVec3(reader, tag));
+            {
+                let vec = parseVec3(reader, tag);
+                transformation.scale(vec[0], vec[1], vec[2]);
+            }
+            break;
+        default:
+            throw new Error('Invalid node name.');
+            return null;
     }
 
     return transformation;

@@ -1,17 +1,26 @@
-function Component(id) {
+function Component(scene, id) {
+    this.scene = scene;
     this.id = id;
-    this.transformations = [];
     this.materials = [];
     this.children = [];
     this.currentMaterial = 0;
+    this.transformation = new Transformation(scene);
 }
 
-Component.prototype.addTransformation = function(transformation) {
-    this.transformations.push(transformation);
+Component.prototype.rotate = function(angle, x, y, z) {
+    this.transformation.rotate(angle, x, y, z);
 }
 
-Component.prototype.concatTransformations = function(transformations) {
-    this.transformations = this.transformations.concat(transformations);
+Component.prototype.translate = function(x, y, z) {
+    this.transformation.translate(x, y, z);
+}
+
+Component.prototype.scale = function(x, y, z) {
+    this.transformation.scale(x, y, z);
+}
+
+Component.prototype.transform = function(transformation) {
+    this.transformation.multiply(transformation);
 }
 
 Component.prototype.addMaterial = function(material) {
@@ -28,4 +37,15 @@ Component.prototype.getId = function() {
 
 Component.prototype.addChild = function(component) {
     this.children.push(component);
+}
+
+Component.prototype.display = function() {
+    this.scene.pushMatrix();
+    this.scene.multMatrix(this.transformation.getMatrix());
+
+    for (let child of this.children) {
+        child.display();
+    }
+
+    this.scene.popMatrix();
 }
