@@ -119,6 +119,8 @@ MySceneGraph.prototype.parseTextures = function(dsx) {
         if (this.textures[id])
             return ('Texture with id ' + id + ' already exists.');
 
+        if(id === 'none' || id === 'inherit')
+          return ('"none" and "inherit" are keywords and cannot be used as texture ids.');
 
 
         let file = this.reader.getString(texture, 'file', true);
@@ -229,7 +231,7 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
 
         let textureId = this.reader.getString(texture, 'id', true);
         if (textureId)
-            component.addTexture(this.textures[textureId]);
+            component.setTexture(textureId);
         else
             return ('A component with id ' + id + ' is missing a texture id');
 
@@ -261,6 +263,11 @@ MySceneGraph.prototype.createSceneGraph = function(components) {
         return 'There is no node with the root id provided.';
 
     this.scene.rootNode = components[this.rootId].component;
+
+    if(this.scene.rootNode.texture === 'inherit')
+      return 'Root node cannot inherit a texture.';
+
+    this.scene.rootNode.updateTextures(this.textures);
 };
 
 /**
