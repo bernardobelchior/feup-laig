@@ -198,7 +198,6 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
     }
 
     let error = this.createSceneGraph(components);
-    console.log(this.scene.rootNode);
 
     if (error)
         return error;
