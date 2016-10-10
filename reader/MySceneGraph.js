@@ -47,7 +47,7 @@ MySceneGraph.prototype.parseDsx = function(dsx) {
     //NOTE: There cannot be a carriage return between the 'return' keyword and
     //the OR statement, otherwise the functions are not called.
 
-    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parseTransformations(dsx) || this.parseMaterials(dsx) || this.parsePrimitives(dsx) || this.parseComponents(dsx));
+    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parseTransformations(dsx) || this.parseTextures(dsx) || this.parseMaterials(dsx) || this.parsePrimitives(dsx) || this.parseComponents(dsx));
 }
 
 /**
@@ -107,7 +107,7 @@ MySceneGraph.prototype.parseViews = function(dsx) {
 /**
  * Parses the textures from the dsx root element.
  */
-MySceneGraph.prototype.parseTexture = function(dsx) {
+MySceneGraph.prototype.parseTextures = function(dsx) {
     let textures = dsx.getElementsByTagName('textures')[0];
 
     for (let texture of textures.children) {
@@ -131,7 +131,7 @@ MySceneGraph.prototype.parseTexture = function(dsx) {
         let length_s = this.reader.getFloat(texture, 'length_s', false);
 
         if (!length_s) {
-            console.log('Texture with id ' + id + ' does not have length_s defined. Assuming 1.0.');
+            console.log('Texture with id ' + id + ' does not have length_s defined or is invalid. Assuming 1.0.');
             length_s = 1;
         }
 
@@ -140,7 +140,7 @@ MySceneGraph.prototype.parseTexture = function(dsx) {
         let length_t = this.reader.getFloat(texture, 'length_t', false);
 
         if (!length_t) {
-            console.log('Texture with id ' + id + ' does not have length_t defined. Assuming 1.0.');
+            console.log('Texture with id ' + id + ' does not have length_t defined or is invalid. Assuming 1.0.');
             length_t = 1;
         }
 
