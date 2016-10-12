@@ -48,8 +48,8 @@ Torus.prototype.initBuffers = function(){
             let xCoord = Math.acos(x/this.inner)/(2*Math.PI);
             let yCoord = 2*Math.PI*Math.acos(z/(this.inner + this.outer*Math.cos(2*Math.PI*xCoord)));
             
-            xCoord = 1/this.slices;
-            yCoord = (n % (this.loops + 1)  )/ this.slices;
+            yCoord = m/this.slices;
+            xCoord = (n % (this.loops + 1)  )/ this.slices;
 
             this.texCoords.push(xCoord,yCoord);
                   
