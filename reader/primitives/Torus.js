@@ -19,7 +19,7 @@ Torus.prototype.constructor = Torus;
 
 Torus.prototype.initBuffers = function(){
     this.vertices = [];
-    //this.normals = [];
+    this.normals = [];
     this.indices = [];
     this.texCoords = [];
     var c = (this.outer + this.inner)/2;
@@ -29,6 +29,7 @@ Torus.prototype.initBuffers = function(){
     var nverts = 0;
     var patchLengthY = 1/this.slices;
     var patchLengthX = 1/this.loops;
+    var k = 0;
 
     for(var m = 0; m <= this.slices; m++){
         for(var n = 0; n <= this.loops; n++){
@@ -42,12 +43,14 @@ Torus.prototype.initBuffers = function(){
             let nz = this.inner * Math.sin(n * ang1)
 
             this.vertices.push(x,y,z);
-            //this.normals.push(nx,ny,nz);
+            this.normals.push(nx,ny,nz);
 
-            let yCoord = Math.acos(z/this.inner)/(2*Math.PI);
-            let xCoord = 2*Math.PI*Math.acos(x/(this.inner + this.outer*2*Math.PI*yCoord));
+            let xCoord = Math.acos(x/this.inner)/(2*Math.PI);
+            let yCoord = 2*Math.PI*Math.acos(z/(this.inner + this.outer*Math.cos(2*Math.PI*xCoord)));
+            
+            xCoord = 1/this.slices;
+            yCoord = (n % (this.loops + 1)  )/ this.slices;
 
- 
             this.texCoords.push(xCoord,yCoord);
                   
             nverts++;
