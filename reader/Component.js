@@ -77,19 +77,19 @@ Component.prototype.addChild = function(component) {
  * the texture object it refers to.
  */
 Component.prototype.updateTextures = function(textures) {
-    for (let child of this.children) {
-        switch (this.texture) {
-            case 'inherit':
-                this.inheritTexture = true;
-                break;
-            case 'none':
-                this.texture = null;
-                break;
-            default:
-                this.texture = textures[this.texture];
-                break;
-        }
+    switch (this.texture) {
+        case 'inherit':
+            this.inheritTexture = true;
+            break;
+        case 'none':
+            this.texture = null;
+            break;
+        default:
+            this.texture = textures[this.texture];
+            break;
+    }
 
+    for (let child of this.children) {
         //FIXME: Better way to do this
         if (child instanceof Component)
             child.updateTextures(textures);
@@ -108,6 +108,11 @@ Component.prototype.display = function(parent) {
 
     if (this.inheritMaterial)
         this.material = parent.materials[parent.currentMaterial];
+    else
+        this.material = this.materials[this.currentMaterial];
+
+    if (this.texture)
+        this.texture.apply(this.material);
 
     for (let child of this.children) {
         child.display(this);
