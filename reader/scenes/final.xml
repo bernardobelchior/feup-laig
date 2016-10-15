@@ -27,7 +27,7 @@
     </views>
 
     <illumination doublesided="1" local="1">
-
+        
         <ambient r="ff" g="ff" b="ff" a="ff"/>
         <background r="ff" g="ff" b="ff" a="ff"/>
 
@@ -97,45 +97,49 @@
             <sphere radius="0.5" slices="20" stacks="20"/>
         </primitive>
 
-        <!--    <primitive id="torus">
-            <torus inner="ff" outer="ff" slices="ii" loops="ii"/>
-        </primitive>-->
+        <primitive id="torus">
+            <torus inner="0.2" outer="1" slices="20" loops="20"/>
+        </primitive>
+
+        <primitive id="colonyBase">
+            <cylinder base="1" top="1" height="0.1" slices="20" stacks="5"/>
+        </primitive>
     </primitives>
 
+<!--components section-->
     <components>
         <component id="root">
+
             <transformation>
-                <translate x="1" y="1" z="0"/>
+                <rotate axis="x" angle="-90"/>
             </transformation>
 
             <materials>
-                <material id="whiteboard"/>
-            </materials>
-
-            <texture id="whiteboard"/>
-
-            <children>
-                <componentref id="test"/>
-                <primitiveref id="rectangle"/>
-            </children>
-        </component>
-
-        <component id="test">
-            <transformation>
-                <translate x="0" y="0" z="1"/>
-             <rotate axis="y" angle="1"/>
-                <scale x="0.5" y="0.5" z="0.5"/>
-            </transformation>
-
-            <materials>
-                <material id="default"/>
+                <material id="none"/>
             </materials>
 
             <texture id="none"/>
 
             <children>
-                <primitiveref id="sphere"/>
+                <componentref id="cBase"/>
             </children>
         </component>
+
+
+        <component id="cBase">
+            <transformation>
+            </transformation>
+
+            <materials>
+                <material id="none"/>
+            </materials>
+
+            <texture id="none">
+
+            <children>
+                <primitiveref id="colonyBase"/>
+            </children>
+        </component>
+                
     </components>
 </dsx>
