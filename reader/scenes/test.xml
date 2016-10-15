@@ -129,9 +129,15 @@
             <sphere radius="0.5" slices="20" stacks="20"/>
         </primitive>
 
+<<<<<<< HEAD
         <!--    <primitive id="torus">
             <torus inner="ff" outer="ff" slices="ii" loops="ii"/>
         </primitive>-->
+=======
+        <primitive id="torus">
+            <torus inner="3" outer="4" slices="30" loops="30"/>
+        </primitive>
+>>>>>>> torus
     </primitives>
 
     <components>
