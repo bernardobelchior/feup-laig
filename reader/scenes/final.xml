@@ -113,7 +113,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -132,7 +132,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -151,7 +151,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -174,7 +174,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -195,7 +195,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -218,7 +218,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -241,7 +241,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -261,7 +261,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -279,7 +279,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -297,7 +297,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -314,7 +314,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -331,7 +331,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -347,7 +347,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -366,7 +366,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -387,7 +387,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -404,7 +404,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -420,7 +420,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -437,7 +437,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -453,7 +453,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -471,7 +471,7 @@
             </transformation>
 
             <materials>
-                <material id="none"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
