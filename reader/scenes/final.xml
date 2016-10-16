@@ -113,7 +113,7 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="SSEColony"/>
+                <!--componentref id="SSEColony"/-->
                 <componentref id="SSETradeStation"/>
             </children>
 
@@ -369,12 +369,176 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="TradeStationLowerBase"/>
+                <componentref id="tradeStationMainBuilding"/>
+                <componentref id="tradeStationUpperBase"/>
+                <componentref id="tradeStationLowerBase"/>
+                <componentref id="tradeStationMiddleBase"/>
+                <componentref id="tradeStationSprawl"/>
             </children>
 
         </component>
 
-        <component id="TradeStationLowerBase">
+        <component id="tradeStationMainBuilding">
+            
+            <transformation>
+            <translate x="0" y="0" z="0.2"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="tradeStationMainBuildingSpine"/>
+                <componentref id="tradeStationMainBuildingTower"/>
+                <componentref id="tradeStationMainBuildingBase"/>
+            </children>
+        </component>
+
+        <component id="tradeStationMainBuildingSpine">
+            
+            <transformation>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="tradeStationMainBuildingSpineP1"/>
+                <componentref id="tradeStationMainBuildingSpineP2"/>
+                <componentref id="tradeStationMainBuildingSpineP3"/>
+            </children>
+        </component>    
+
+        <component id="tradeStationMainBuildingSpineP1">
+            
+            <transformation>
+                <translate x="0.175" y="0" z="0.9"/>
+                <rotate axis="x" angle="90"/>
+                <scale x="0.175" y="0.175" z="0.05"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+        </component> 
+
+        <component id="tradeStationMainBuildingSpineP2">
+            
+            <transformation>
+                <translate x="0" y="0" z="-0.25"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="tradeStationMainBuildingSpineP1"/>
+            </children>
+        </component> 
+
+        <component id="tradeStationMainBuildingSpineP3">
+            
+            <transformation>
+                <translate x="0" y="0" z="-0.5"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="tradeStationMainBuildingSpineP1"/>
+            </children>
+        </component>                                
+
+        <component id="tradeStationMainBuildingTower">
+            
+            <transformation>
+                <scale x="0.175" y="0.175" z="1"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="cylinder"/>
+            </children>
+        </component>  
+
+        <component id="tradeStationMainBuildingBase">
+            
+            <transformation>
+                <scale x="0.25" y="0.25" z="0.2"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="cylinder"/>
+            </children>
+        </component>        
+
+        <component id="tradeStationUpperBase">
+            <transformation>
+            <translate x="0" y="0" z="0.05"/>
+            <scale x="0.85" y="0.85" z="1"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="tradeStationMiddleBase"/>
+            </children>
+
+        </component>        
+
+        <component id="tradeStationMiddleBase">
+            <transformation>
+            <translate x="0" y="0" z="0.1"/>
+            <scale x="0.85" y="0.85" z="0.5"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="tradeStationLowerBase"/>
+            </children>
+
+        </component>
+
+        <component id="tradeStationLowerBase">
             <transformation>
             <scale x="1" y="0.75" z="1"/>
             <translate x="-0.25" y="1.5" z="0"/>
@@ -484,6 +648,70 @@
             </children>
 
         </component>    
+
+        <component id="tradeStationSprawl">
+
+            <transformation>
+                <translate x="-0.3" y="-0.2" z="0"/>
+                <scale x="0.75" y="0.65" z="1.2"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="tradeStationSprawl1"/>
+                <componentref id="tradeStationSprawl2"/>
+            </children>
+        </component>
+
+        <component id="tradeStationSprawl1">
+
+            <transformation>
+                <translate x="0.75" y="-0.2" z="0.1"/>
+                <scale x="0.5" y="2.8" z="0.2"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="colonyMainBuilding"/>
+                <componentref id="colonyMainBuilding2"/>
+                <componentref id="colonyMediumBuilding1"/>
+                <componentref id="colonyMediumBuilding2"/>
+                <componentref id="colonySmallBuilding1"/>
+            </children>
+        </component>
+
+        <component id="tradeStationSprawl2">
+
+            <transformation>
+                <translate x="0.2" y="0.75" z="0.1"/>
+                <rotate axis="z" angle="30"/>
+                <scale x="0.5" y="0.5" z="0.3"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="colonyMainBuilding"/>
+                <componentref id="colonyMainBuilding2"/>
+                <componentref id="colonyMediumBuilding1"/>
+                <componentref id="colonyMediumBuilding2"/>
+                <componentref id="colonySmallBuilding1"/>
+            </children>
+        </component>        
          
         <!-- Unit Cube -->
 
