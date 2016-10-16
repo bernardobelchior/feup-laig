@@ -19,8 +19,11 @@ XMLscene.prototype.init = function(application) {
     this.gl.enable(this.gl.CULL_FACE);
     this.gl.depthFunc(this.gl.LEQUAL);
 
+    this.enableTextures(true);
+
     this.cameras = [];
-    this.rootNode;
+    this.rootNode;  
+      
 };
 
 XMLscene.prototype.initLights = function() {
@@ -85,5 +88,6 @@ XMLscene.prototype.display = function() {
 
         // Draw axis
         this.axis.display();
+
     };
 };
