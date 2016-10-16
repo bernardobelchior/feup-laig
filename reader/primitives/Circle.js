@@ -34,6 +34,13 @@ Circle.prototype.initBuffers = function() {
 
     this.indices.push(this.slices - 1, 0, this.slices);
 
+    this.texCoords = [
+      -0.5, -0.5,
+      -0.5, 0.5,
+      0.5, -0.5,
+      0.5, 0.5
+    ];
+
     this.primitiveType = this.scene.gl.TRIANGLES;
     this.initGLBuffers();
 };

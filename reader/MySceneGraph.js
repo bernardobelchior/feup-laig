@@ -200,8 +200,6 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
     let compsTag = dsx.getElementsByTagName('components')[0];
     let components = {};
 
-    console.log(compsTag.children);
-
     for (let compTag of compsTag.children) {
         let id = this.reader.getString(compTag, 'id', true);
 
@@ -233,9 +231,12 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
             return ('A component with id ' + id + ' does not have a texture tag.');
 
         let textureId = this.reader.getString(texture, 'id', true);
-        if (textureId)
-            component.setTexture(textureId);
-        else
+        if (textureId) {
+            error = component.setTexture(textureId);
+
+            if(error)
+              return error;
+        } else
             return ('A component with id ' + id + ' is missing a texture id');
 
         //Children parsing
@@ -259,7 +260,6 @@ MySceneGraph.prototype.createSceneGraph = function(components) {
     for (let id in components) {
         for (let child of components[id].children) {
             components[id].component.addChild(components[child].component);
-            console.log(components[id].component.children.length);
         }
     }
 
