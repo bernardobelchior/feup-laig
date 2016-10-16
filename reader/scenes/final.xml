@@ -137,8 +137,9 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="SSETradeStation"/>
-                <componentref id="SSEColony"/>
+                <!--componentref id="SSETradeStation"/>
+                <componentref id="SSEColony"/-->
+                <componentref id="SSESpaceship"/>
             </children>
 
         </component>
@@ -744,7 +745,191 @@
                 <componentref id="colonySmallBuilding1"/>
             </children>
         </component>        
+
+        <!-- Trade Station End -->
+
+        <!-- Space Ship -->
+
+        <component id="SSESpaceship">
+            <transformation>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
         
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="spaceshipBody"/>
+                <componentref id="spaceshipBottomStabilizers"/>
+            </children>
+
+        </component>
+
+        <component id="spaceshipBody">
+            <transformation>
+                <scale x="0.33" y="0.33" z="1"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+        
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+
+        </component>        
+
+        <component id="spaceshipBottomStabilizers">
+            <transformation>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+        
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="spaceshipBottomStabilizer1"/>
+                <componentref id="spaceshipBottomStabilizer2"/>
+                <componentref id="spaceshipBottomStabilizer3"/>
+                <componentref id="spaceshipBottomStabilizer4"/>
+            </children>
+
+        </component>    
+
+        <component id="spaceshipBottomStabilizer1">
+            <transformation>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+        
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="spaceshipBottomStabilizerBig"/>
+                <componentref id="spaceshipBottomStabilizerSlant"/>
+                <componentref id="spaceshipBottomStabilizerSmall"/>
+            </children>
+
+        </component> 
+
+        <component id="spaceshipBottomStabilizer2">
+            <transformation>
+                <rotate axis="z" angle="180"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+        
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="spaceshipBottomStabilizer1"/>
+            </children>
+
+        </component> 
+
+        <component id="spaceshipBottomStabilizer3">
+            <transformation>
+                <rotate axis="z" angle="-90"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+        
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="spaceshipBottomStabilizer1"/>
+            </children>
+
+        </component>   
+
+        <component id="spaceshipBottomStabilizer4">
+            <transformation>
+                <rotate axis="z" angle="90"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+        
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="spaceshipBottomStabilizer1"/>
+            </children>
+
+        </component>                           
+
+        <component id="spaceshipBottomStabilizerBig">
+            <transformation>
+                <translate x="0.33" y="0" z="0.05"/>
+                <scale x="0.33" y="0.1" z="0.15"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+        
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+
+        </component>
+
+        <component id="spaceshipBottomStabilizerSlant">
+            <transformation>
+                <translate x="0.25" y="0" z="0.1"/>
+                <rotate axis="y" angle="15"/>
+                <scale x="0.33" y="0.1" z="0.15"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+        
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+
+        </component>    
+
+        <component id="spaceshipBottomStabilizerSmall">
+            <transformation>
+                <translate x="0.2" y="0" z="0.15"/>
+                <rotate axis="y" angle="15"/>
+                <scale x="0.2" y="0.03" z="0.15"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+        
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+
+        </component>               
+
+        <!-- Space Ship End -->
+
 
         <!-- Buildings -->
 
@@ -793,6 +978,7 @@
             </children>
         </component>
 
+        <!--Buildings End -->
 
         <!-- Unit Cube -->
 
