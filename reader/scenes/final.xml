@@ -108,9 +108,8 @@
 
         <component id="root">
 
-            <!-- bloco "transformation" obrigatorio -->
             <transformation>
-                <rotate axis="x" angle="-90"/>
+                <rotate axis="x" angle="0"/>
             </transformation>
 
             <materials>
@@ -120,12 +119,156 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="cBase"/>
+                <componentref id="SSEColony"/>
             </children>
 
         </component>
 
 
+        <!-- Colony -->
+        
+        <component id="SSEColony">
+            <transformation>
+            </transformation>
+
+            <materials>
+                <material id="none"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="colonyBase"/>
+                <componentref id="colonyBuildings"/>
+            </children>
+        </component>
+        
+        <component id="colonyBuildings">
+            
+            <transformation>
+                <scale x="1.2" y="1.2" z="1.2"/>
+                <translate x="0.2" y="0.2" z="0"/>
+            </transformation>
+
+            <materials>
+                <material id="none"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="colonyMainBuilding"/>
+                <componentref id="colonyMainBuilding2"/>
+                <componentref id="colonyMediumBuilding1"/>
+                <componentref id="colonyMediumBuilding2"/>
+                <componentref id="colonySmallBuilding1"/>
+            </children>
+        </component>
+                
+        <component id="colonyMainBuilding">
+            <transformation>
+                <scale x="0.3" y="0.4" z="1"/>
+            </transformation>
+
+            <materials>
+                <material id="none"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+
+        </component>
+
+        <component id="colonyMainBuilding2">
+            <transformation>
+                <translate x="-0.55" y="-0.1" z="0"/>
+                <scale x="0.3" y="0.3" z="0.75"/>
+            </transformation>
+
+            <materials>
+                <material id="none"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+
+        </component>
+
+        <component id="colonyMediumBuilding1">
+            <transformation>
+                <translate x="0.15" y="-0.25" z="0"/>
+                <scale x="0.2" y="0.2" z="0.5"/>
+            </transformation>
+
+            <materials>
+                <material id="none"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+        </component>
+
+        <component id="colonyMediumBuilding2">
+            <transformation>
+                <translate x="-0.2" y="-0.1" z="0"/>
+                <scale x="0.2" y="0.4" z="0.4"/>
+            </transformation>
+
+            <materials>
+                <material id="none"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+        </component>
+
+        <component id="colonySmallBuilding1">
+            <transformation>
+                <translate x="-0.52" y="-0.4" z="0"/>
+                <scale x="0.2" y="0.2" z="0.25"/>
+            </transformation>
+
+            <materials>
+                <material id="none"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+        </component>        
+
+        <component id="colonyBase">
+            <transformation>
+                <scale x="1" y="1" z="0.1"/>
+            </transformation>
+
+            <materials>
+                <material id="none"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="cylinder"/>
+            </children>
+
+        </component>
+
+        <!-- Unit Cube -->
 
         <component id="unitCube">
             <transformation>
@@ -146,23 +289,6 @@
                 <componentref id="unitCubeRight"/>
                 <componentref id="unitCubeLeft"/>
             </children>
-        </component>
-
-        <component id="cBase">
-            <transformation>
-                <scale x="1" y="1" z="0.1"/>
-            </transformation>
-
-            <materials>
-                <material id="none"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <primitiveref id="cylinder"/>
-            </children>
-
         </component>
 
         <component id="unitCubeTop">
@@ -264,27 +390,6 @@
                 <primitiveref id="square"/>
             </children>
         </component>
-
-          
-
-        <component id="cBuilding1">
-            <transformation>
-                <scale x="1" y="1" z="5"/>
-            </transformation>
-
-            <materials>
-                <material id="none"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <primitiveref id="square"/>
-            </children>
-
-        </component>
-
-
 
     </components>
 </dsx>
