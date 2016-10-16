@@ -146,7 +146,7 @@ MySceneGraph.prototype.parseTextures = function(dsx) {
             length_t = 1;
         }
 
-        this.textures[id] = new Texture(file, length_s, length_t);
+        this.textures[id] = new Texture(this.scene, file, length_s, length_t);
     }
 }
 

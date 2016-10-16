@@ -114,6 +114,8 @@ Component.prototype.display = function(parent) {
     if (this.texture)
         this.texture.apply(this.material);
 
+    this.material.apply();
+
     for (let child of this.children) {
         child.display(this);
     }
