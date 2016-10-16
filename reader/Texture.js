@@ -1,5 +1,5 @@
 function Texture(scene, file, length_s, length_t) {
-    this.texture = new CGFtexture(scene, "assets/" + file);
+    this.texture = new CGFtexture(scene, file);
     this.length_s = length_s;
     this.length_t = length_t;
 }

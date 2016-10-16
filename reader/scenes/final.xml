@@ -51,9 +51,9 @@
     </lights>
 
     <textures>
-        <texture id="building_side" file="building_side.jpg" length_s="1" length_t="1"/>
-        <texture id="building_roof" file="building_roof.jpg" length_s="1" length_t="1"/>
-        <texture id="floor" file="floor.jpg" length_s="1" length_t="1"/>
+        <texture id="building_side" file="assets/building_side.jpg" length_s="1" length_t="1"/>
+        <texture id="building_roof" file="assets/building_roof.jpg" length_s="1" length_t="1"/>
+        <texture id="floor" file="assets/floor.jpg" length_s="1" length_t="1"/>
     </textures>
 
     <materials>
@@ -63,6 +63,30 @@
             <specular r="0.5" g="0.5" b="0.5" a="1"/>
             <emission r="0" g="0" b="0" a="1"/>
             <shininess value="200"/>
+        </material>
+
+        <material id="ground">
+            <ambient r="0.2" g="0.2" b="0.2" a="1"/>
+            <diffuse r="0.8" g="0.8" b="0.8" a="1"/>
+            <specular r="0.1" g="0.1" b="0.1" a="1"/>
+            <emission r="0" g="0" b="0" a="1"/>
+            <shininess value="10"/>
+        </material>
+
+        <material id="building_side">
+            <ambient r="0.2" g="0.2" b="0.2" a="1"/>
+            <diffuse r="0.8" g="0.8" b="0.8" a="1"/>
+            <specular r="0.8" g="0.8" b="0.8" a="1"/>
+            <emission r="0" g="0" b="0" a="1"/>
+            <shininess value="200"/>
+        </material>
+
+        <material id="building_roof">
+            <ambient r="0.2" g="0.2" b="0.2" a="1"/>
+            <diffuse r="0.3" g="0.3" b="0.3" a="1"/>
+            <specular r="0.1" g="0.1" b="0.1" a="1"/>
+            <emission r="0" g="0" b="0" a="1"/>
+            <shininess value="10"/>
         </material>
     </materials>
 
@@ -113,8 +137,8 @@
             <texture id="none"/>
 
             <children>
-                <!--componentref id="SSEColony"/-->
-                <componentref id="triangularPrism"/>
+                <componentref id="SSEColony"/>
+                <!--    <componentref id="triangularPrism"/>-->
             </children>
 
         </component>
@@ -122,9 +146,7 @@
         <!-- Colony -->
 
         <component id="SSEColony">
-            <transformation>
-
-            </transformation>
+            <transformation></transformation>
 
             <materials>
                 <material id="default"/>
@@ -152,7 +174,7 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="colonyMainBuilding"/>
+                <componentref id="colonyMainBuilding1"/>
                 <componentref id="colonyMainBuilding2"/>
                 <componentref id="colonyMediumBuilding1"/>
                 <componentref id="colonyMediumBuilding2"/>
@@ -195,7 +217,7 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="colonyMainBuilding"/>
+                <componentref id="colonyMainBuilding1"/>
                 <componentref id="colonyMainBuilding2"/>
                 <componentref id="colonyMediumBuilding1"/>
                 <componentref id="colonyMediumBuilding2"/>
@@ -218,7 +240,7 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="colonyMainBuilding"/>
+                <componentref id="colonyMainBuilding1"/>
                 <componentref id="colonyMainBuilding2"/>
                 <componentref id="colonyMediumBuilding1"/>
                 <componentref id="colonyMediumBuilding2"/>
@@ -241,7 +263,7 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="colonyMainBuilding"/>
+                <componentref id="colonyMainBuilding1"/>
                 <componentref id="colonyMainBuilding2"/>
                 <componentref id="colonyMediumBuilding1"/>
                 <componentref id="colonyMediumBuilding2"/>
@@ -249,7 +271,7 @@
             </children>
         </component>
 
-        <component id="colonyMainBuilding">
+        <component id="colonyMainBuilding1">
             <transformation>
                 <scale x="0.3" y="0.4" z="1"/>
             </transformation>
@@ -261,7 +283,9 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="unitCube"/>
+                <componentref id="colonyBuildingSide1"/>
+                <componentref id="colonyBuildingTop1"/>
+                <componentref id="colonyBuildingBottom1"/>
             </children>
 
         </component>
@@ -279,7 +303,9 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="unitCube"/>
+                <componentref id="colonyBuildingSide1"/>
+                <componentref id="colonyBuildingTop1"/>
+                <componentref id="colonyBuildingBottom1"/>
             </children>
 
         </component>
@@ -297,7 +323,9 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="unitCube"/>
+                <componentref id="colonyBuildingSide1"/>
+                <componentref id="colonyBuildingTop1"/>
+                <componentref id="colonyBuildingBottom1"/>
             </children>
         </component>
 
@@ -314,7 +342,9 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="unitCube"/>
+                <componentref id="colonyBuildingSide1"/>
+                <componentref id="colonyBuildingTop1"/>
+                <componentref id="colonyBuildingBottom1"/>
             </children>
         </component>
 
@@ -331,7 +361,9 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="unitCube"/>
+                <componentref id="colonyBuildingSide1"/>
+                <componentref id="colonyBuildingTop1"/>
+                <componentref id="colonyBuildingBottom1"/>
             </children>
         </component>
 
@@ -344,9 +376,7 @@
                 <material id="default"/>
             </materials>
 
-            <texture id="none"/>
-            <!-- Need to understand how to apply the texture to the top of the cylinder only.
-            <texture id="floor"/>-->
+            <texture id="floor"/>
 
             <children>
                 <primitiveref id="cylinder"/>
@@ -358,6 +388,53 @@
 
         <!-- Trade Station -->
 
+        <!-- Buildings -->
+
+        <component id="colonyBuildingSide1">
+            <transformation></transformation>
+
+            <materials>
+                <material id="building_side"/>
+            </materials>
+
+            <texture id="building_side"/>
+
+            <children>
+                <componentref id="unitCubeFront"/>
+                <componentref id="unitCubeBack"/>
+                <componentref id="unitCubeRight"/>
+                <componentref id="unitCubeLeft"/>
+            </children>
+        </component>
+
+        <component id="colonyBuildingTop1">
+            <transformation></transformation>
+
+            <materials>
+                <material id="building_roof"/>
+            </materials>
+
+            <texture id="building_roof"/>
+
+            <children>
+                <componentref id="unitCubeTop"/>
+            </children>
+        </component>
+
+        <component id="colonyBuildingBottom1">
+            <transformation></transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="unitCubeBottom"/>
+            </children>
+        </component>
+
         <!-- Unit Cube -->
 
         <component id="unitCube">
@@ -366,7 +443,7 @@
             </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
             <texture id="none"/>
@@ -387,7 +464,7 @@
             </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
             <texture id="building_roof"/>
@@ -404,7 +481,7 @@
             </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
             <texture id="none"/>
@@ -420,10 +497,10 @@
             </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
-            <texture id="building_side"/>
+            <texture id="inherit"/>
 
             <children>
                 <primitiveref id="square"/>
@@ -437,10 +514,10 @@
             </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
-            <texture id="building_side"/>
+            <texture id="inherit"/>
 
             <children>
                 <primitiveref id="square"/>
@@ -453,10 +530,10 @@
             </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
-            <texture id="building_side"/>
+            <texture id="inherit"/>
 
             <children>
                 <primitiveref id="square"/>
@@ -470,10 +547,10 @@
             </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
-            <texture id="building_side"/>
+            <texture id="inherit"/>
 
             <children>
                 <primitiveref id="square"/>
@@ -485,8 +562,7 @@
         <!-- Triangular Prism -->
 
         <component id="triangularPrism">
-            <transformation>
-            </transformation>
+            <transformation></transformation>
 
             <materials>
                 <material id="default"/>
@@ -534,7 +610,7 @@
             <children>
                 <primitiveref id="square"/>
             </children>
-        </component>        
+        </component>
 
         <component id="triangularPrismBack">
             <transformation>
@@ -551,13 +627,13 @@
             <children>
                 <primitiveref id="triangle"/>
             </children>
-        </component>  
+        </component>
 
         <component id="triangularPrismLeft">
             <transformation>
-            <translate x="-0.5" y="0" z="0"/>
-            <rotate axis="z" angle="-30"/>
-            <rotate axis="y" angle="-90"/>
+                <translate x="-0.5" y="0" z="0"/>
+                <rotate axis="z" angle="-30"/>
+                <rotate axis="y" angle="-90"/>
             </transformation>
 
             <materials>
@@ -569,13 +645,13 @@
             <children>
                 <primitiveref id="square"/>
             </children>
-        </component>  
+        </component>
 
         <component id="triangularPrismRight">
             <transformation>
-            <translate x="0.5" y="0" z="1"/>
-            <rotate axis="z" angle="30"/>
-            <rotate axis="y" angle="90"/>
+                <translate x="0.5" y="0" z="1"/>
+                <rotate axis="z" angle="30"/>
+                <rotate axis="y" angle="90"/>
             </transformation>
 
             <materials>
@@ -587,7 +663,7 @@
             <children>
                 <primitiveref id="square"/>
             </children>
-        </component>  
-    
+        </component>
+
     </components>
 </dsx>
