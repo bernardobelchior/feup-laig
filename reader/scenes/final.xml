@@ -197,7 +197,8 @@
 
         <component id="SSEColony">
             <transformation>
-                <translate x="-1" y="2" z="-1"/>
+                <translate x="1" y="2" z="-1"/>
+                <rotate axis="y" angle ="-45"/>
             </transformation>
 
             <materials>
@@ -442,7 +443,8 @@
 
         <component id="SSETradeStation">
             <transformation>
-                <translate x="1" y="-2" z="0"/>
+                <translate x="3 " y="3" z="3"/>
+                <rotate axis="y" angle="-25"/>
             </transformation>
 
             <materials>
@@ -851,7 +853,7 @@
         <!-- Space Ship -->
         <component id="SSESpaceship">
             <transformation>
-              <translate x="-3" y="0" z="1"/>
+              <translate x="-3" y="-7" z="1"/>
               <rotate axis="y" angle="75"/>
             </transformation>
             <materials>
@@ -1339,13 +1341,33 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="saturnPlanet"/>
-                <componentref id="saturnRing"/>
+                <componentref id="saturn"/>
                 <componentref id="constellation1"/>
                 <componentref id="constellation2"/>
                 <componentref id="constellation3"/>
             </children>
         </component>
+
+        <component id="saturn">
+            <transformation>
+                <translate x="-7" y="0" z="-5"/>
+                <scale x="10" y="10" z="10"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                 <componentref id="saturnPlanet"/>
+                 <componentref id="saturnRing"/>
+            </children>
+
+        </component>
+
+    
 
         <component id="saturnPlanet">
             <transformation>
