@@ -202,6 +202,8 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
     let compsTag = dsx.getElementsByTagName('components')[0];
     let components = {};
 
+    console.log(compsTag.children);
+
     for (let compTag of compsTag.children) {
         let id = this.reader.getString(compTag, 'id', true);
 
@@ -259,6 +261,7 @@ MySceneGraph.prototype.createSceneGraph = function(components) {
     for (let id in components) {
         for (let child of components[id].children) {
             components[id].component.addChild(components[child].component);
+            console.log(components[id].component.children.length);
         }
     }
 
@@ -346,7 +349,7 @@ MySceneGraph.prototype.parseComponentChildren = function(components, component, 
                 return ('Cyclic dependency on component named ' + component.getId() + '.');
 
             children.push(id);
-        } else
+        } else //primitiveref
             component.addChild(this.primitives[id]);
     }
 
