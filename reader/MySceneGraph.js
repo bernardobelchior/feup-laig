@@ -234,8 +234,8 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
         if (textureId) {
             error = component.setTexture(textureId);
 
-            if(error)
-              return error;
+            if (error)
+                return error;
         } else
             return ('A component with id ' + id + ' is missing a texture id');
 
@@ -259,6 +259,7 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
 MySceneGraph.prototype.createSceneGraph = function(components) {
     for (let id in components) {
         for (let child of components[id].children) {
+            console.log(components[child]);
             components[id].component.addChild(components[child].component);
         }
     }
@@ -317,9 +318,8 @@ MySceneGraph.prototype.parseComponentMaterials = function(component, tag) {
 
         if (id === 'inherit')
             component.inheritMaterial = true;
-
-        if (!this.materials[id])
-          return ('There is no material with id ' + id + '.');
+        else if (!this.materials[id])
+            return ('There is no material with id ' + id + '.');
 
         component.addMaterial(this.materials[id]);
     }

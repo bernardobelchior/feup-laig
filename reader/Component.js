@@ -110,7 +110,7 @@ Component.prototype.display = function(parent) {
         this.texture = parent.texture;
 
     if (this.inheritMaterial)
-        this.material = parent.materials[parent.currentMaterial];
+        this.material = parent.material;
     else
         this.material = this.materials[this.currentMaterial];
 
