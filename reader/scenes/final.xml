@@ -67,10 +67,10 @@
 
         <material id="ground">
             <ambient r="0.2" g="0.2" b="0.2" a="1"/>
-            <diffuse r="0.8" g="0.8" b="0.8" a="1"/>
+            <diffuse r="0.2" g="0.2" b="0.2" a="1"/>
             <specular r="0.1" g="0.1" b="0.1" a="1"/>
             <emission r="0" g="0" b="0" a="1"/>
-            <shininess value="10"/>
+            <shininess value="1"/>
         </material>
 
         <material id="building_side">
@@ -373,7 +373,7 @@
             </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="ground"/>
             </materials>
 
             <texture id="floor"/>
