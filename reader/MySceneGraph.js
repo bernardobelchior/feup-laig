@@ -31,8 +31,6 @@ MySceneGraph.prototype.onXMLReady = function() {
     // Here should go the calls for different functions to parse the various blocks
     var error = this.parseDsx(rootElement);
 
-    error = this.parseIllumination(rootElement);
-
     if (error != null) {
         this.onXMLError(error);
         return;
@@ -47,7 +45,7 @@ MySceneGraph.prototype.parseDsx = function(dsx) {
     //NOTE: There cannot be a carriage return between the 'return' keyword and
     //the OR statement, otherwise the functions are not called.
 
-    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parseTransformations(dsx) || this.parseTextures(dsx) || this.parseMaterials(dsx) || this.parsePrimitives(dsx) || this.parseComponents(dsx));
+    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parseIllumination(dsx) || this.parseTransformations(dsx) || this.parseTextures(dsx) || this.parseMaterials(dsx) || this.parsePrimitives(dsx) || this.parseComponents(dsx));
 }
 
 /**
@@ -319,6 +317,9 @@ MySceneGraph.prototype.parseComponentMaterials = function(component, tag) {
 
         if (id === 'inherit')
             component.inheritMaterial = true;
+
+        if (!this.materials[id])
+          return ('There is no material with id ' + id + '.');
 
         component.addMaterial(this.materials[id]);
     }
