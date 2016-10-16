@@ -119,6 +119,8 @@ Component.prototype.display = function(parent) {
     else
         this.material.setTexture(null);
 
+
+
     this.material.apply();
 
     for (let child of this.children) {

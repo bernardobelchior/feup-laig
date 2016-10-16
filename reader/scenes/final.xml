@@ -54,6 +54,10 @@
         <texture id="building_side" file="assets/building_side.jpg" length_s="1" length_t="1"/>
         <texture id="building_roof" file="assets/building_roof.jpg" length_s="1" length_t="1"/>
         <texture id="floor" file="assets/floor.jpg" length_s="1" length_t="1"/>
+        <texture id="concrete" file="assets/concrete.jpg" length_s="1" length_t="1"/>
+        <texture id="saturn" file="assets/saturn.png" length_s="1" length_t="1"/>
+        <texture id="saturn_ring" file="assets/saturn_ring.jpg" length_s="1" length_t="1"/>
+        <texture id="metal" file="assets/metal.jpg" length_s="1" length_t="1"/>
     </textures>
 
     <materials>
@@ -63,6 +67,22 @@
             <specular r="0.5" g="0.5" b="0.5" a="1"/>
             <emission r="0" g="0" b="0" a="1"/>
             <shininess value="200"/>
+        </material>
+
+        <material id="concrete">
+            <ambient r="0.2" g="0.2" b="0.2" a="1"/>
+            <diffuse r="0.4" g="0.4" b="0.4" a="1"/>
+            <specular r="0.1" g="0.1" b="0.1" a="1"/>
+            <emission r="0" g="0" b="0" a="1"/>
+            <shininess value="1"/>
+        </material>
+
+        <material id="darker_concrete">
+            <ambient r="0.2" g="0.2" b="0.2" a="1"/>
+            <diffuse r="0.1" g="0.1" b="0.1" a="1"/>
+            <specular r="0.1" g="0.1" b="0.1" a="1"/>
+            <emission r="0" g="0" b="0" a="1"/>
+            <shininess value="1"/>
         </material>
 
         <material id="ground">
@@ -87,6 +107,30 @@
             <specular r="0.1" g="0.1" b="0.1" a="1"/>
             <emission r="0" g="0" b="0" a="1"/>
             <shininess value="10"/>
+        </material>
+
+        <material id="planet">
+            <ambient r="0.2" g="0.2" b="0.2" a="1"/>
+            <diffuse r="0.9" g="0.9" b="0.9" a="1"/>
+            <specular r="0.1" g="0.1" b="0.1" a="1"/>
+            <emission r="0" g="0" b="0" a="1"/>
+            <shininess value="10"/>
+        </material>
+
+        <material id="spaceship">
+            <ambient r="0.5" g="0.5" b="0.5" a="1"/>
+            <diffuse r="0.9" g="0.9" b="0.9" a="1"/>
+            <specular r="1" g="1" b="1" a="1"/>
+            <emission r="0" g="0" b="0" a="1"/>
+            <shininess value="10"/>
+        </material>
+
+        <material id="star">
+            <ambient r="1" g="1" b="1" a="1"/>
+            <diffuse r="1" g="1" b="1" a="1"/>
+            <specular r="1" g="1" b="1" a="1"/>
+            <emission r="1" g="1" b="1" a="1"/>
+            <shininess value="1000"/>
         </material>
     </materials>
 
@@ -119,6 +163,10 @@
             <torus inner="0.1" outer="1" slices="20" loops="20"/>
         </primitive>
 
+        <primitive id="ring">
+            <torus inner="0.05" outer="1" slices="20" loops="20"/>
+        </primitive>
+
     </primitives>
 
     <!--components section-->
@@ -127,7 +175,7 @@
         <component id="root">
 
             <transformation>
-                <rotate axis="x" angle="0"/>
+                <rotate axis="x" angle="-90"/>
             </transformation>
 
             <materials>
@@ -137,9 +185,10 @@
             <texture id="none"/>
 
             <children>
-                <!--componentref id="SSETradeStation"/>
-                <componentref id="SSEColony"/-->
                 <componentref id="SSESpaceship"/>
+                <componentref id="SSETradeStation"/>
+                <componentref id="SSEColony"/>
+                <componentref id="planets"/>
             </children>
 
         </component>
@@ -147,7 +196,9 @@
         <!-- Colony -->
 
         <component id="SSEColony">
-            <transformation></transformation>
+            <transformation>
+                <translate x="-1" y="2" z="-1"/>
+            </transformation>
 
             <materials>
                 <material id="default"/>
@@ -389,9 +440,9 @@
 
         <!-- Trade Station -->
 
-
         <component id="SSETradeStation">
             <transformation>
+                <translate x="1" y="-2" z="0"/>
             </transformation>
 
             <materials>
@@ -411,16 +462,16 @@
         </component>
 
         <component id="tradeStationMainBuilding">
-            
+
             <transformation>
-            <translate x="0" y="0" z="0.2"/>
+                <translate x="0" y="0" z="0.2"/>
             </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="building_side"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="building_side"/>
 
             <children>
                 <componentref id="tradeStationMainBuildingSpine"/>
@@ -430,600 +481,44 @@
         </component>
 
         <component id="tradeStationMainBuildingSpine">
-            
-            <transformation>
-            </transformation>
+
+            <transformation></transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="inherit"/>
 
             <children>
                 <componentref id="tradeStationMainBuildingSpineP1"/>
                 <componentref id="tradeStationMainBuildingSpineP2"/>
                 <componentref id="tradeStationMainBuildingSpineP3"/>
             </children>
-        </component>    
+        </component>
 
         <component id="tradeStationMainBuildingSpineP1">
-            
+
             <transformation>
-                <translate x="0.175" y="0" z="0.9"/>
-                <rotate axis="x" angle="90"/>
-                <scale x="0.175" y="0.175" z="0.05"/>
+                <translate x="0.17" y="-0.05" z="0.8"/>
+                <scale x="0.15" y="0.05" z="0.15"/>
             </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="building_side"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="building_side"/>
 
             <children>
-                <componentref id="unitCube"/>
-            </children>
-        </component> 
-
-        <component id="tradeStationMainBuildingSpineP2">
-            
-            <transformation>
-                <translate x="0" y="0" z="-0.25"/>
-            </transformation>
-
-            <materials>
-                <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <componentref id="tradeStationMainBuildingSpineP1"/>
-            </children>
-        </component> 
-
-        <component id="tradeStationMainBuildingSpineP3">
-            
-            <transformation>
-                <translate x="0" y="0" z="-0.5"/>
-            </transformation>
-
-            <materials>
-                <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <componentref id="tradeStationMainBuildingSpineP1"/>
-            </children>
-        </component>                                
-
-        <component id="tradeStationMainBuildingTower">
-            
-            <transformation>
-                <scale x="0.175" y="0.175" z="1"/>
-            </transformation>
-
-            <materials>
-                <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <primitiveref id="cylinder"/>
-            </children>
-        </component>  
-
-        <component id="tradeStationMainBuildingBase">
-            
-            <transformation>
-                <scale x="0.25" y="0.25" z="0.2"/>
-            </transformation>
-
-            <materials>
-                <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <primitiveref id="cylinder"/>
-            </children>
-        </component>        
-
-        <component id="tradeStationUpperBase">
-            <transformation>
-            <translate x="0" y="0" z="0.05"/>
-            <scale x="0.85" y="0.85" z="1"/>
-            </transformation>
-
-            <materials>
-                <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <componentref id="tradeStationMiddleBase"/>
-            </children>
-
-        </component>        
-
-        <component id="tradeStationMiddleBase">
-            <transformation>
-            <translate x="0" y="0" z="0.1"/>
-            <scale x="0.85" y="0.85" z="0.5"/>
-            </transformation>
-
-            <materials>
-                <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <componentref id="tradeStationLowerBase"/>
-            </children>
-
-        </component>
-
-        <component id="tradeStationLowerBase">
-            <transformation>
-            <scale x="1" y="0.75" z="1"/>
-            <translate x="-0.25" y="1.5" z="0"/>
-            </transformation>
-
-            <materials>
-                 <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <componentref id="LowerBaseHalf1"/>
-                <componentref id="LowerBaseHalf2"/>
-                <componentref id="LowerBaseConnector"/>
-            </children>
-
-        </component>   
-
-
-        <component id="LowerBaseHalf1">
-            <transformation>
-            </transformation>
-
-            <materials>
-                <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <componentref id="LowerBaseP1"/>
-                <componentref id="LowerBaseP2"/>
-            </children>
-
-        </component>     
-
-        <component id="LowerBaseHalf2">
-            <transformation>
-                <translate x="0.5" y="-3" z="0"/>
-                <rotate axis="z" angle="180"/>
-            </transformation>
-
-            <materials>
-                <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <componentref id="LowerBaseHalf1"/>
-            </children>
-
-        </component>     
-
-        <component id="LowerBaseConnector">
-            <transformation>
-                <translate x="0.25" y="-1.5" z="0"/>
-                <rotate axis="z" angle="45"/>
-                <scale x="1.05" y="1.05" z="0.1"/>
-            </transformation>
-
-            <materials>
-                <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <componentref id="unitCube"/>
-            </children>
-
-        </component>              
-                 
-
-        <component id="LowerBaseP1">
-            <transformation>
-                <scale x="1" y="1" z="0.1"/>
-            </transformation>
-
-            <materials>
-                <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <componentref id="triangularPrism"/>
-            </children>
-
-        </component>    
-
-        <component id="LowerBaseP2">
-
-            <transformation>
-                <translate x="0" y="-0.75" z="0"/>
-                <scale x="1" y="1.5" z="0.1"/>
-            </transformation>
-
-            <materials>
-                <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <componentref id="unitCube"/>
-            </children>
-
-        </component>    
-
-        <component id="tradeStationSprawl">
-
-            <transformation>
-                <translate x="-0.3" y="-0.2" z="0"/>
-                <scale x="0.75" y="0.65" z="1.2"/>
-            </transformation>
-
-            <materials>
-                <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <componentref id="tradeStationSprawl1"/>
-                <componentref id="tradeStationSprawl2"/>
+                <componentref id="tradeStationMainBuildingSpineSide"/>
+                <componentref id="tradeStationMainBuildingSpineTop"/>
+                <componentref id="tradeStationMainBuildingSpineBottom"/>
             </children>
         </component>
 
-        <component id="tradeStationSprawl1">
+        <component id="tradeStationMainBuildingSpineSide">
 
-            <transformation>
-                <translate x="0.75" y="-0.2" z="0.1"/>
-                <scale x="0.5" y="2.8" z="0.2"/>
-            </transformation>
-
-            <materials>
-                <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <componentref id="colonyMainBuilding1"/>
-                <componentref id="colonyMainBuilding2"/>
-                <componentref id="colonyMediumBuilding1"/>
-                <componentref id="colonyMediumBuilding2"/>
-                <componentref id="colonySmallBuilding1"/>
-            </children>
-        </component>
-
-        <component id="tradeStationSprawl2">
-
-            <transformation>
-                <translate x="0.2" y="0.75" z="0.1"/>
-                <rotate axis="z" angle="30"/>
-                <scale x="0.5" y="0.5" z="0.3"/>
-            </transformation>
-
-            <materials>
-                <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <componentref id="colonyMainBuilding1"/>
-                <componentref id="colonyMainBuilding2"/>
-                <componentref id="colonyMediumBuilding1"/>
-                <componentref id="colonyMediumBuilding2"/>
-                <componentref id="colonySmallBuilding1"/>
-            </children>
-        </component>        
-
-        <!-- Trade Station End -->
-
-        <!-- Space Ship -->
-
-        <component id="SSESpaceship">
-            <transformation>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-        
-            <texture id="inherit"/>
-
-            <children>
-                <componentref id="spaceshipTip"/>
-                <componentref id="spaceshipBody"/>
-                <componentref id="spaceshipBottom"/>
-                <componentref id="spaceshipBottomStabilizers"/>
-                <componentref id="spaceshipSideStabilizers"/>
-            </children>
-
-        </component>
-
-        <component id="spaceshipTip">
-
-            <transformation>
-                <translate x="0" y="0" z="1"/>
-                <scale x="0.17" y="0.17" z="0.17"/>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-
-            <texture id="inherit"/>
-
-            <children>
-                <primitiveref id="sphere"/>
-            </children>
-        </component>
-
-        <component id="spaceshipBody">
-            <transformation>
-                <scale x="0.33" y="0.33" z="1"/>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-        
-            <texture id="inherit"/>
-
-            <children>
-                <componentref id="unitCube"/>
-            </children>
-
-        </component>   
-
-        <component id="spaceshipBottom">
-            <transformation>
-                <scale x="0.33" y="0.33" z="0.33"/>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <primitiveref id="torus"/>
-            </children>
-
-        </component>
-
-        <component id="spaceshipBottomStabilizers">
-            <transformation>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-        
-            <texture id="inherit"/>
-
-            <children>
-                <componentref id="spaceshipBottomStabilizer1"/>
-                <componentref id="spaceshipBottomStabilizer2"/>
-                <componentref id="spaceshipBottomStabilizer3"/>
-                <componentref id="spaceshipBottomStabilizer4"/>
-            </children>
-
-        </component>  
-
-        <component id="spaceshipSideStabilizers">
-            <transformation>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-        
-            <texture id="inherit"/>
-
-            <children>
-                <componentref id="spaceshipSideStabilizer1"/>
-                <componentref id="spaceshipSideStabilizer2"/>
-            </children>
-
-        </component>   
-
-        <component id="spaceshipSideStabilizer1">
-            <transformation>
-                <translate x="0.15" y="0" z="0.35"/>
-                <scale x="0.2" y="0.05" z="0.2"/>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-        
-            <texture id="inherit"/>
-
-            <children>
-                <componentref id="unitCube"/>
-            </children>
-
-        </component>    
-
-        <component id="spaceshipSideStabilizer2">
-            <transformation>
-                <rotate axis="z" angle="180"/>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-        
-            <texture id="inherit"/>
-
-            <children>
-                <componentref id="spaceshipSideStabilizer1"/>
-            </children>
-
-        </component>                     
-
-        <component id="spaceshipBottomStabilizer1">
-            <transformation>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-        
-            <texture id="inherit"/>
-
-            <children>
-                <componentref id="spaceshipBottomStabilizerBig"/>
-                <componentref id="spaceshipBottomStabilizerSlant"/>
-                <componentref id="spaceshipBottomStabilizerSmall"/>
-            </children>
-
-        </component> 
-
-        <component id="spaceshipBottomStabilizer2">
-            <transformation>
-                <rotate axis="z" angle="180"/>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-        
-            <texture id="inherit"/>
-
-            <children>
-                <componentref id="spaceshipBottomStabilizer1"/>
-            </children>
-
-        </component> 
-
-        <component id="spaceshipBottomStabilizer3">
-            <transformation>
-                <rotate axis="z" angle="-90"/>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-        
-            <texture id="inherit"/>
-
-            <children>
-                <componentref id="spaceshipBottomStabilizer1"/>
-            </children>
-
-        </component>   
-
-        <component id="spaceshipBottomStabilizer4">
-            <transformation>
-                <rotate axis="z" angle="90"/>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-        
-            <texture id="inherit"/>
-
-            <children>
-                <componentref id="spaceshipBottomStabilizer1"/>
-            </children>
-
-        </component>                           
-
-        <component id="spaceshipBottomStabilizerBig">
-            <transformation>
-                <translate x="0.33" y="0" z="0.05"/>
-                <scale x="0.33" y="0.1" z="0.15"/>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-        
-            <texture id="inherit"/>
-
-            <children>
-                <componentref id="unitCube"/>
-            </children>
-
-        </component>
-
-        <component id="spaceshipBottomStabilizerSlant">
-            <transformation>
-                <translate x="0.25" y="0" z="0.1"/>
-                <rotate axis="y" angle="15"/>
-                <scale x="0.33" y="0.1" z="0.15"/>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-        
-            <texture id="inherit"/>
-
-            <children>
-                <componentref id="unitCube"/>
-            </children>
-
-        </component>    
-
-        <component id="spaceshipBottomStabilizerSmall">
-            <transformation>
-                <translate x="0.2" y="0" z="0.15"/>
-                <rotate axis="y" angle="15"/>
-                <scale x="0.2" y="0.03" z="0.15"/>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-        
-            <texture id="inherit"/>
-
-            <children>
-                <componentref id="unitCube"/>
-            </children>
-
-        </component>               
-
-        <!-- Space Ship End -->
-
-
-        <!-- Buildings -->
-
-        <component id="colonyBuildingSide1">
             <transformation></transformation>
 
             <materials>
@@ -1033,14 +528,17 @@
             <texture id="building_side"/>
 
             <children>
-                <componentref id="unitCubeFront"/>
-                <componentref id="unitCubeBack"/>
                 <componentref id="unitCubeRight"/>
+                <componentref id="unitCubeBack"/>
+                <componentref id="unitCubeFront"/>
+                <componentref id="unitCubeTop"/>
+                <componentref id="unitCubeBottom"/>
                 <componentref id="unitCubeLeft"/>
             </children>
         </component>
 
-        <component id="colonyBuildingTop1">
+        <component id="tradeStationMainBuildingSpineTop">
+
             <transformation></transformation>
 
             <materials>
@@ -1054,21 +552,547 @@
             </children>
         </component>
 
-        <component id="colonyBuildingBottom1">
+        <component id="tradeStationMainBuildingSpineBottom">
+
             <transformation></transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="concrete"/>
+                <material id="darker_concrete"/>
             </materials>
 
-            <texture id="none"/>
-                
+            <texture id="concrete"/>
+
             <children>
                 <componentref id="unitCubeBottom"/>
             </children>
         </component>
 
-        <!--Buildings End -->
+        <component id="tradeStationMainBuildingSpineP2">
+
+            <transformation>
+                <translate x="0" y="0" z="-0.25"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="building_side"/>
+
+            <children>
+                <componentref id="tradeStationMainBuildingSpineP1"/>
+            </children>
+        </component>
+
+        <component id="tradeStationMainBuildingSpineP3">
+
+            <transformation>
+                <translate x="0" y="0" z="-0.5"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="tradeStationMainBuildingSpineP1"/>
+            </children>
+        </component>
+
+        <component id="tradeStationMainBuildingTower">
+
+            <transformation>
+                <scale x="0.175" y="0.175" z="1"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <primitiveref id="cylinder"/>
+            </children>
+        </component>
+
+        <component id="tradeStationMainBuildingBase">
+
+            <transformation>
+                <scale x="0.25" y="0.25" z="0.2"/>
+            </transformation>
+
+            <materials>
+                <material id="concrete"/>
+                <material id="darker_concrete"/>
+            </materials>
+
+            <texture id="concrete"/>
+
+            <children>
+                <primitiveref id="cylinder"/>
+            </children>
+        </component>
+
+        <component id="tradeStationUpperBase">
+            <transformation>
+                <translate x="0" y="0" z="0.05"/>
+                <scale x="0.85" y="0.85" z="1"/>
+            </transformation>
+
+            <materials>
+                <material id="concrete"/>
+                <material id="darker_concrete"/>
+            </materials>
+
+            <texture id="concrete"/>
+
+            <children>
+                <componentref id="tradeStationMiddleBase"/>
+            </children>
+
+        </component>
+
+        <component id="tradeStationMiddleBase">
+            <transformation>
+                <translate x="0" y="0" z="0.1"/>
+                <scale x="0.85" y="0.85" z="0.5"/>
+            </transformation>
+
+            <materials>
+                <material id="concrete"/>
+                <material id="darker_concrete"/>
+            </materials>
+
+            <texture id="concrete"/>
+
+            <children>
+                <componentref id="tradeStationLowerBase"/>
+            </children>
+
+        </component>
+
+        <component id="tradeStationLowerBase">
+            <transformation>
+                <scale x="1" y="0.75" z="1"/>
+                <translate x="-0.25" y="1.5" z="0"/>
+            </transformation>
+
+            <materials>
+                <material id="concrete"/>
+                <material id="darker_concrete"/>
+            </materials>
+
+            <texture id="concrete"/>
+
+            <children>
+                <componentref id="baseHalf1"/>
+                <componentref id="baseHalf2"/>
+                <componentref id="baseConnector"/>
+            </children>
+        </component>
+
+        <component id="baseHalf1">
+            <transformation></transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="lowerBaseP1"/>
+                <componentref id="lowerBaseP2"/>
+            </children>
+
+        </component>
+
+        <component id="baseHalf2">
+            <transformation>
+                <translate x="0.5" y="-3" z="0"/>
+                <rotate axis="z" angle="180"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="baseHalf1"/>
+            </children>
+
+        </component>
+
+        <component id="baseConnector">
+            <transformation>
+                <translate x="0.25" y="-1.5" z="0"/>
+                <rotate axis="z" angle="45"/>
+                <scale x="1.05" y="1.05" z="0.1"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+
+        </component>
+
+        <component id="lowerBaseP1">
+            <transformation>
+                <scale x="1" y="1" z="0.1"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="triangularPrism"/>
+            </children>
+
+        </component>
+
+        <component id="lowerBaseP2">
+
+            <transformation>
+                <translate x="0" y="-0.75" z="0"/>
+                <scale x="1" y="1.5" z="0.1"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+
+        </component>
+
+        <component id="tradeStationSprawl">
+
+            <transformation>
+                <translate x="-0.3" y="-0.2" z="0"/>
+                <scale x="0.75" y="0.65" z="1.2"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="tradeStationSprawl1"/>
+                <componentref id="tradeStationSprawl2"/>
+            </children>
+        </component>
+
+        <component id="tradeStationSprawl1">
+
+            <transformation>
+                <translate x="0.75" y="-0.6" z="0.1"/>
+                <scale x="0.5" y="2.0" z="0.3"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="colonyMainBuilding1"/>
+                <componentref id="colonyMainBuilding2"/>
+                <componentref id="colonyMediumBuilding1"/>
+                <componentref id="colonyMediumBuilding2"/>
+            </children>
+        </component>
+
+        <component id="tradeStationSprawl2">
+
+            <transformation>
+                <translate x="0.2" y="0.75" z="0.1"/>
+                <rotate axis="z" angle="30"/>
+                <scale x="0.5" y="0.5" z="0.3"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="colonyMainBuilding1"/>
+                <componentref id="colonyMainBuilding2"/>
+                <componentref id="colonyMediumBuilding1"/>
+                <componentref id="colonyMediumBuilding2"/>
+                <componentref id="colonySmallBuilding1"/>
+            </children>
+        </component>
+        <!-- Trade Station End -->
+
+        <!-- Space Ship -->
+        <component id="SSESpaceship">
+            <transformation>
+              <translate x="-3" y="0" z="1"/>
+              <rotate axis="y" angle="75"/>
+            </transformation>
+            <materials>
+                <material id="spaceship"/>
+            </materials>
+            <texture id="metal"/>
+            <children>
+                <componentref id="spaceshipTip"/>
+                <componentref id="spaceshipBody"/>
+                <componentref id="spaceshipBottom"/>
+                <componentref id="spaceshipBottomStabilizers"/>
+                <componentref id="spaceshipSideStabilizers"/>
+            </children>
+        </component>
+
+        <component id="spaceshipTip">
+            <transformation>
+                <translate x="0" y="0" z="1"/>
+                <scale x="0.17" y="0.17" z="0.17"/>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <primitiveref id="sphere"/>
+            </children>
+        </component>
+
+        <component id="spaceshipBody">
+            <transformation>
+                <scale x="0.33" y="0.33" z="1"/>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+        </component>
+
+        <component id="spaceshipBottom">
+            <transformation>
+                <scale x="0.33" y="0.33" z="0.33"/>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="none"/>
+            <children>
+                <primitiveref id="torus"/>
+            </children>
+        </component>
+
+        <component id="spaceshipBottomStabilizers">
+            <transformation></transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <componentref id="spaceshipBottomStabilizer1"/>
+                <componentref id="spaceshipBottomStabilizer2"/>
+                <componentref id="spaceshipBottomStabilizer3"/>
+                <componentref id="spaceshipBottomStabilizer4"/>
+            </children>
+        </component>
+
+        <component id="spaceshipSideStabilizers">
+            <transformation></transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <componentref id="spaceshipSideStabilizer1"/>
+                <componentref id="spaceshipSideStabilizer2"/>
+            </children>
+        </component>
+
+        <component id="spaceshipSideStabilizer1">
+            <transformation>
+                <translate x="0.15" y="0" z="0.35"/>
+                <scale x="0.2" y="0.05" z="0.2"/>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+        </component>
+
+        <component id="spaceshipSideStabilizer2">
+            <transformation>
+                <rotate axis="z" angle="180"/>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <componentref id="spaceshipSideStabilizer1"/>
+            </children>
+        </component>
+
+        <component id="spaceshipBottomStabilizer1">
+            <transformation></transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <componentref id="spaceshipBottomStabilizerBig"/>
+                <componentref id="spaceshipBottomStabilizerSlant"/>
+                <componentref id="spaceshipBottomStabilizerSmall"/>
+            </children>
+        </component>
+
+        <component id="spaceshipBottomStabilizer2">
+            <transformation>
+                <rotate axis="z" angle="180"/>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <componentref id="spaceshipBottomStabilizer1"/>
+            </children>
+        </component>
+
+        <component id="spaceshipBottomStabilizer3">
+            <transformation>
+                <rotate axis="z" angle="-90"/>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <componentref id="spaceshipBottomStabilizer1"/>
+            </children>
+        </component>
+
+        <component id="spaceshipBottomStabilizer4">
+            <transformation>
+                <rotate axis="z" angle="90"/>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <componentref id="spaceshipBottomStabilizer1"/>
+            </children>
+        </component>
+
+        <component id="spaceshipBottomStabilizerBig">
+            <transformation>
+                <translate x="0.33" y="0" z="0.05"/>
+                <scale x="0.33" y="0.1" z="0.15"/>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+        </component>
+
+        <component id="spaceshipBottomStabilizerSlant">
+            <transformation>
+                <translate x="0.25" y="0" z="0.1"/>
+                <rotate axis="y" angle="15"/>
+                <scale x="0.33" y="0.1" z="0.15"/>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+        </component>
+
+        <component id="spaceshipBottomStabilizerSmall">
+            <transformation>
+                <translate x="0.2" y="0" z="0.15"/>
+                <rotate axis="y" angle="15"/>
+                <scale x="0.2" y="0.03" z="0.15"/>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+        </component>
+        <!-- Space Ship End -->
+
+        <!-- Buildings -->
+        <component id="colonyBuildingSide1">
+            <transformation></transformation>
+            <materials>
+                <material id="building_side"/>
+            </materials>
+            <texture id="building_side"/>
+            <children>
+                <componentref id="unitCubeFront"/>
+                <componentref id="unitCubeBack"/>
+                <componentref id="unitCubeRight"/>
+                <componentref id="unitCubeLeft"/>
+            </children>
+        </component>
+        <component id="colonyBuildingTop1">
+            <transformation></transformation>
+            <materials>
+                <material id="building_roof"/>
+            </materials>
+            <texture id="building_roof"/>
+            <children>
+                <componentref id="unitCubeTop"/>
+            </children>
+        </component>
+        <component id="colonyBuildingBottom1">
+            <transformation></transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+            <texture id="none"/>
+            <children>
+                <componentref id="unitCubeBottom"/>
+            </children>
+        </component>
+
+        <!-- End Colony Building -->
 
         <!-- Unit Cube -->
 
@@ -1081,7 +1105,7 @@
                 <material id="inherit"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="inherit"/>
 
             <children>
                 <componentref id="unitCubeBack"/>
@@ -1102,7 +1126,7 @@
                 <material id="inherit"/>
             </materials>
 
-            <texture id="building_roof"/>
+            <texture id="inherit"/>
 
             <children>
                 <primitiveref id="square"/>
@@ -1119,7 +1143,7 @@
                 <material id="inherit"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="inherit"/>
 
             <children>
                 <primitiveref id="square"/>
@@ -1200,10 +1224,10 @@
             <transformation></transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="inherit"/>
 
             <children>
                 <componentref id="triangularPrismFront"/>
@@ -1220,10 +1244,10 @@
             </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="inherit"/>
 
             <children>
                 <primitiveref id="triangle"/>
@@ -1237,10 +1261,10 @@
             </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="inherit"/>
 
             <children>
                 <primitiveref id="square"/>
@@ -1254,10 +1278,10 @@
             </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="inherit"/>
 
             <children>
                 <primitiveref id="triangle"/>
@@ -1272,10 +1296,10 @@
             </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="inherit"/>
 
             <children>
                 <primitiveref id="square"/>
@@ -1290,17 +1314,175 @@
             </transformation>
 
             <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <primitiveref id="square"/>
+            </children>
+        </component>
+
+        <!-- End of Triangular Prism -->
+
+        <!-- Planets -->
+        <component id="planets">
+            <transformation>
+                <translate x="2" y="0" z="0.5"/>
+            </transformation>
+
+            <materials>
                 <material id="default"/>
             </materials>
 
             <texture id="none"/>
 
             <children>
-                <primitiveref id="square"/>
+                <componentref id="saturnPlanet"/>
+                <componentref id="saturnRing"/>
+                <componentref id="constellation1"/>
+                <componentref id="constellation2"/>
+                <componentref id="constellation3"/>
             </children>
-        </component>  
+        </component>
 
-        <!-- End of Triangular Prism -->
+        <component id="saturnPlanet">
+            <transformation>
+                <scale x="0.25" y="0.25" z="0.25"/>
+                <rotate axis="x" angle="60"/>
+            </transformation>
+
+            <materials>
+                <material id="planet"/>
+            </materials>
+
+            <texture id="saturn"/>
+
+            <children>
+                <primitiveref id="sphere"/>
+            </children>
+        </component>
+
+        <component id="saturnRing">
+            <transformation>
+                <scale x="0.7" y="0.7" z="0.1"/>
+                <rotate axis="x" angle="-30"/>
+            </transformation>
+
+            <materials>
+                <material id="planet"/>
+            </materials>
+
+            <texture id="saturn_ring"/>
+
+            <children>
+                <primitiveref id="ring"/>
+            </children>
+        </component>
+
+        <component id="constellation1">
+            <transformation></transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="star1"/>
+                <componentref id="star2"/>
+                <componentref id="star3"/>
+            </children>
+        </component>
+
+        <component id="constellation2">
+            <transformation>
+                <translate x="-2" y="0" z="-2"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="star1"/>
+                <componentref id="star2"/>
+                <componentref id="star3"/>
+            </children>
+        </component>
+
+        <component id="constellation3">
+            <transformation>
+                <translate x="0" y="3" z="-1"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="star1"/>
+                <componentref id="star2"/>
+                <componentref id="star3"/>
+            </children>
+        </component>
+
+        <component id="star1">
+            <transformation>
+                <translate x="-10" y="10" z="-2"/>
+                <scale x="0.01" y="0.01" z="0.01"/>
+            </transformation>
+
+            <materials>
+                <material id="star"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="sphere"/>
+            </children>
+        </component>
+
+        <component id="star2">
+            <transformation>
+                <translate x="-10" y="9" z="-2"/>
+                <scale x="0.03" y="0.03" z="0.03"/>
+            </transformation>
+
+            <materials>
+                <material id="star"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="sphere"/>
+            </children>
+        </component>
+
+        <component id="star3">
+            <transformation>
+                <translate x="-8" y="10" z="-2"/>
+                <scale x="0.02" y="0.02" z="0.02"/>
+            </transformation>
+
+            <materials>
+                <material id="star"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="sphere"/>
+            </children>
+        </component>
 
     </components>
 </dsx>

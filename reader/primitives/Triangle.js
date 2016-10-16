@@ -57,12 +57,11 @@ Triangle.prototype.initBuffers = function() {
         0, 0, 1
     ];
 
-    /*this.texCoords = [
-        this.minS, this.maxT,
-        this.minS, this.minT,
-        this.maxS, this.maxT,
-        this.maxS, this.minT
-    ];*/
+    this.texCoords = [
+        this.point1[0], this.point1[1],
+        this.point2[0], this.point2[1],
+        this.point3[0], this.point3[1]
+    ];
 
     this.primitiveType = this.scene.gl.TRIANGLES;
     this.initGLBuffers();

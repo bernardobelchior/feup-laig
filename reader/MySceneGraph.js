@@ -259,7 +259,6 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
 MySceneGraph.prototype.createSceneGraph = function(components) {
     for (let id in components) {
         for (let child of components[id].children) {
-            console.log(components[child]);
             components[id].component.addChild(components[child].component);
         }
     }
