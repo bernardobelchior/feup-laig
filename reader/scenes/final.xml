@@ -27,7 +27,7 @@
     </views>
 
     <illumination doublesided="1" local="1">
-        
+
         <ambient r="ff" g="ff" b="ff" a="ff"/>
         <background r="ff" g="ff" b="ff" a="ff"/>
 
@@ -51,23 +51,17 @@
     </lights>
 
     <textures>
-        <texture id="whiteboard" file="whiteboard.jpg" length_s="1" length_t="2"/>
+        <texture id="building_side" file="building_side.jpg" length_s="1" length_t="1"/>
+        <texture id="building_roof" file="building_roof.jpg" length_s="1" length_t="1"/>
+        <texture id="floor" file="floor.jpg" length_s="1" length_t="1"/>
     </textures>
 
     <materials>
-      <material id="default">
-        <ambient r="0.2" g="0.2" b="0.2" a="1"/>
-        <diffuse r="0.5" g="0.5" b="0.5" a="1"/>
-        <specular r="0.5" g="0.5" b="0.5" a="1"/>
-        <emission r="0" g="0" b="0" a="1"/>
-        <shininess value="10"/>
-      </material>
-
-        <material id="whiteboard">
-            <emission r="0" g="0" b="0" a="1"/>
+        <material id="default">
             <ambient r="0.2" g="0.2" b="0.2" a="1"/>
-            <diffuse r="1" g="1" b="1" a="1"/>
+            <diffuse r="0.5" g="0.5" b="0.5" a="1"/>
             <specular r="0.5" g="0.5" b="0.5" a="1"/>
+            <emission r="0" g="0" b="0" a="1"/>
             <shininess value="200"/>
         </material>
     </materials>
@@ -103,13 +97,13 @@
 
     </primitives>
 
-<!--components section-->
+    <!--components section-->
     <components>
 
         <component id="root">
 
             <transformation>
-                <rotate axis="x" angle="0"/>
+                <rotate axis="x" angle="-90"/>
             </transformation>
 
             <materials>
@@ -124,11 +118,11 @@
 
         </component>
 
-
         <!-- Colony -->
-        
+
         <component id="SSEColony">
             <transformation>
+
             </transformation>
 
             <materials>
@@ -142,9 +136,9 @@
                 <componentref id="colonyBuildings"/>
             </children>
         </component>
-        
+
         <component id="colonyBuildings">
-            
+
             <transformation>
                 <scale x="1.2" y="1.2" z="1.2"/>
                 <translate x="0.2" y="0.2" z="0.1"/>
@@ -167,7 +161,7 @@
         </component>
 
         <component id="colonySprawl">
-            
+
             <transformation>
                 <translate x="-0.3" y="-0.2" z="0"/>
                 <scale x="0.75" y="0.65" z="1.2"/>
@@ -185,10 +179,9 @@
                 <componentref id="colonySprawl3"/>
             </children>
         </component>
-                
-                
+
         <component id="colonySprawl1">
-            
+
             <transformation>
                 <rotate axis="z" angle="45"/>
                 <scale x="1.5" y="0.9" z="0.2"/>
@@ -210,7 +203,7 @@
         </component>
 
         <component id="colonySprawl2">
-            
+
             <transformation>
                 <translate x="-0.4" y="0.4" z="0"/>
                 <rotate axis="z" angle="90"/>
@@ -230,10 +223,10 @@
                 <componentref id="colonyMediumBuilding2"/>
                 <componentref id="colonySmallBuilding1"/>
             </children>
-        </component>        
-               
+        </component>
+
         <component id="colonySprawl3">
-            
+
             <transformation>
                 <translate x="0.4" y="0.4" z="0"/>
                 <rotate axis="z" angle="90"/>
@@ -254,7 +247,7 @@
                 <componentref id="colonySmallBuilding1"/>
             </children>
         </component>
-                                
+
         <component id="colonyMainBuilding">
             <transformation>
                 <scale x="0.3" y="0.4" z="1"/>
@@ -339,7 +332,7 @@
             <children>
                 <componentref id="unitCube"/>
             </children>
-        </component>        
+        </component>
 
         <component id="colonyBase">
             <transformation>
@@ -351,6 +344,8 @@
             </materials>
 
             <texture id="none"/>
+            <!-- Need to understand how to apply the texture to the top of the cylinder only.
+            <texture id="floor"/>-->
 
             <children>
                 <primitiveref id="cylinder"/>
@@ -390,7 +385,7 @@
                 <material id="default"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="building_roof"/>
 
             <children>
                 <primitiveref id="square"/>
@@ -423,7 +418,7 @@
                 <material id="default"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="building_side"/>
 
             <children>
                 <primitiveref id="square"/>
@@ -440,7 +435,7 @@
                 <material id="default"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="building_side"/>
 
             <children>
                 <primitiveref id="square"/>
@@ -456,13 +451,12 @@
                 <material id="default"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="building_side"/>
 
             <children>
                 <primitiveref id="square"/>
             </children>
         </component>
-
 
         <component id="unitCubeLeft">
             <transformation>
@@ -474,7 +468,7 @@
                 <material id="default"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="building_side"/>
 
             <children>
                 <primitiveref id="square"/>

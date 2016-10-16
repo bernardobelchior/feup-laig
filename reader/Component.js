@@ -85,6 +85,9 @@ Component.prototype.updateTextures = function(textures) {
             this.texture = null;
             break;
         default:
+            if (!textures[this.texture])
+                return ('There is not texture with id ' + this.texture + '.');
+
             this.texture = textures[this.texture];
             break;
     }
@@ -113,6 +116,8 @@ Component.prototype.display = function(parent) {
 
     if (this.texture)
         this.texture.apply(this.material);
+    else
+        this.material.setTexture(null);
 
     this.material.apply();
 
