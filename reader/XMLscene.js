@@ -22,7 +22,8 @@ XMLscene.prototype.init = function(application) {
     this.enableTextures(true);
 
     this.cameras = [];
-    this.rootNode;
+    this.rootNode;  
+      
 };
 
 XMLscene.prototype.initLights = function() {

@@ -31,8 +31,6 @@ MySceneGraph.prototype.onXMLReady = function() {
     // Here should go the calls for different functions to parse the various blocks
     var error = this.parseDsx(rootElement);
 
-    error = this.parseIllumination(rootElement);
-
     if (error != null) {
         this.onXMLError(error);
         return;
@@ -47,7 +45,7 @@ MySceneGraph.prototype.parseDsx = function(dsx) {
     //NOTE: There cannot be a carriage return between the 'return' keyword and
     //the OR statement, otherwise the functions are not called.
 
-    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parseTransformations(dsx) || this.parseTextures(dsx) || this.parseMaterials(dsx) || this.parsePrimitives(dsx) || this.parseComponents(dsx));
+    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parseIllumination(dsx) || this.parseTransformations(dsx) || this.parseTextures(dsx) || this.parseMaterials(dsx) || this.parsePrimitives(dsx) || this.parseComponents(dsx));
 }
 
 /**
@@ -119,8 +117,8 @@ MySceneGraph.prototype.parseTextures = function(dsx) {
         if (this.textures[id])
             return ('Texture with id ' + id + ' already exists.');
 
-        if(id === 'none' || id === 'inherit')
-          return ('"none" and "inherit" are keywords and cannot be used as texture ids.');
+        if (id === 'none' || id === 'inherit')
+            return ('"none" and "inherit" are keywords and cannot be used as texture ids.');
 
 
         let file = this.reader.getString(texture, 'file', true);
@@ -146,7 +144,7 @@ MySceneGraph.prototype.parseTextures = function(dsx) {
             length_t = 1;
         }
 
-        this.textures[id] = new Texture(file, length_s, length_t);
+        this.textures[id] = new Texture(this.scene, file, length_s, length_t);
     }
 }
 
@@ -155,6 +153,9 @@ MySceneGraph.prototype.parseTextures = function(dsx) {
  */
 MySceneGraph.prototype.parseMaterials = function(dsx) {
     var materials = dsx.getElementsByTagName('materials')[0];
+
+    if (!materials.children.length)
+        return ('There must be at least one material defined.');
 
     for (let material of materials.children) {
         let id = this.reader.getString(material, 'id', true);
@@ -230,9 +231,12 @@ MySceneGraph.prototype.parseComponents = function(dsx) {
             return ('A component with id ' + id + ' does not have a texture tag.');
 
         let textureId = this.reader.getString(texture, 'id', true);
-        if (textureId)
-            component.setTexture(textureId);
-        else
+        if (textureId) {
+            error = component.setTexture(textureId);
+
+            if (error)
+                return error;
+        } else
             return ('A component with id ' + id + ' is missing a texture id');
 
         //Children parsing
@@ -264,10 +268,17 @@ MySceneGraph.prototype.createSceneGraph = function(components) {
 
     this.scene.rootNode = components[this.rootId].component;
 
-    if(this.scene.rootNode.texture === 'inherit')
-      return 'Root node cannot inherit a texture.';
+    /*
+     * Handle textures inheritance
+     */
+    if (this.scene.rootNode.texture === 'inherit')
+        return 'Root node cannot inherit a texture.';
 
     this.scene.rootNode.updateTextures(this.textures);
+
+    /*
+     * Handle materials inheritance
+     */
 };
 
 /**
@@ -296,13 +307,18 @@ MySceneGraph.prototype.parseComponentTransformations = function(component, tag) 
  */
 MySceneGraph.prototype.parseComponentMaterials = function(component, tag) {
     if (!tag.children.length)
-        return 'A component does not have a material.';
+        return 'There is a component that does not have a material.';
 
     for (let materialTag of tag.children) {
         let id = this.reader.getString(materialTag, 'id', true);
 
         if (!id)
             return 'A material in a component is missing its id.';
+
+        if (id === 'inherit')
+            component.inheritMaterial = true;
+        else if (!this.materials[id])
+            return ('There is no material with id ' + id + '.');
 
         component.addMaterial(this.materials[id]);
     }
@@ -333,7 +349,7 @@ MySceneGraph.prototype.parseComponentChildren = function(components, component, 
                 return ('Cyclic dependency on component named ' + component.getId() + '.');
 
             children.push(id);
-        } else
+        } else //primitiveref
             component.addChild(this.primitives[id]);
     }
 

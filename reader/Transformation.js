@@ -12,7 +12,7 @@ Transformation.prototype.constructor = Transformation;
 Transformation.prototype.rotate = function(angle, x, y, z) {
     this.scene.pushMatrix();
     this.scene.setMatrix(this.transformationMatrix);
-    this.scene.rotate(angle, x, y, z);
+    this.scene.rotate(angle*Math.PI/180, x, y, z);
     this.transformationMatrix = this.scene.getMatrix();
     this.scene.popMatrix();
 }
