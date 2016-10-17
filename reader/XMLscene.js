@@ -60,6 +60,7 @@ XMLscene.prototype.onGraphLoaded = function() {
 
     //Sets default camera
     this.camera = this.cameras[this.currentCamera];
+    this.interface.setActiveCamera(this.camera);
 };
 
 XMLscene.prototype.display = function() {
@@ -108,5 +109,6 @@ XMLscene.prototype.display = function() {
             this.currentCamera++;
 
         this.camera = this.cameras[this.currentCamera];
+        this.interface.setActiveCamera(this.camera);
     };
 };

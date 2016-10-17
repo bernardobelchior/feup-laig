@@ -42,17 +42,28 @@ MySceneGraph.prototype.onXMLReady = function() {
 };
 
 MySceneGraph.prototype.parseDsx = function(dsx) {
+    //Mandatory in order to ensure the blocks order.
+    let scene = dsx.children[0];
+    let views = dsx.children[1];
+    let illumination = dsx.children[2];
+    let lights = dsx.children[3];
+    let textures = dsx.children[4];
+    let materials = dsx.children[5];
+    let transformations = dsx.children[6];
+    let primitives = dsx.children[7];
+    let components = dsx.children[8];
+
     //NOTE: There cannot be a carriage return between the 'return' keyword and
     //the OR statement, otherwise the functions are not called.
-
-    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parseIllumination(dsx) || this.parseTransformations(dsx) || this.parseTextures(dsx) || this.parseMaterials(dsx) || this.parsePrimitives(dsx) || this.parseComponents(dsx));
+    return (this.parseScene(scene) || this.parseViews(views) || this.parseIllumination(illumination) || this.parseTextures(textures) || this.parseMaterials(materials) || this.parseTransformations(transformations) || this.parsePrimitives(primitives) || this.parseComponents(components));
 }
 
 /**
   Parses the scene tag
 */
-MySceneGraph.prototype.parseScene = function(dsx) {
-    var scene = dsx.getElementsByTagName('scene')[0];
+MySceneGraph.prototype.parseScene = function(scene) {
+    if (scene.nodeName !== 'scene')
+        return ('Blocks not ordered correctly. Expected "scene", found "' + scene.nodeName + '".');
 
     this.rootId = this.reader.getString(scene, 'root', true);
 
@@ -65,11 +76,13 @@ MySceneGraph.prototype.parseScene = function(dsx) {
 /**
   Parses the views tag and its children and sets the scene's cameras accordingly.
 */
-MySceneGraph.prototype.parseViews = function(dsx) {
-    var views = dsx.getElementsByTagName('views')[0];
-    var defaultCamera;
+MySceneGraph.prototype.parseViews = function(views) {
+    if (views.nodeName !== 'views')
+        return ('Blocks not ordered correctly. Expected "views", found "' + views.nodeName + '".');
 
-    var defaultPerspectiveId = this.reader.getString(views, 'default', true);
+    let defaultCamera;
+
+    let defaultPerspectiveId = this.reader.getString(views, 'default', true);
 
     if (!(views.children.length > 0))
         return 'You need to have at least one perspective defined.';
@@ -77,7 +90,7 @@ MySceneGraph.prototype.parseViews = function(dsx) {
     for (let perspective of views.children) {
         //Parse perspective attributes
         var id = this.reader.getString(perspective, 'id', true);
-        var fov = this.reader.getFloat(perspective, 'angle', true)*Math.PI/180; //To radians
+        var fov = this.reader.getFloat(perspective, 'angle', true) * Math.PI / 180; //To radians
         var near = this.reader.getFloat(perspective, 'near', true);
         var far = this.reader.getFloat(perspective, 'far', true);
 
@@ -106,13 +119,9 @@ MySceneGraph.prototype.parseViews = function(dsx) {
 /*
  * Parses illumination in DSX
  */
-MySceneGraph.prototype.parseIllumination = function(dsx) {
-
-    var illumination = dsx.getElementsByTagName('illumination')[0];
-
-    if (illumination == null)
-        return "illumination element is missing";
-
+MySceneGraph.prototype.parseIllumination = function(illumination) {
+    if (illumination.nodeName !== 'illumination')
+        return ('Blocks not ordered correctly. Expected "illumination", found "' + illumination.nodeName + '".');
 
     this.doublesided = this.reader.getBoolean(illumination, 'doublesided', true);
     this.local = this.reader.getBoolean(illumination, 'local', true);
@@ -120,17 +129,17 @@ MySceneGraph.prototype.parseIllumination = function(dsx) {
     if (this.doublesided == null || this.local == null)
         return "boolean value(s) in illumination missing";
 
-    let ambientTag = illumination.getElementsByTagName('ambient') [0];
+    let ambientTag = illumination.getElementsByTagName('ambient')[0];
     this.ambient = parseRGBA(this.reader, ambientTag);
 
-    let backgroundTag = illumination.getElementsByTagName('background') [0];
+    let backgroundTag = illumination.getElementsByTagName('background')[0];
     this.bg = parseRGBA(this.reader, backgroundTag);
 
 
     if (this.ambient == null)
         return "ambient illumination missing"
 
-    if(this.bg == null)
+    if (this.bg == null)
         return "background illumination missing";
 
 }
@@ -139,8 +148,9 @@ MySceneGraph.prototype.parseIllumination = function(dsx) {
 /**
  * Parses the textures from the dsx root element.
  */
-MySceneGraph.prototype.parseTextures = function(dsx) {
-    let textures = dsx.getElementsByTagName('textures')[0];
+MySceneGraph.prototype.parseTextures = function(textures) {
+  if (textures.nodeName !== 'textures')
+      return ('Blocks not ordered correctly. Expected "textures", found "' + textures.nodeName + '".');
 
     for (let texture of textures.children) {
 
@@ -185,8 +195,9 @@ MySceneGraph.prototype.parseTextures = function(dsx) {
 /**
  * Parses the materials from the dsx root element.
  */
-MySceneGraph.prototype.parseMaterials = function(dsx) {
-    var materials = dsx.getElementsByTagName('materials')[0];
+MySceneGraph.prototype.parseMaterials = function(materials) {
+  if (materials.nodeName !== 'materials')
+      return ('Blocks not ordered correctly. Expected "materials", found "' + materials.nodeName + '".');
 
     if (!materials.children.length)
         return ('There must be at least one material defined.');
@@ -230,8 +241,10 @@ MySceneGraph.prototype.parseMaterials = function(dsx) {
  * Parses the components from the dsx root element
  * And creates the scene graph.
  */
-MySceneGraph.prototype.parseComponents = function(dsx) {
-    let compsTag = dsx.getElementsByTagName('components')[0];
+MySceneGraph.prototype.parseComponents = function(compsTag) {
+  if (compsTag.nodeName !== 'components')
+      return ('Blocks not ordered correctly. Expected "components", found "' + compsTag.nodeName + '".');
+
     let components = {};
 
     for (let compTag of compsTag.children) {
@@ -396,8 +409,9 @@ MySceneGraph.prototype.parseComponentChildren = function(components, component, 
 /**
  *  Parses the primitives from the dsx root element.
  */
-MySceneGraph.prototype.parsePrimitives = function(dsx) {
-    let primitives = dsx.getElementsByTagName('primitives')[0];
+MySceneGraph.prototype.parsePrimitives = function(primitives) {
+  if (primitives.nodeName !== 'primitives')
+      return ('Blocks not ordered correctly. Expected "primitives", found "' + primitives.nodeName + '".');
 
     for (let primitive of primitives.children) {
         let shape = primitive.children[0];
@@ -471,26 +485,20 @@ MySceneGraph.prototype.parsePrimitives = function(dsx) {
  * the first element of the value array is the function to be called (transtale/rotate/scale)
  * the remainder of the array are the arguments to the function
  */
-MySceneGraph.prototype.parseTransformations = function(rootElement) {
-    var transformations = rootElement.getElementsByTagName('transformations');
-    if (transformations == null)
-        return "transformations element is missing";
+MySceneGraph.prototype.parseTransformations = function(transformations) {
+  if (transformations.nodeName !== 'transformations')
+      return ('Blocks not ordered correctly. Expected "transformations", found "' + transformations.nodeName + '".');
 
-    if (transformations.length != 1)
-        return "invalid number of transformations elements"
-
-    if (transformations[0].children.length < 1)
-        return 'there should be one or more "transformation" blocks';
+    if (transformations.children.length < 1)
+        return 'At least one transformation is needed in transformations block.';
 
     this.transformations = []; //dictionary
-    var duplicate = false; //flag
 
     // this for loop gets the ID of the transformation and, if it is not already in use, stores it in the dictionary
-    for (let transf of transformations[0].children) {
-        duplicate = false;
+    for (let transf of transformations.children) {
         let transfID = this.reader.getString(transf, 'id', true);
         if (!transfID)
-            return 'missing transformation ID';
+            return 'Missing transformation ID.';
 
         //check if a transformation with the same ID has already been stored
         if (this.transformations[transfID])
