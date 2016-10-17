@@ -19,8 +19,11 @@ XMLscene.prototype.init = function(application) {
     this.gl.enable(this.gl.CULL_FACE);
     this.gl.depthFunc(this.gl.LEQUAL);
 
+    this.enableTextures(true);
+
     this.cameras = [];
-    this.primitives = {};
+    this.rootNode;  
+      
 };
 
 XMLscene.prototype.initLights = function() {
@@ -70,7 +73,6 @@ XMLscene.prototype.display = function() {
     // Apply transformations corresponding to the camera position relative to the origin
     this.applyViewMatrix();
 
-
     this.setDefaultAppearance();
 
     // ---- END Background, camera and axis setup
@@ -82,12 +84,10 @@ XMLscene.prototype.display = function() {
         //Update lights
         this.lights[0].update();
 
+        this.rootNode.display();
+
         // Draw axis
         this.axis.display();
 
-        //for .. in iterates through all the properties of this.primitives
-        for(let id in this.primitives) {
-          this.primitives[id].display();
-        }
     };
 };

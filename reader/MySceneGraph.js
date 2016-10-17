@@ -9,6 +9,9 @@ function MySceneGraph(filename, scene) {
     this.reader = new CGFXMLreader();
     this.rootId;
     this.materials = {};
+    this.transformations = {};
+    this.primitives = {};
+    this.textures = {};
     /*
      * Read the contents of the xml file, and refer to this class for loading and error handlers.
      * After the file is read, the reader calls onXMLReady on this object.
@@ -28,8 +31,6 @@ MySceneGraph.prototype.onXMLReady = function() {
     // Here should go the calls for different functions to parse the various blocks
     var error = this.parseDsx(rootElement);
 
-    error = this.parseIllumination(rootElement);
-
     if (error != null) {
         this.onXMLError(error);
         return;
@@ -43,48 +44,8 @@ MySceneGraph.prototype.onXMLReady = function() {
 MySceneGraph.prototype.parseDsx = function(dsx) {
     //NOTE: There cannot be a carriage return between the 'return' keyword and
     //the OR statement, otherwise the functions are not called.
-    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parseMaterials(dsx) || this.parsePrimitives(dsx));
-}
 
-/**
- *Parses the given tag and returns a Vec3 with the result.
- * Attributes are named x, y and z concatenated with the number.
- *TODO:Check if the read values are valid
- */
-MySceneGraph.prototype.parseVec3 = function(tag, number) {
-    if (!number)
-        number = '';
-    let z = this.reader.getFloat(tag, 'z' + number, true);
-
-    let vec3 = this.parseVec2(tag, number);
-    vec3.push(z);
-
-    return vec3;
-}
-
-/**
- * Parses the vector from the given tag attributes.
- * Attributes are named x and y concatenated with the number.
- */
-MySceneGraph.prototype.parseVec2 = function(tag, number) {
-    if (!number)
-        number = '';
-
-    let x = this.reader.getFloat(tag, 'x' + number, true);
-    let y = this.reader.getFloat(tag, 'y' + number, true);
-
-    return [x, y];
-}
-
-MySceneGraph.prototype.parseRGBA = function(tag) {
-    let r = this.reader.getFloat(tag, 'r', true);
-    let g = this.reader.getFloat(tag, 'g', true);
-    let b = this.reader.getFloat(tag, 'b', true);
-    let a = this.reader.getFloat(tag, 'a', true);
-
-    return [
-        r, g, b, a
-    ];
+    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parseIllumination(dsx) || this.parseTransformations(dsx) || this.parseTextures(dsx) || this.parseMaterials(dsx) || this.parsePrimitives(dsx) || this.parseComponents(dsx));
 }
 
 /**
@@ -122,10 +83,10 @@ MySceneGraph.prototype.parseViews = function(dsx) {
 
         //Parse perspective elements
         var fromTag = perspective.getElementsByTagName('from')[0];
-        var fromVector = this.parseVec3(fromTag);
+        var fromVector = parseVec3(this.reader, fromTag);
 
         var toTag = perspective.getElementsByTagName('to')[0];
-        var toVector = this.parseVec3(toTag);
+        var toVector = parseVec3(this.reader, toTag);
 
         //Sets the default camera
         if (defaultPerspectiveId === id)
@@ -142,10 +103,59 @@ MySceneGraph.prototype.parseViews = function(dsx) {
 }
 
 /**
+ * Parses the textures from the dsx root element.
+ */
+MySceneGraph.prototype.parseTextures = function(dsx) {
+    let textures = dsx.getElementsByTagName('textures')[0];
+
+    for (let texture of textures.children) {
+
+        let id = this.reader.getString(texture, 'id', true);
+        if (!id)
+            return ('A texture must have an id. One is missing.');
+
+        if (this.textures[id])
+            return ('Texture with id ' + id + ' already exists.');
+
+        if (id === 'none' || id === 'inherit')
+            return ('"none" and "inherit" are keywords and cannot be used as texture ids.');
+
+
+        let file = this.reader.getString(texture, 'file', true);
+
+        if (!file)
+            return ('Texture with id ' + id + ' does not have a file associated.');
+
+
+
+        let length_s = this.reader.getFloat(texture, 'length_s', false);
+
+        if (!length_s) {
+            console.log('Texture with id ' + id + ' does not have length_s defined or is invalid. Assuming 1.0.');
+            length_s = 1;
+        }
+
+
+
+        let length_t = this.reader.getFloat(texture, 'length_t', false);
+
+        if (!length_t) {
+            console.log('Texture with id ' + id + ' does not have length_t defined or is invalid. Assuming 1.0.');
+            length_t = 1;
+        }
+
+        this.textures[id] = new Texture(this.scene, file, length_s, length_t);
+    }
+}
+
+/**
  * Parses the materials from the dsx root element.
  */
 MySceneGraph.prototype.parseMaterials = function(dsx) {
     var materials = dsx.getElementsByTagName('materials')[0];
+
+    if (!materials.children.length)
+        return ('There must be at least one material defined.');
 
     for (let material of materials.children) {
         let id = this.reader.getString(material, 'id', true);
@@ -156,16 +166,16 @@ MySceneGraph.prototype.parseMaterials = function(dsx) {
             return ('Material with id ' + id + ' already exists.');
 
         let emission = material.getElementsByTagName('emission')[0];
-        let emissionRGBA = this.parseRGBA(emission);
+        let emissionRGBA = parseRGBA(this.reader, emission);
 
         let ambient = material.getElementsByTagName('ambient')[0];
-        let ambientRGBA = this.parseRGBA(ambient);
+        let ambientRGBA = parseRGBA(this.reader, ambient);
 
         let diffuse = material.getElementsByTagName('diffuse')[0];
-        let diffuseRGBA = this.parseRGBA(diffuse);
+        let diffuseRGBA = parseRGBA(this.reader, diffuse);
 
         let specular = material.getElementsByTagName('specular')[0];
-        let specularRGBA = this.parseRGBA(specular);
+        let specularRGBA = parseRGBA(this.reader, specular);
 
         let shininess = material.getElementsByTagName('shininess')[0];
         let shininessValue = this.reader.getFloat(shininess, 'value', true);
@@ -183,10 +193,177 @@ MySceneGraph.prototype.parseMaterials = function(dsx) {
 }
 
 /**
-  Parses the primitives from the dsx root element.
-*/
+ * Parses the components from the dsx root element
+ * And creates the scene graph.
+ */
+MySceneGraph.prototype.parseComponents = function(dsx) {
+    let compsTag = dsx.getElementsByTagName('components')[0];
+    let components = {};
+
+    for (let compTag of compsTag.children) {
+        let id = this.reader.getString(compTag, 'id', true);
+
+        if (!id)
+            return 'A component must have an id. Please provide one.';
+
+        if (components[id])
+            return ('A component with id ' + id + ' already exists.');
+
+        let component = new Component(this.scene, id);
+
+        let transformationTag = compTag.getElementsByTagName('transformation')[0];
+        let materialsTag = compTag.getElementsByTagName('materials')[0];
+
+        //Error checking
+        let error = this.parseComponentTransformations(component, transformationTag);
+        if (error)
+            return error;
+
+        error = this.parseComponentMaterials(component, materialsTag)
+        if (error)
+            return error;
+
+        /*
+         * Texture parsing
+         */
+        let texture = compTag.getElementsByTagName('texture')[0];
+        if (!texture)
+            return ('A component with id ' + id + ' does not have a texture tag.');
+
+        let textureId = this.reader.getString(texture, 'id', true);
+        if (textureId) {
+            error = component.setTexture(textureId);
+
+            if (error)
+                return error;
+        } else
+            return ('A component with id ' + id + ' is missing a texture id');
+
+        //Children parsing
+        let childrenTag = compTag.getElementsByTagName('children')[0];
+
+        error = this.parseComponentChildren(components, component, childrenTag)
+        if (error)
+            return error;
+    }
+
+    let error = this.createSceneGraph(components);
+
+    if (error)
+        return error;
+}
+
+/**
+ * Creates the scene graph used to display the scene
+ */
+MySceneGraph.prototype.createSceneGraph = function(components) {
+    for (let id in components) {
+        for (let child of components[id].children) {
+            components[id].component.addChild(components[child].component);
+        }
+    }
+
+    if (!components[this.rootId])
+        return 'There is no node with the root id provided.';
+
+    this.scene.rootNode = components[this.rootId].component;
+
+    /*
+     * Handle textures inheritance
+     */
+    if (this.scene.rootNode.texture === 'inherit')
+        return 'Root node cannot inherit a texture.';
+
+    this.scene.rootNode.updateTextures(this.textures);
+
+    /*
+     * Handle materials inheritance
+     */
+};
+
+/**
+ * Parses the transformations and adds it to the component.
+ */
+MySceneGraph.prototype.parseComponentTransformations = function(component, tag) {
+    for (let transfTag of tag.children) {
+        let transformation;
+
+        if (transfTag.nodeName === 'transformationref') {
+            let id = this.reader.getString(transfTag, 'id', true);
+
+            if (!this.transformations[id])
+                return ('Transformation with id ' + id + ' does not exist.');
+
+            transformation = this.transformations[id];
+        } else
+            transformation = parseTransformation(this.scene, this.reader, transfTag);
+
+        component.transform(transformation);
+    }
+}
+
+/**
+ * Parses the component materials and adds it to the component.
+ */
+MySceneGraph.prototype.parseComponentMaterials = function(component, tag) {
+    if (!tag.children.length)
+        return 'There is a component that does not have a material.';
+
+    for (let materialTag of tag.children) {
+        let id = this.reader.getString(materialTag, 'id', true);
+
+        if (!id)
+            return 'A material in a component is missing its id.';
+
+        if (id === 'inherit')
+            component.inheritMaterial = true;
+        else if (!this.materials[id])
+            return ('There is no material with id ' + id + '.');
+
+        component.addMaterial(this.materials[id]);
+    }
+}
+
+/**
+ * Parses the children of the given component and:
+ * If it is a primitive, adds it to the Component class;
+ * If it is another component, adds it to the children array;
+ *
+ * In the end, it adds the component and its children to the components dictionary.
+ */
+MySceneGraph.prototype.parseComponentChildren = function(components, component, tag) {
+    let children = [];
+
+    for (let child of tag.children) {
+        if (child.nodeName !== 'componentref' && child.nodeName !== 'primitiveref')
+            return ('There is a component with id ' + component.getId() + ' with an unexpected child tag.');
+
+        let id = this.reader.getString(child, 'id', true);
+
+        if (!id)
+            return ('There is a component with id ' + component.getId() + ' that has a child without id.');
+
+        if (child.nodeName === 'componentref') {
+
+            if (id === component.getId()) //Check for cylic dependency
+                return ('Cyclic dependency on component named ' + component.getId() + '.');
+
+            children.push(id);
+        } else //primitiveref
+            component.addChild(this.primitives[id]);
+    }
+
+    components[component.getId()] = {
+        'component': component,
+        'children': children
+    };
+}
+
+/**
+ *  Parses the primitives from the dsx root element.
+ */
 MySceneGraph.prototype.parsePrimitives = function(dsx) {
-    var primitives = dsx.getElementsByTagName('primitives')[0];
+    let primitives = dsx.getElementsByTagName('primitives')[0];
 
     for (let primitive of primitives.children) {
         let shape = primitive.children[0];
@@ -200,15 +377,15 @@ MySceneGraph.prototype.parsePrimitives = function(dsx) {
         switch (shape.nodeName) {
             case 'rectangle':
                 object = new Rectangle(this.scene,
-                    this.parseVec2(shape, '1'),
-                    this.parseVec2(shape, '2')
+                    parseVec2(this.reader, shape, '1'),
+                    parseVec2(this.reader, shape, '2')
                 );
                 break;
             case 'triangle':
                 object = new Triangle(this.scene,
-                    this.parseVec3(shape, '1'),
-                    this.parseVec3(shape, '2'),
-                    this.parseVec3(shape, '3'));
+                    parseVec3(this.reader, shape, '1'),
+                    parseVec3(this.reader, shape, '2'),
+                    parseVec3(this.reader, shape, '3'));
                 break;
             case 'cylinder':
                 {
@@ -231,44 +408,89 @@ MySceneGraph.prototype.parsePrimitives = function(dsx) {
                 }
                 break;
             case 'torus':
-                console.log('Torus found. Not implemented yet.');
+                {
+                    let inner = this.reader.getFloat(shape, 'inner', true);
+                    let outer = this.reader.getFloat(shape, 'outer', true);
+                    let slices = this.reader.getInteger(shape, 'slices', true);
+                    let loops = this.reader.getInteger(shape, 'loops', true);
+
+                    object = new Torus(this.scene, inner, outer, slices, loops);
+                }
                 break;
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');
                 break;
         }
 
-        if (this.scene.primitives[id])
+        if (this.primitives[id])
             return ('There are two primitives with the same id: ' + id + '.');
 
         if (object)
-            this.scene.primitives[id] = object;
+            this.primitives[id] = object;
+    }
+}
+
+/**
+ * Parses transformation element of DSX
+ * stores transformations in a dictionary for future reference
+ * the dictionary keys are the ID strings, the values are arrays
+ * the first element of the value array is the function to be called (transtale/rotate/scale)
+ * the remainder of the array are the arguments to the function
+ */
+MySceneGraph.prototype.parseTransformations = function(rootElement) {
+    var transformations = rootElement.getElementsByTagName('transformations');
+    if (transformations == null)
+        return "transformations element is missing";
+
+    if (transformations.length != 1)
+        return "invalid number of transformations elements"
+
+    if (transformations[0].children.length < 1)
+        return 'there should be one or more "transformation" blocks';
+
+    this.transformations = []; //dictionary
+    var duplicate = false; //flag
+
+    // this for loop gets the ID of the transformation and, if it is not already in use, stores it in the dictionary
+    for (let transf of transformations[0].children) {
+        duplicate = false;
+        let transfID = this.reader.getString(transf, 'id', true);
+        if (!transfID)
+            return 'missing transformation ID';
+
+        //check if a transformation with the same ID has already been stored
+        if (this.transformations[transfID])
+            return ('Transformation with ID ' + transfID + ' already exists.');
+
+        this.transformations[transfID] = new Transformation(this.scene);
+
+        for (let operations of transf.children) {
+            this.transformations[transfID].multiply(parseTransformation(this.scene, this.reader, operations));
+        }
     }
 }
 
 /*
  * Parses illumination in DSX
  */
-MySceneGraph.prototype.parseIllumination = function(rootElement){
+MySceneGraph.prototype.parseIllumination = function(rootElement) {
 
     var illumination = rootElement.getElementsByTagName('illumination');
 
     if (illumination == null)
         return "illumination element is missing";
-    
 
-    this.doublesided = this.reader.getBoolean(illumination[0],'doublesided', true);
-    this.local = this.reader.getBoolean(illumination[0],'local', true);
 
-    if(this.doublesided == null || this.local == null)
+    this.doublesided = this.reader.getBoolean(illumination[0], 'doublesided', true);
+    this.local = this.reader.getBoolean(illumination[0], 'local', true);
+
+    if (this.doublesided == null || this.local == null)
         return "boolean value(s) in illumination missing";
 
-    console.log("Illumination settings read from file: {doublesided = " + this.doublesided + ", local = " + this.local + "}");
+    this.ambient = parseRGBA(this.reader, illumination[0].children[0]);
+    this.background = parseRGBA(this.reader, illumination[0].children[1]);
 
-    this.ambient = this.parseRGBA(illumination[0].children[0]);
-    this.background = this.parseRGBA(illumination[0].children[1]);
-    
-    if(this.ambient == null || this.background == null)
+    if (this.ambient == null || this.background == null)
         return "ambient and background illuminations missing";
 
 }
