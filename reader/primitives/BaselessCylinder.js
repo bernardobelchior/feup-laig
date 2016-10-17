@@ -2,12 +2,14 @@
  * BaselessCylinder
  * @constructor
  */
-function BaselessCylinder(scene, height, slices, stacks) {
+function BaselessCylinder(scene, base, top, height, slices, stacks) {
     CGFobject.call(this, scene);
 
     this.slices = slices;
     this.stacks = stacks;
     this.height = height;
+    this.base = base;
+    this.top = top;
 
     this.initBuffers();
 };
@@ -21,6 +23,8 @@ BaselessCylinder.prototype.initBuffers = function() {
     this.indices = [];
     this.texCoords = [];
 
+console.log('test');
+    let multiplier = (this.base-this.top)/(this.stacks);
     var patchLengthx = 1 / this.slices;
     var patchLengthy = 1 / this.stacks;
     var xCoord = 0;
@@ -29,7 +33,7 @@ BaselessCylinder.prototype.initBuffers = function() {
 
     for (i = 0; i <= this.stacks; i++) {
         for (j = 0; j < this.slices; j++) {
-            this.vertices.push(Math.cos(ang * j), Math.sin(ang * j), i / this.stacks * this.height);
+            this.vertices.push(Math.cos(ang * j)*((this.stacks-i)*multiplier+this.top), Math.sin(ang * j)*((this.stacks-i)*multiplier+this.top), i / this.stacks * this.height);
             this.normals.push(Math.cos(ang * j), Math.sin(ang * j), 0);
             this.texCoords.push(xCoord, yCoord);
             xCoord += patchLengthx;
