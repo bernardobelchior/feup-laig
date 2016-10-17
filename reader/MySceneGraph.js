@@ -77,7 +77,7 @@ MySceneGraph.prototype.parseViews = function(dsx) {
     for (let perspective of views.children) {
         //Parse perspective attributes
         var id = this.reader.getString(perspective, 'id', true);
-        var fov = this.reader.getFloat(perspective, 'angle', true);
+        var fov = this.reader.getFloat(perspective, 'angle', true)*Math.PI/180; //To radians
         var near = this.reader.getFloat(perspective, 'near', true);
         var far = this.reader.getFloat(perspective, 'far', true);
 
@@ -90,12 +90,12 @@ MySceneGraph.prototype.parseViews = function(dsx) {
 
         //Sets the default camera
         if (defaultPerspectiveId === id)
-            this.scene.defaultCamera = this.scene.cameras.length;
+            this.scene.currentCamera = this.scene.cameras.length;
 
         this.scene.cameras.push(new CGFcamera(fov, near, far, fromVector, toVector));
     }
 
-    if (this.scene.defaultCamera == null)
+    if (this.scene.currentCamera == null)
         return 'The default perspective is not a child of views.';
 
 

@@ -59,7 +59,7 @@ XMLscene.prototype.onGraphLoaded = function() {
     this.axis = new CGFaxis(this, this.axisLength);
 
     //Sets default camera
-    //this.camera = this.cameras[this.defaultCamera];
+    this.camera = this.cameras[this.currentCamera];
 };
 
 XMLscene.prototype.display = function() {
@@ -99,5 +99,14 @@ XMLscene.prototype.display = function() {
 
     XMLscene.prototype.switchMaterials = function() {
         this.rootNode.switchMaterials();
+    };
+
+    XMLscene.prototype.nextCamera = function() {
+        if (this.currentCamera === this.cameras.length - 1)
+            this.currentCamera = 0;
+        else
+            this.currentCamera++;
+
+        this.camera = this.cameras[this.currentCamera];
     };
 };
