@@ -34,9 +34,9 @@ Torus.prototype.initBuffers = function(){
 
     for(var m = 0; m <= this.slices; m++){
         for(var n = 0; n <= this.loops; n++){
-            
-            let x = (c + this.inner * Math.cos(n * ang2)) * Math.cos(m * ang1);
-            let y = (c + this.inner * Math.cos(n * ang2)) * Math.sin(m * ang1);
+
+            let x = (this.outer + this.inner * Math.cos(n * ang2)) * Math.cos(m * ang1);
+            let y = (this.outer + this.inner * Math.cos(n * ang2)) * Math.sin(m * ang1);
             let z = this.inner * Math.sin(n * ang1)
 
             let nx = (this.inner * Math.cos(n * ang2)) * Math.cos(m * ang1);
@@ -48,12 +48,12 @@ Torus.prototype.initBuffers = function(){
 
             let xCoord = Math.acos(x/this.inner)/(2*Math.PI);
             let yCoord = 2*Math.PI*Math.acos(z/(this.inner + this.outer*Math.cos(2*Math.PI*xCoord)));
-            
+
             yCoord = m/this.slices;
             xCoord = (n % (this.loops + 1)  )/ this.slices;
 
             this.texCoords.push(xCoord,yCoord);
-                  
+
             nverts++;
 
             if(m > 0 && n > 0){
