@@ -45,7 +45,7 @@ MySceneGraph.prototype.parseDsx = function(dsx) {
     //NOTE: There cannot be a carriage return between the 'return' keyword and
     //the OR statement, otherwise the functions are not called.
 
-    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parseIllumination(dsx) || this.parseTransformations(dsx) || this.parseTextures(dsx) || this.parseMaterials(dsx) || this.parsePrimitives(dsx) || this.parseComponents(dsx));
+    return (this.parseScene(dsx) || this.parseViews(dsx) || this.parseIllumination(dsx) || this.parseLights(dsx) || this.parseTransformations(dsx) || this.parseTextures(dsx) || this.parseMaterials(dsx) || this.parsePrimitives(dsx) || this.parseComponents(dsx) );
 }
 
 /**
@@ -135,6 +135,56 @@ MySceneGraph.prototype.parseIllumination = function(dsx) {
 
 }
 
+/**
+ * Parses the lights from the dsx root element.
+ */
+MySceneGraph.prototype.parseLights = function(dsx){
+    let lights = dsx.getElementsByTagName('lights')[0];
+
+    if(!lights.children.length){
+        return "No lights detected in the dsx";
+    }
+
+    for(let light of lights.children){
+
+        console.log(light);
+        let type = light.nodeName;
+        if(type !== 'omni' && type !== 'spot')
+            return ('Invalid light type');
+        let id = this.reader.getString(light, 'id', true);
+        if (!id)
+            return ('A light must have an id. One is missing.');
+
+        if (this.scene.lights[id])
+            return ('Light with id ' + id + ' already exists.');
+
+        let enabled = this.reader.getBoolean(light,'enabled',true);
+        if(!enabled)
+            return ('Light with id ' + id + ' has no enabled attribute.');
+
+        let location = parseVec3(this.reader,'location');
+        if(!location)
+            return ('Light with id ' + id + 'has and invalid location!');
+
+        let ambient = parseVec3(this.reader,'ambient');
+        if(!ambient)
+            return ('Light with id ' + id + 'has and invalid ambient attributes!');
+
+        let diffuse = parseVec3(this.reader,'diffuse');
+        if(!diffuse)
+            return ('Light with id ' + id + 'has and invalid diffuse attributes!');
+
+        let specular = parseVec3(this.reader,'specular');
+        if(!specular)
+            return ('Light with id ' + id + 'has and invalid specular attributes!');
+
+        let target = parseVec3(this.reader,'target');
+        if(!target && type === 'spot')
+            return('Spotlight with id ' + id + 'has no target!');
+
+        this.scene.lights[id] = new CGFLight(this.scene,id);
+    }
+}
 
 /**
  * Parses the textures from the dsx root element.
