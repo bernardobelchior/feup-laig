@@ -10,11 +10,9 @@ function Cylinder(scene, base, top, height, slices, stacks) {
     this.stacks = stacks;
     this.height = height;
 
-    //TODO: Height is not scaled properly.
-
-    this.baselessCylinder = new BaselessCylinder(scene, height, slices, stacks);
-    this.top = new Circle(scene, slices);
-    this.bottom = new Circle(scene, slices);
+    this.baselessCylinder = new BaselessCylinder(scene, base, top, height, slices, stacks);
+    this.top = new Circle(scene, slices, top);
+    this.bottom = new Circle(scene, slices, base);
 };
 
 Cylinder.prototype = Object.create(CGFobject.prototype);

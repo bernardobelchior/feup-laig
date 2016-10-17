@@ -152,7 +152,7 @@
         </primitive>
 
         <primitive id="cylinder">
-            <cylinder base="1" top="1" height="1" slices="20" stacks="5"/>
+            <cylinder base="10" top="0.5" height="1" slices="20" stacks="5"/>
         </primitive>
 
         <primitive id="sphere">
@@ -1367,7 +1367,7 @@
 
         </component>
 
-    
+
 
         <component id="saturnPlanet">
             <transformation>
