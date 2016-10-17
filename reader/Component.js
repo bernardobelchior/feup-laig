@@ -129,3 +129,29 @@ Component.prototype.display = function(parent) {
 
     this.scene.popMatrix();
 }
+
+/**
+ * Changes the material of the component and its children.
+ */
+Component.prototype.switchMaterials = function() {
+    this.nextMaterial();
+
+    for (let child of this.children) {
+        if(child instanceof Component)
+          child.switchMaterials();
+    }
+
+};
+
+/**
+ * Selects the next material from the available ones.
+ */
+Component.prototype.nextMaterial = function() {
+    if (this.inheritMaterial)
+        return;
+
+    if (this.currentMaterial === this.materials.length - 1)
+        this.currentMaterial = 0;
+    else
+        this.currentMaterial++;
+};
