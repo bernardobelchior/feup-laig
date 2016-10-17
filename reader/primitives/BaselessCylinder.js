@@ -23,7 +23,6 @@ BaselessCylinder.prototype.initBuffers = function() {
     this.indices = [];
     this.texCoords = [];
 
-console.log('test');
     let multiplier = (this.base-this.top)/(this.stacks);
     var patchLengthx = 1 / this.slices;
     var patchLengthy = 1 / this.stacks;

@@ -130,5 +130,4 @@ Interface.prototype.processKeyUp = function(event) {
 			this.scene.switchMaterials();
 			break;
 	};
-  console.log(event.keyCode);
 };
