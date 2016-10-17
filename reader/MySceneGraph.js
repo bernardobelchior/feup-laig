@@ -102,6 +102,40 @@ MySceneGraph.prototype.parseViews = function(dsx) {
     //this.scene.camera = this.cameras[defaultCamera];
 }
 
+
+/*
+ * Parses illumination in DSX
+ */
+MySceneGraph.prototype.parseIllumination = function(dsx) {
+
+    var illumination = dsx.getElementsByTagName('illumination')[0];
+
+    if (illumination == null)
+        return "illumination element is missing";
+
+
+    this.doublesided = this.reader.getBoolean(illumination, 'doublesided', true);
+    this.local = this.reader.getBoolean(illumination, 'local', true);
+
+    if (this.doublesided == null || this.local == null)
+        return "boolean value(s) in illumination missing";
+
+    let ambientTag = illumination.getElementsByTagName('ambient') [0];
+    this.ambient = parseRGBA(this.reader, ambientTag);
+
+    let backgroundTag = illumination.getElementsByTagName('background') [0];
+    this.bg = parseRGBA(this.reader, backgroundTag);
+
+
+    if (this.ambient == null)
+        return "ambient illumination missing"
+
+    if(this.bg == null)
+        return "background illumination missing";
+
+}
+
+
 /**
  * Parses the textures from the dsx root element.
  */
@@ -468,31 +502,6 @@ MySceneGraph.prototype.parseTransformations = function(rootElement) {
             this.transformations[transfID].multiply(parseTransformation(this.scene, this.reader, operations));
         }
     }
-}
-
-/*
- * Parses illumination in DSX
- */
-MySceneGraph.prototype.parseIllumination = function(rootElement) {
-
-    var illumination = rootElement.getElementsByTagName('illumination');
-
-    if (illumination == null)
-        return "illumination element is missing";
-
-
-    this.doublesided = this.reader.getBoolean(illumination[0], 'doublesided', true);
-    this.local = this.reader.getBoolean(illumination[0], 'local', true);
-
-    if (this.doublesided == null || this.local == null)
-        return "boolean value(s) in illumination missing";
-
-    this.ambient = parseRGBA(this.reader, illumination[0].children[0]);
-    this.background = parseRGBA(this.reader, illumination[0].children[1]);
-
-    if (this.ambient == null || this.background == null)
-        return "ambient and background illuminations missing";
-
 }
 
 /*
