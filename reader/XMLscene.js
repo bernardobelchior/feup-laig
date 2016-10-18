@@ -87,8 +87,9 @@ XMLscene.prototype.display = function() {
     if (this.graph.loadedOk) {
         //Update lights
 
-        for(light of this.lights)
+        for(light of this.lights){
             light.update();
+        }
 
         this.rootNode.display();
 

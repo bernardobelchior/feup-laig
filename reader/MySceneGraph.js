@@ -207,16 +207,17 @@ MySceneGraph.prototype.parseOmniLight = function(light, id, enabled){
     if(!specular)
         return ("Light with id " + id + " is missing a valid specular setting!") ;
 
-    let newLight = this.scene.lights[id] = new CGFlight(this.scene,id);
+    let newLight = new CGFlight(this.scene,id);
 
     if(enabled)
         newLight.enable();
 
-    newLight.setPosition(0.5,location[1], location[2], location[3]);
+    newLight.setPosition(location[0],location[1], location[2], location[3]);
     newLight.setAmbient(ambient[0],ambient[1], ambient[2], ambient[3]);
     newLight.setDiffuse(diffuse[0],diffuse[1], diffuse[2], diffuse[3]);
     newLight.setSpecular(specular[0],specular[1], specular[2], specular[3]);
-    newLight.setVisible(true);
+
+    this.scene.lights[id] = newLight;
 }
 
 MySceneGraph.prototype.parseSpotLight = function(light, id, enabled){
@@ -225,7 +226,55 @@ MySceneGraph.prototype.parseSpotLight = function(light, id, enabled){
     if(!angle)
         return ("Light with id " + id + " has an invalid angle");
 
-    console.log(angle);
+    let exponent = this.reader.getFloat(light,'exponent', true);
+    if(!exponent)
+        return ("Light with id " + id + " has an invalid exponent");
+
+
+    let targetTag = light.getElementsByTagName('target')[0];
+    let target = parseVec3(this.reader, targetTag);
+    if(!target)
+        return ("Light with id " + id + " is missing a valid target!") ;
+
+    let locationTag = light.getElementsByTagName('location')[0];
+    let location = parseVec3(this.reader, locationTag);
+    if(!location)
+        return ("Light with id " + id + " is missing a valid location!") ;
+
+    let ambientTag = light.getElementsByTagName('ambient')[0];
+    let ambient = parseRGBA(this.reader, ambientTag);
+    if(!ambient)
+        return ("Light with id " + id + " is missing a valid ambient setting!") ;
+
+
+    let diffuseTag = light.getElementsByTagName('diffuse')[0];
+    let diffuse = parseRGBA(this.reader, diffuseTag);
+    if(!diffuse)
+        return ("Light with id " + id + " is missing a valid diffuse setting!") ;
+
+    let specularTag = light.getElementsByTagName('specular')[0];
+    let specular = parseRGBA(this.reader, specularTag);
+    if(!specular)
+        return ("Light with id " + id + " is missing a valid specular setting!") ;
+
+    let direction = [];
+    direction[0] = target[0] - location[0];
+    direction[1] = target[1] - location[1];
+    direction[2] = target[2] - location[2];
+    let newLight =  new CGFlight(this.scene,id);
+
+    if(enabled)
+        newLight.enable();
+
+    newLight.setPosition(location[0],location[1], location[2]);
+    newLight.setSpotDirection(direction[0], direction[1], direction[2]);
+    newLight.setSpotExponent(exponent);
+    newLight.setAmbient(ambient[0],ambient[1], ambient[2], ambient[3]);
+    newLight.setDiffuse(diffuse[0],diffuse[1], diffuse[2], diffuse[3]);
+    newLight.setSpecular(specular[0],specular[1], specular[2], specular[3]);
+    newLight.setVisible(true);
+
+    this.scene.lights[id] = newLight;
 }
 
 
