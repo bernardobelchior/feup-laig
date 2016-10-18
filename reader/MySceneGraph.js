@@ -139,15 +139,17 @@ MySceneGraph.prototype.parseIllumination = function(dsx) {
  * Parses the lights from the dsx root element.
  */
 MySceneGraph.prototype.parseLights = function(dsx){
+    let error;
+
     let lights = dsx.getElementsByTagName('lights')[0];
 
     if(!lights.children.length){
         return "No lights detected in the dsx";
     }
-
+       console.log(lights.children);
     for(let light of lights.children) {
 
-        console.log(light);
+
 
         let id = this.reader.getString(light, 'id', true);
         if (!id)
@@ -164,17 +166,19 @@ MySceneGraph.prototype.parseLights = function(dsx){
 
         switch (type) {
             case 'omni':
-                return this.parseOmniLight(light, id, enabled);
+                error = this.parseOmniLight(light, id, enabled);
                 break;
 
             case 'spot':
-                return this.parseSpot(light, id);
+                error = this.parseSpotLight(light, id, enabled);
                 break;
 
             default:
-                return ("Light with id " + id + "has an invalid type");
+                error = ("Light with id " + id + " has an invalid type");
         }
     }
+
+    return error;
 };
 
 /**
@@ -185,23 +189,23 @@ MySceneGraph.prototype.parseOmniLight = function(light, id, enabled){
     let locationTag = light.getElementsByTagName('location')[0];
     let location = parseVec4(this.reader, locationTag);
     if(!location)
-        return ("Light with id " + id + "is missing a valid location!") ;
+        return ("Light with id " + id + " is missing a valid location!") ;
 
     let ambientTag = light.getElementsByTagName('ambient')[0];
     let ambient = parseRGBA(this.reader, ambientTag);
     if(!ambient)
-        return ("Light with id " + id + "is missing a valid ambient setting!") ;
+        return ("Light with id " + id + " is missing a valid ambient setting!") ;
 
 
     let diffuseTag = light.getElementsByTagName('diffuse')[0];
     let diffuse = parseRGBA(this.reader, diffuseTag);
     if(!diffuse)
-        return ("Light with id " + id + "is missing a valid diffuse setting!") ;
+        return ("Light with id " + id + " is missing a valid diffuse setting!") ;
 
     let specularTag = light.getElementsByTagName('specular')[0];
     let specular = parseRGBA(this.reader, specularTag);
     if(!specular)
-        return ("Light with id " + id + "is missing a valid specular setting!") ;
+        return ("Light with id " + id + " is missing a valid specular setting!") ;
 
     let newLight = this.scene.lights[id] = new CGFlight(this.scene,id);
 
@@ -213,6 +217,15 @@ MySceneGraph.prototype.parseOmniLight = function(light, id, enabled){
     newLight.setDiffuse(diffuse[0],diffuse[1], diffuse[2], diffuse[3]);
     newLight.setSpecular(specular[0],specular[1], specular[2], specular[3]);
     newLight.setVisible(true);
+}
+
+MySceneGraph.prototype.parseSpotLight = function(light, id, enabled){
+    console.log(light);
+    let angle = this.reader.getFloat(light,'angle', true);
+    if(!angle)
+        return ("Light with id " + id + " has an invalid angle");
+
+    console.log(angle);
 }
 
 
