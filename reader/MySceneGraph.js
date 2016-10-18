@@ -153,6 +153,10 @@ MySceneGraph.prototype.parseLights = function(dsx){
         if (!id)
             return ('A light must have an id. One is missing.');
 
+        let enabled = this.reader.getBoolean(light, 'enabled', true);
+        if(!enabled)
+            return ("Light with id " + id + " has no valid 'enabled' attribute");
+
         if (this.scene.lights[id])
             return ('Light with id ' + id + ' already exists.');
 
@@ -160,7 +164,7 @@ MySceneGraph.prototype.parseLights = function(dsx){
 
         switch (type) {
             case 'omni':
-                return this.parseOmniLight(light, id);
+                return this.parseOmniLight(light, id, enabled);
                 break;
 
             case 'spot':
@@ -176,14 +180,19 @@ MySceneGraph.prototype.parseLights = function(dsx){
 /**
  * Parses an omni type light from the lights block
  */
-MySceneGraph.prototype.parseOmniLight = function(light, id){
+MySceneGraph.prototype.parseOmniLight = function(light, id, enabled){
 
     let locationTag = light.getElementsByTagName('location')[0];
     let location = parseVec4(this.reader, locationTag);
     if(!location)
         return ("Light with id " + id + "is missing a valid location!") ;
 
-    console.log(location);
+    let ambientTag = light.getElementsByTagName('ambient')[0];
+    let ambient = parseRGBA(this.reader, ambientTag);
+    if(!ambient)
+        return ("Light with id " + id + "is missing a valid ambient setting!") ;
+
+
 }
 
 
