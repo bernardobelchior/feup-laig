@@ -193,6 +193,26 @@ MySceneGraph.prototype.parseOmniLight = function(light, id, enabled){
         return ("Light with id " + id + "is missing a valid ambient setting!") ;
 
 
+    let diffuseTag = light.getElementsByTagName('diffuse')[0];
+    let diffuse = parseRGBA(this.reader, diffuseTag);
+    if(!diffuse)
+        return ("Light with id " + id + "is missing a valid diffuse setting!") ;
+
+    let specularTag = light.getElementsByTagName('specular')[0];
+    let specular = parseRGBA(this.reader, specularTag);
+    if(!specular)
+        return ("Light with id " + id + "is missing a valid specular setting!") ;
+
+    let newLight = this.scene.lights[id] = new CGFlight(this.scene,id);
+
+    if(enabled)
+        newLight.enable();
+
+    newLight.setPosition(0.5,location[1], location[2], location[3]);
+    newLight.setAmbient(ambient[0],ambient[1], ambient[2], ambient[3]);
+    newLight.setDiffuse(diffuse[0],diffuse[1], diffuse[2], diffuse[3]);
+    newLight.setSpecular(specular[0],specular[1], specular[2], specular[3]);
+    newLight.setVisible(true);
 }
 
 
