@@ -145,12 +145,10 @@ MySceneGraph.prototype.parseLights = function(dsx){
         return "No lights detected in the dsx";
     }
 
-    for(let light of lights.children){
+    for(let light of lights.children) {
 
         console.log(light);
-        let type = light.nodeName;
-        if(type !== 'omni' && type !== 'spot')
-            return ('Invalid light type');
+
         let id = this.reader.getString(light, 'id', true);
         if (!id)
             return ('A light must have an id. One is missing.');
@@ -158,33 +156,36 @@ MySceneGraph.prototype.parseLights = function(dsx){
         if (this.scene.lights[id])
             return ('Light with id ' + id + ' already exists.');
 
-        let enabled = this.reader.getBoolean(light,'enabled',true);
-        if(!enabled)
-            return ('Light with id ' + id + ' has no enabled attribute.');
+        let type = light.nodeName;
 
-        let location = parseVec3(this.reader,'location');
-        if(!location)
-            return ('Light with id ' + id + 'has and invalid location!');
+        switch (type) {
+            case 'omni':
+                return this.parseOmniLight(light, id);
+                break;
 
-        let ambient = parseVec3(this.reader,'ambient');
-        if(!ambient)
-            return ('Light with id ' + id + 'has and invalid ambient attributes!');
+            case 'spot':
+                return this.parseSpot(light, id);
+                break;
 
-        let diffuse = parseVec3(this.reader,'diffuse');
-        if(!diffuse)
-            return ('Light with id ' + id + 'has and invalid diffuse attributes!');
-
-        let specular = parseVec3(this.reader,'specular');
-        if(!specular)
-            return ('Light with id ' + id + 'has and invalid specular attributes!');
-
-        let target = parseVec3(this.reader,'target');
-        if(!target && type === 'spot')
-            return('Spotlight with id ' + id + 'has no target!');
-
-        this.scene.lights[id] = new CGFLight(this.scene,id);
+            default:
+                return ("Light with id " + id + "has an invalid type");
+        }
     }
+};
+
+/**
+ * Parses an omni type light from the lights block
+ */
+MySceneGraph.prototype.parseOmniLight = function(light, id){
+
+    let locationTag = light.getElementsByTagName('location')[0];
+    let location = parseVec4(this.reader, locationTag);
+    if(!location)
+        return ("Light with id " + id + "is missing a valid location!") ;
+
+    console.log(location);
 }
+
 
 /**
  * Parses the textures from the dsx root element.
@@ -552,7 +553,7 @@ MySceneGraph.prototype.parseTransformations = function(rootElement) {
             this.transformations[transfID].multiply(parseTransformation(this.scene, this.reader, operations));
         }
     }
-}
+};
 
 /*
  * Callback to be executed on any read error
@@ -561,3 +562,4 @@ MySceneGraph.prototype.onXMLError = function(message) {
     console.error("XML Loading Error: " + message);
     this.loadedOk = false;
 };
+

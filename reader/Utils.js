@@ -15,6 +15,18 @@ function parseVec3(reader, tag, number) {
     return vec3;
 }
 
+function parseVec4(reader, tag, number) {
+   if (!number)
+       number = '';
+
+    let w = reader.getFloat(tag, 'w' + number, true);
+
+    let vec4 = parseVec3(reader, tag, number);
+    vec4.push(w);
+
+    return vec4;
+}
+
 /**
  * Parses the vector from the given tag attributes.
  * Attributes are named x and y concatenated with the number.
