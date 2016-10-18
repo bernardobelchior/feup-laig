@@ -18,17 +18,24 @@
 
     <scene root="root" axis_length="1"/>
 
-    <views default="ss">
-        <perspective id="ss" near="1.5" far="2.0" angle="1.7">
-            <from x="1" y="1" z="1"/>
-            <to x="2" y="3" z="4"/>
-        </perspective>
-
+    <views default="default">
+      <perspective id="default" near="0.1" far="500" angle="22.91">
+          <from x="30" y="30" z="30"/>
+          <to x="0" y="0" z="0"/>
+      </perspective>
+      <perspective id="camera1" near="0.1" far="500" angle="22.91">
+          <from x="-30" y="-30" z="-30"/>
+          <to x="0" y="0" z="0"/>
+      </perspective>
+      <perspective id="camera2" near="0.1" far="500" angle="22.91">
+          <from x="30" y="30" z="-30"/>
+          <to x="0" y="0" z="0"/>
+      </perspective>
     </views>
 
     <illumination doublesided="1" local="1">
 
-        <ambient r="0.3" g="0.2" b="0.5" a="0.8"/>
+        <ambient r="0.04" g="0.04" b="0.09" a="0.8"/>
         <background r="0.01" g="0.01" b="0.05" a="1.0"/>
 
     </illumination>

@@ -23,7 +23,6 @@ Circle.prototype.initBuffers = function() {
     var ang = (2 * Math.PI) / this.slices;
     var xCoord = 0;
     var yCoord = 0;
-    console.log(this.radius);
 
     for (i = 0; i < this.slices; i++) {
         this.vertices.push(Math.cos(ang * i)*this.radius, Math.sin(ang * i)*this.radius, 0);
