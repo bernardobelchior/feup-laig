@@ -55,7 +55,8 @@ MySceneGraph.prototype.parseDsx = function(dsx) {
 
     //NOTE: There cannot be a carriage return between the 'return' keyword and
     //the OR statement, otherwise the functions are not called.
-    return (this.parseScene(scene) || this.parseViews(views) || this.parseIllumination(illumination) || this.parseTextures(textures) || this.parseMaterials(materials) || this.parseTransformations(transformations) || this.parsePrimitives(primitives) || this.parseComponents(components));
+
+    return (this.parseScene(scene) || this.parseViews(views) || this.parseIllumination(illumination) || this.parseLights(lights)|| this.parseTextures(textures) || this.parseMaterials(materials) || this.parseTransformations(transformations) || this.parsePrimitives(primitives) || this.parseComponents(components));
 }
 
 /**
@@ -142,6 +143,149 @@ MySceneGraph.prototype.parseIllumination = function(illumination) {
     if (this.bg == null)
         return "background illumination missing";
 
+}
+
+/**
+ * Parses the lights from the dsx root element.
+ */
+MySceneGraph.prototype.parseLights = function(lights){
+    if (lights.nodeName !== 'lights')
+        return ('Blocks not ordered correctly. Expected "lights", found "' + lights.nodeName + '".');
+
+    let error;
+
+    if(!lights.children.length){
+        return "No lights detected in the dsx";
+    }
+       console.log(lights.children);
+    for(let light of lights.children) {
+
+
+
+        let id = this.reader.getString(light, 'id', true);
+        if (!id)
+            return ('A light must have an id. One is missing.');
+
+        let enabled = this.reader.getBoolean(light, 'enabled', true);
+        if(!enabled)
+            return ("Light with id " + id + " has no valid 'enabled' attribute");
+
+        if (this.scene.lights[id])
+            return ('Light with id ' + id + ' already exists.');
+
+        let type = light.nodeName;
+
+        switch (type) {
+            case 'omni':
+                error = this.parseOmniLight(light, id, enabled);
+                break;
+
+            case 'spot':
+                error = this.parseSpotLight(light, id, enabled);
+                break;
+
+            default:
+                error = ("Light with id " + id + " has an invalid type");
+        }
+    }
+
+    return error;
+};
+
+/**
+ * Parses an omni type light from the lights block
+ */
+MySceneGraph.prototype.parseOmniLight = function(light, id, enabled){
+
+    let locationTag = light.getElementsByTagName('location')[0];
+    let location = parseVec4(this.reader, locationTag);
+    if(!location)
+        return ("Light with id " + id + " is missing a valid location!") ;
+
+    let ambientTag = light.getElementsByTagName('ambient')[0];
+    let ambient = parseRGBA(this.reader, ambientTag);
+    if(!ambient)
+        return ("Light with id " + id + " is missing a valid ambient setting!") ;
+
+
+    let diffuseTag = light.getElementsByTagName('diffuse')[0];
+    let diffuse = parseRGBA(this.reader, diffuseTag);
+    if(!diffuse)
+        return ("Light with id " + id + " is missing a valid diffuse setting!") ;
+
+    let specularTag = light.getElementsByTagName('specular')[0];
+    let specular = parseRGBA(this.reader, specularTag);
+    if(!specular)
+        return ("Light with id " + id + " is missing a valid specular setting!") ;
+
+    let newLight = new CGFlight(this.scene,id);
+
+    if(enabled)
+        newLight.enable();
+
+    newLight.setPosition(location[0],location[1], location[2], location[3]);
+    newLight.setAmbient(ambient[0],ambient[1], ambient[2], ambient[3]);
+    newLight.setDiffuse(diffuse[0],diffuse[1], diffuse[2], diffuse[3]);
+    newLight.setSpecular(specular[0],specular[1], specular[2], specular[3]);
+
+    this.scene.lights[id] = newLight;
+}
+
+MySceneGraph.prototype.parseSpotLight = function(light, id, enabled){
+    console.log(light);
+    let angle = this.reader.getFloat(light,'angle', true);
+    if(!angle)
+        return ("Light with id " + id + " has an invalid angle");
+
+    let exponent = this.reader.getFloat(light,'exponent', true);
+    if(!exponent)
+        return ("Light with id " + id + " has an invalid exponent");
+
+
+    let targetTag = light.getElementsByTagName('target')[0];
+    let target = parseVec3(this.reader, targetTag);
+    if(!target)
+        return ("Light with id " + id + " is missing a valid target!") ;
+
+    let locationTag = light.getElementsByTagName('location')[0];
+    let location = parseVec3(this.reader, locationTag);
+    if(!location)
+        return ("Light with id " + id + " is missing a valid location!") ;
+
+    let ambientTag = light.getElementsByTagName('ambient')[0];
+    let ambient = parseRGBA(this.reader, ambientTag);
+    if(!ambient)
+        return ("Light with id " + id + " is missing a valid ambient setting!") ;
+
+
+    let diffuseTag = light.getElementsByTagName('diffuse')[0];
+    let diffuse = parseRGBA(this.reader, diffuseTag);
+    if(!diffuse)
+        return ("Light with id " + id + " is missing a valid diffuse setting!") ;
+
+    let specularTag = light.getElementsByTagName('specular')[0];
+    let specular = parseRGBA(this.reader, specularTag);
+    if(!specular)
+        return ("Light with id " + id + " is missing a valid specular setting!") ;
+
+    let direction = [];
+    direction[0] = target[0] - location[0];
+    direction[1] = target[1] - location[1];
+    direction[2] = target[2] - location[2];
+    let newLight =  new CGFlight(this.scene,id);
+
+    if(enabled)
+        newLight.enable();
+
+    newLight.setPosition(location[0],location[1], location[2]);
+    newLight.setSpotDirection(direction[0], direction[1], direction[2]);
+    newLight.setSpotExponent(exponent);
+    newLight.setAmbient(ambient[0],ambient[1], ambient[2], ambient[3]);
+    newLight.setDiffuse(diffuse[0],diffuse[1], diffuse[2], diffuse[3]);
+    newLight.setSpecular(specular[0],specular[1], specular[2], specular[3]);
+    newLight.setVisible(true);
+
+    this.scene.lights[id] = newLight;
 }
 
 
@@ -510,7 +654,7 @@ MySceneGraph.prototype.parseTransformations = function(transformations) {
             this.transformations[transfID].multiply(parseTransformation(this.scene, this.reader, operations));
         }
     }
-}
+};
 
 /*
  * Callback to be executed on any read error
@@ -519,3 +663,4 @@ MySceneGraph.prototype.onXMLError = function(message) {
     console.error("XML Loading Error: " + message);
     this.loadedOk = false;
 };
+
