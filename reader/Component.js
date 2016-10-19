@@ -89,6 +89,7 @@ Component.prototype.updateTextures = function(textures) {
                 return ('There is not texture with id ' + this.texture + '.');
 
             this.texture = textures[this.texture];
+            console.log(this.texture);
             break;
     }
 
@@ -114,12 +115,11 @@ Component.prototype.display = function(parent) {
     else
         this.material = this.materials[this.currentMaterial];
 
-    if (this.texture)
-        this.texture.apply(this.material);
-    else
+    if (this.texture) {
+            console.log(this.texture);
+            this.texture.apply(this.material);
+    } else
         this.material.setTexture(null);
-
-
 
     this.material.apply();
 
@@ -137,8 +137,8 @@ Component.prototype.switchMaterials = function() {
     this.nextMaterial();
 
     for (let child of this.children) {
-        if(child instanceof Component)
-          child.switchMaterials();
+        if (child instanceof Component)
+            child.switchMaterials();
     }
 
 };

@@ -57,10 +57,16 @@ Triangle.prototype.initBuffers = function() {
         0, 0, 1
     ];
 
+    let a = distance3d(this.point1, this.point3);
+    let b = distance3d(this.point1, this.point2);
+    let c = distance3d(this.point2, this.point3);
+    let cosBeta = (Math.pow(a, 2) - Math.pow(b, 2) + Math.pow(c, 2))/(2*a*c);
+    let sinBeta = Math.sqrt(1 - Math.pow(cosBeta));
+
     this.texCoords = [
-        this.point1[0], this.point1[1],
-        this.point2[0], this.point2[1],
-        this.point3[0], this.point3[1]
+        c - a*cosBeta, a*sinBeta,
+        0, 0,
+        c, 0
     ];
 
     this.primitiveType = this.scene.gl.TRIANGLES;

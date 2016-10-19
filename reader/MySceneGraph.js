@@ -56,7 +56,7 @@ MySceneGraph.prototype.parseDsx = function(dsx) {
     //NOTE: There cannot be a carriage return between the 'return' keyword and
     //the OR statement, otherwise the functions are not called.
 
-    return (this.parseScene(scene) || this.parseViews(views) || this.parseIllumination(illumination) || this.parseLights(lights)|| this.parseTextures(textures) || this.parseMaterials(materials) || this.parseTransformations(transformations) || this.parsePrimitives(primitives) || this.parseComponents(components));
+    return (this.parseScene(scene) || this.parseViews(views) || this.parseIllumination(illumination) || this.parseLights(lights) || this.parseTextures(textures) || this.parseMaterials(materials) || this.parseTransformations(transformations) || this.parsePrimitives(primitives) || this.parseComponents(components));
 }
 
 /**
@@ -148,45 +148,44 @@ MySceneGraph.prototype.parseIllumination = function(illumination) {
 /**
  * Parses the lights from the dsx root element.
  */
-MySceneGraph.prototype.parseLights = function(lights){
+MySceneGraph.prototype.parseLights = function(lights) {
     if (lights.nodeName !== 'lights')
         return ('Blocks not ordered correctly. Expected "lights", found "' + lights.nodeName + '".');
 
     let error;
+    let ids = {};
 
-    if(!lights.children.length){
+    if (!lights.children.length) {
         return "No lights detected in the dsx";
     }
-       console.log(lights.children);
-    for(let light of lights.children) {
 
-
-
+    for (let light of lights.children) {
         let id = this.reader.getString(light, 'id', true);
         if (!id)
             return ('A light must have an id. One is missing.');
 
         let enabled = this.reader.getBoolean(light, 'enabled', true);
-        if(!enabled)
+        if (enabled === undefined)
             return ("Light with id " + id + " has no valid 'enabled' attribute");
 
-        if (this.scene.lights[id])
+        if (ids[id])
             return ('Light with id ' + id + ' already exists.');
 
         let type = light.nodeName;
 
         switch (type) {
             case 'omni':
-                error = this.parseOmniLight(light, id, enabled);
+                error = this.parseOmniLight(light, this.scene.lights.length, enabled);
                 break;
 
             case 'spot':
-                error = this.parseSpotLight(light, id, enabled);
+                error = this.parseSpotLight(light, this.scene.lights.length, enabled);
                 break;
 
             default:
                 error = ("Light with id " + id + " has an invalid type");
         }
+        ids[id] = id;
     }
 
     return error;
@@ -195,97 +194,95 @@ MySceneGraph.prototype.parseLights = function(lights){
 /**
  * Parses an omni type light from the lights block
  */
-MySceneGraph.prototype.parseOmniLight = function(light, id, enabled){
+MySceneGraph.prototype.parseOmniLight = function(light, id, enabled) {
 
     let locationTag = light.getElementsByTagName('location')[0];
     let location = parseVec4(this.reader, locationTag);
-    if(!location)
-        return ("Light with id " + id + " is missing a valid location!") ;
+    if (!location)
+        return ("Light with id " + id + " is missing a valid location!");
 
     let ambientTag = light.getElementsByTagName('ambient')[0];
     let ambient = parseRGBA(this.reader, ambientTag);
-    if(!ambient)
-        return ("Light with id " + id + " is missing a valid ambient setting!") ;
-
+    if (!ambient)
+        return ("Light with id " + id + " is missing a valid ambient setting!");
 
     let diffuseTag = light.getElementsByTagName('diffuse')[0];
     let diffuse = parseRGBA(this.reader, diffuseTag);
-    if(!diffuse)
-        return ("Light with id " + id + " is missing a valid diffuse setting!") ;
+    if (!diffuse)
+        return ("Light with id " + id + " is missing a valid diffuse setting!");
 
     let specularTag = light.getElementsByTagName('specular')[0];
     let specular = parseRGBA(this.reader, specularTag);
-    if(!specular)
-        return ("Light with id " + id + " is missing a valid specular setting!") ;
+    if (!specular)
+        return ("Light with id " + id + " is missing a valid specular setting!");
 
-    let newLight = new CGFlight(this.scene,id);
-
-    if(enabled)
+    let newLight = new CGFlight(this.scene, id);
+    if (enabled)
         newLight.enable();
 
-    newLight.setPosition(location[0],location[1], location[2], location[3]);
-    newLight.setAmbient(ambient[0],ambient[1], ambient[2], ambient[3]);
-    newLight.setDiffuse(diffuse[0],diffuse[1], diffuse[2], diffuse[3]);
-    newLight.setSpecular(specular[0],specular[1], specular[2], specular[3]);
+    newLight.setPosition(location[0], location[1], location[2], location[3]);
+    newLight.setAmbient(ambient[0], ambient[1], ambient[2], ambient[3]);
+    newLight.setDiffuse(diffuse[0], diffuse[1], diffuse[2], diffuse[3]);
+    newLight.setSpecular(specular[0], specular[1], specular[2], specular[3]);
 
-    this.scene.lights[id] = newLight;
+    this.scene.lights.push(newLight);
 }
 
-MySceneGraph.prototype.parseSpotLight = function(light, id, enabled){
-    console.log(light);
-    let angle = this.reader.getFloat(light,'angle', true);
-    if(!angle)
+MySceneGraph.prototype.parseSpotLight = function(light, id, enabled) {
+    let angle = this.reader.getFloat(light, 'angle', true);
+    if (!angle)
         return ("Light with id " + id + " has an invalid angle");
 
-    let exponent = this.reader.getFloat(light,'exponent', true);
-    if(!exponent)
+    let exponent = this.reader.getFloat(light, 'exponent', true);
+    if (!exponent)
         return ("Light with id " + id + " has an invalid exponent");
 
 
     let targetTag = light.getElementsByTagName('target')[0];
     let target = parseVec3(this.reader, targetTag);
-    if(!target)
-        return ("Light with id " + id + " is missing a valid target!") ;
+    if (!target)
+        return ("Light with id " + id + " is missing a valid target!");
 
     let locationTag = light.getElementsByTagName('location')[0];
     let location = parseVec3(this.reader, locationTag);
-    if(!location)
-        return ("Light with id " + id + " is missing a valid location!") ;
+    if (!location)
+        return ("Light with id " + id + " is missing a valid location!");
 
     let ambientTag = light.getElementsByTagName('ambient')[0];
     let ambient = parseRGBA(this.reader, ambientTag);
-    if(!ambient)
-        return ("Light with id " + id + " is missing a valid ambient setting!") ;
+    if (!ambient)
+        return ("Light with id " + id + " is missing a valid ambient setting!");
 
 
     let diffuseTag = light.getElementsByTagName('diffuse')[0];
     let diffuse = parseRGBA(this.reader, diffuseTag);
-    if(!diffuse)
-        return ("Light with id " + id + " is missing a valid diffuse setting!") ;
+    if (!diffuse)
+        return ("Light with id " + id + " is missing a valid diffuse setting!");
 
     let specularTag = light.getElementsByTagName('specular')[0];
     let specular = parseRGBA(this.reader, specularTag);
-    if(!specular)
-        return ("Light with id " + id + " is missing a valid specular setting!") ;
+    if (!specular)
+        return ("Light with id " + id + " is missing a valid specular setting!");
 
     let direction = [];
     direction[0] = target[0] - location[0];
     direction[1] = target[1] - location[1];
     direction[2] = target[2] - location[2];
-    let newLight =  new CGFlight(this.scene,id);
+    let newLight = new CGFlight(this.scene, id);
 
-    if(enabled)
+    if (enabled)
         newLight.enable();
 
-    newLight.setPosition(location[0],location[1], location[2]);
+    newLight.setPosition(location[0], location[1], location[2], 1);
     newLight.setSpotDirection(direction[0], direction[1], direction[2]);
     newLight.setSpotExponent(exponent);
-    newLight.setAmbient(ambient[0],ambient[1], ambient[2], ambient[3]);
-    newLight.setDiffuse(diffuse[0],diffuse[1], diffuse[2], diffuse[3]);
-    newLight.setSpecular(specular[0],specular[1], specular[2], specular[3]);
+    newLight.setSpotCutOff(angle);
+    newLight.setAmbient(ambient[0], ambient[1], ambient[2], ambient[3]);
+    newLight.setDiffuse(diffuse[0], diffuse[1], diffuse[2], diffuse[3]);
+    newLight.setSpecular(specular[0], specular[1], specular[2], specular[3]);
     newLight.setVisible(true);
 
-    this.scene.lights[id] = newLight;
+    this.scene.lights.push(newLight);
 }
 
 
@@ -293,8 +290,8 @@ MySceneGraph.prototype.parseSpotLight = function(light, id, enabled){
  * Parses the textures from the dsx root element.
  */
 MySceneGraph.prototype.parseTextures = function(textures) {
-  if (textures.nodeName !== 'textures')
-      return ('Blocks not ordered correctly. Expected "textures", found "' + textures.nodeName + '".');
+    if (textures.nodeName !== 'textures')
+        return ('Blocks not ordered correctly. Expected "textures", found "' + textures.nodeName + '".');
 
     for (let texture of textures.children) {
 
@@ -340,8 +337,8 @@ MySceneGraph.prototype.parseTextures = function(textures) {
  * Parses the materials from the dsx root element.
  */
 MySceneGraph.prototype.parseMaterials = function(materials) {
-  if (materials.nodeName !== 'materials')
-      return ('Blocks not ordered correctly. Expected "materials", found "' + materials.nodeName + '".');
+    if (materials.nodeName !== 'materials')
+        return ('Blocks not ordered correctly. Expected "materials", found "' + materials.nodeName + '".');
 
     if (!materials.children.length)
         return ('There must be at least one material defined.');
@@ -386,8 +383,8 @@ MySceneGraph.prototype.parseMaterials = function(materials) {
  * And creates the scene graph.
  */
 MySceneGraph.prototype.parseComponents = function(compsTag) {
-  if (compsTag.nodeName !== 'components')
-      return ('Blocks not ordered correctly. Expected "components", found "' + compsTag.nodeName + '".');
+    if (compsTag.nodeName !== 'components')
+        return ('Blocks not ordered correctly. Expected "components", found "' + compsTag.nodeName + '".');
 
     let components = {};
 
@@ -423,6 +420,9 @@ MySceneGraph.prototype.parseComponents = function(compsTag) {
 
         let textureId = this.reader.getString(texture, 'id', true);
         if (textureId) {
+            if (textureId !== 'none' && textureId !== 'inherit' && !this.textures[textureId])
+                return ('No texture with id ' + textureId + ' exists.');
+
             error = component.setTexture(textureId);
 
             if (error)
@@ -554,8 +554,8 @@ MySceneGraph.prototype.parseComponentChildren = function(components, component, 
  *  Parses the primitives from the dsx root element.
  */
 MySceneGraph.prototype.parsePrimitives = function(primitives) {
-  if (primitives.nodeName !== 'primitives')
-      return ('Blocks not ordered correctly. Expected "primitives", found "' + primitives.nodeName + '".');
+    if (primitives.nodeName !== 'primitives')
+        return ('Blocks not ordered correctly. Expected "primitives", found "' + primitives.nodeName + '".');
 
     for (let primitive of primitives.children) {
         let shape = primitive.children[0];
@@ -630,8 +630,8 @@ MySceneGraph.prototype.parsePrimitives = function(primitives) {
  * the remainder of the array are the arguments to the function
  */
 MySceneGraph.prototype.parseTransformations = function(transformations) {
-  if (transformations.nodeName !== 'transformations')
-      return ('Blocks not ordered correctly. Expected "transformations", found "' + transformations.nodeName + '".');
+    if (transformations.nodeName !== 'transformations')
+        return ('Blocks not ordered correctly. Expected "transformations", found "' + transformations.nodeName + '".');
 
     if (transformations.children.length < 1)
         return 'At least one transformation is needed in transformations block.';
@@ -663,4 +663,3 @@ MySceneGraph.prototype.onXMLError = function(message) {
     console.error("XML Loading Error: " + message);
     this.loadedOk = false;
 };
-

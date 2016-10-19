@@ -19,18 +19,18 @@
     <scene root="root" axis_length="1"/>
 
     <views default="default">
-      <perspective id="default" near="0.1" far="500" angle="22.91">
-          <from x="30" y="30" z="30"/>
-          <to x="0" y="0" z="0"/>
-      </perspective>
-      <perspective id="camera1" near="0.1" far="500" angle="22.91">
-          <from x="-30" y="-30" z="-30"/>
-          <to x="0" y="0" z="0"/>
-      </perspective>
-      <perspective id="camera2" near="0.1" far="500" angle="22.91">
-          <from x="30" y="30" z="-30"/>
-          <to x="0" y="0" z="0"/>
-      </perspective>
+        <perspective id="default" near="0.1" far="500" angle="22.91">
+            <from x="30" y="30" z="30"/>
+            <to x="0" y="0" z="0"/>
+        </perspective>
+        <perspective id="camera1" near="0.1" far="500" angle="22.91">
+            <from x="-30" y="-30" z="-30"/>
+            <to x="0" y="0" z="0"/>
+        </perspective>
+        <perspective id="camera2" near="0.1" far="500" angle="22.91">
+            <from x="30" y="30" z="-30"/>
+            <to x="0" y="0" z="0"/>
+        </perspective>
     </views>
 
     <illumination doublesided="1" local="1">
@@ -60,7 +60,7 @@
     <textures>
         <texture id="building_side" file="assets/building_side.jpg" length_s="1" length_t="1"/>
         <texture id="building_roof" file="assets/building_roof.jpg" length_s="1" length_t="1"/>
-        <texture id="floor" file="assets/floor.jpg" length_s="1" length_t="1"/>
+        <texture id="ground" file="assets/ground.jpg" length_s="1" length_t="1"/>
         <texture id="concrete" file="assets/concrete.jpg" length_s="1" length_t="1"/>
         <texture id="saturn" file="assets/saturn.png" length_s="1" length_t="1"/>
         <texture id="saturn_ring" file="assets/saturn_ring.jpg" length_s="1" length_t="1"/>
@@ -205,7 +205,7 @@
         <component id="SSEColony">
             <transformation>
                 <translate x="1" y="2" z="-1"/>
-                <rotate axis="y" angle ="-45"/>
+                <rotate axis="y" angle="-45"/>
             </transformation>
 
             <materials>
@@ -436,7 +436,7 @@
                 <material id="ground"/>
             </materials>
 
-            <texture id="floor"/>
+            <texture id="ground"/>
 
             <children>
                 <primitiveref id="cylinder"/>
@@ -650,6 +650,8 @@
             <transformation>
                 <translate x="0" y="0" z="0.05"/>
                 <scale x="0.85" y="0.85" z="1"/>
+                <translate x="0" y="0" z="0.1"/>
+                <scale x="0.85" y="0.85" z="0.5"/>
             </transformation>
 
             <materials>
@@ -660,7 +662,7 @@
             <texture id="concrete"/>
 
             <children>
-                <componentref id="tradeStationMiddleBase"/>
+                <componentref id="tradeStationBase"/>
             </children>
 
         </component>
@@ -679,23 +681,36 @@
             <texture id="concrete"/>
 
             <children>
-                <componentref id="tradeStationLowerBase"/>
+                <componentref id="tradeStationBase"/>
             </children>
 
         </component>
 
         <component id="tradeStationLowerBase">
+            <transformation></transformation>
+
+            <materials>
+                <material id="ground"/>
+            </materials>
+
+            <texture id="ground"/>
+
+            <children>
+                <componentref id="tradeStationBase"/>
+            </children>
+        </component>
+
+        <component id="tradeStationBase">
             <transformation>
                 <scale x="1" y="0.75" z="1"/>
                 <translate x="-0.25" y="1.5" z="0"/>
             </transformation>
 
             <materials>
-                <material id="concrete"/>
-                <material id="darker_concrete"/>
+                <material id="inherit"/>
             </materials>
 
-            <texture id="concrete"/>
+            <texture id="inherit"/>
 
             <children>
                 <componentref id="baseHalf1"/>
@@ -860,8 +875,8 @@
         <!-- Space Ship -->
         <component id="SSESpaceship">
             <transformation>
-              <translate x="-3" y="-7" z="1"/>
-              <rotate axis="y" angle="75"/>
+                <translate x="-3" y="-7" z="1"/>
+                <rotate axis="y" angle="75"/>
             </transformation>
             <materials>
                 <material id="spaceship"/>
@@ -1368,13 +1383,11 @@
             <texture id="none"/>
 
             <children>
-                 <componentref id="saturnPlanet"/>
-                 <componentref id="saturnRing"/>
+                <componentref id="saturnPlanet"/>
+                <componentref id="saturnRing"/>
             </children>
 
         </component>
-
-
 
         <component id="saturnPlanet">
             <transformation>
