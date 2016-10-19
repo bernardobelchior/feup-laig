@@ -119,8 +119,6 @@ Component.prototype.display = function(parent) {
     else
         this.material.setTexture(null);
 
-
-
     this.material.apply();
 
     for (let child of this.children) {
@@ -137,8 +135,8 @@ Component.prototype.switchMaterials = function() {
     this.nextMaterial();
 
     for (let child of this.children) {
-        if(child instanceof Component)
-          child.switchMaterials();
+        if (child instanceof Component)
+            child.switchMaterials();
     }
 
 };

@@ -7,10 +7,11 @@ XMLscene.prototype.constructor = XMLscene;
 
 XMLscene.prototype.init = function(application) {
     CGFscene.prototype.init.call(this, application);
+    this.lights = [];
 
     this.initCameras();
 
-    this.initLights();
+  //  this.initLights();
 
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -52,8 +53,8 @@ XMLscene.prototype.onGraphLoaded = function() {
     //this.gl.clearColor(this.graph.background[0], this.graph.background[1], this.graph.background[2], this.graph.background[3]);
     this.setGlobalAmbientLight(this.graph.ambient[0], this.graph.ambient[1], this.graph.ambient[2], this.graph.ambient[3]);
     this.gl.clearColor(this.graph.bg[0], this.graph.bg[1], this.graph.bg[2], this.graph.bg[3]);
-    this.lights[0].setVisible(true);
-    this.lights[0].enable();
+    //this.lights[0].setVisible(true);
+    //this.lights[0].enable();
 
     //Sets the axis
     this.axis = new CGFaxis(this, this.axisLength);
@@ -70,8 +71,6 @@ XMLscene.prototype.display = function() {
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-
-
 
     // Initialize Model-View matrix as identity (no transformation
     this.updateProjectionMatrix();
@@ -90,9 +89,8 @@ XMLscene.prototype.display = function() {
     if (this.graph.loadedOk) {
         //Update lights
 
-        for(light of this.lights){
+        for(light of this.lights)
             light.update();
-        }
 
         this.rootNode.display();
 
