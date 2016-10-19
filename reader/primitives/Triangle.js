@@ -60,11 +60,11 @@ Triangle.prototype.initBuffers = function() {
     let a = distance3d(this.point1, this.point3);
     let b = distance3d(this.point1, this.point2);
     let c = distance3d(this.point2, this.point3);
-    let cosBeta = (Math.pow(a, 2) - Math.pow(b, 2) + Math.pow(c, 2))/(2*a*c);
+    let cosBeta = (Math.pow(a, 2) - Math.pow(b, 2) + Math.pow(c, 2)) / (2 * a * c);
     let sinBeta = Math.sqrt(1 - Math.pow(cosBeta));
 
     this.texCoords = [
-        c - a*cosBeta, a*sinBeta,
+        c - a * cosBeta, a * sinBeta,
         0, 0,
         c, 0
     ];
