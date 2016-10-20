@@ -57,18 +57,39 @@ Triangle.prototype.initBuffers = function() {
         0, 0, 1
     ];
 
-    let a = distance3d(this.point1, this.point3);
-    let b = distance3d(this.point1, this.point2);
-    let c = distance3d(this.point2, this.point3);
-    let cosBeta = (Math.pow(a, 2) - Math.pow(b, 2) + Math.pow(c, 2)) / (2 * a * c);
-    let sinBeta = Math.sqrt(1 - Math.pow(cosBeta));
+    let a = Math.sqrt((this.point3[0] - this.point2[0]) * (this.point3[0] - this.point2[0]) +
+        (this.point3[1] - this.point2[1]) * (this.point3[1] - this.point2[1]) +
+        (this.point3[2] - this.point2[2]) * (this.point3[2] - this.point2[2]));
 
-    this.texCoords = [
-        c - a * cosBeta, a * sinBeta,
+    let b = Math.sqrt((this.point1[0] - this.point3[0]) * (this.point1[0] - this.point3[0]) +
+        (this.point1[1] - this.point3[1]) * (this.point1[1] - this.point3[1]) +
+        (this.point1[2] - this.point3[2]) * (this.point1[2] - this.point3[2]));
+
+    let c = Math.sqrt((this.point2[0] - this.point1[0]) * (this.point2[0] - this.point1[0]) +
+        (this.point2[1] - this.point1[1]) * (this.point2[1] - this.point1[1]) +
+        (this.point2[2] - this.point1[2]) * (this.point2[2] - this.point1[2]));
+
+    let cosBeta = (Math.pow(a, 2) - Math.pow(b, 2) + Math.pow(c, 2)) / (2 * a * c);
+
+    let beta = Math.acos(cosBeta);
+
+    this.originalTexCoords = [
         0, 0,
-        c, 0
+        c, 0,
+        c - a * cosBeta, a * Math.sin(beta)
     ];
+
+    this.texCoords = this.originalTexCoords.slice();
 
     this.primitiveType = this.scene.gl.TRIANGLES;
     this.initGLBuffers();
 };
+
+Triangle.prototype.amplifyTexture = function(amplifierS, amplifierT) {
+    for (let i = 0; i < this.originalTexCoords.length; i += 2) {
+        this.texCoords[i] = this.originalTexCoords[i] / amplifierS;
+        this.texCoords[i + 1] = this.originalTexCoords[i + 1] / amplifierT;
+    }
+
+    this.updateTexCoordsGLBuffers();
+}

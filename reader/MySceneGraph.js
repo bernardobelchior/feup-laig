@@ -481,20 +481,47 @@ MySceneGraph.prototype.createSceneGraph = function(components) {
  * Parses the transformations and adds it to the component.
  */
 MySceneGraph.prototype.parseComponentTransformations = function(component, tag) {
+    //Used to prevent the dsx from having transformation ref and other
+    //transformations in the same block.
+    let transfRef;
+
     for (let transfTag of tag.children) {
         let transformation;
 
         if (transfTag.nodeName === 'transformationref') {
+          /*
+          * If transfRef is undefined, transformationref can be parsed.
+          * If transfRef is true, a transformationref has already been parsed,
+          * and cannot be parsed again.
+          * If transfRef is undefined, nothing has been parsed and the parsing
+          * can be executed.
+          */
+            if (transfRef === false)
+                return ('Component with id ' + component.id + ' has transformationref and other transformations mixed.');
+            else if(transfRef === true)
+              return;
+
             let id = this.reader.getString(transfTag, 'id', true);
 
             if (!this.transformations[id])
                 return ('Transformation with id ' + id + ' does not exist.');
 
             transformation = this.transformations[id];
-        } else
-            transformation = parseTransformation(this.scene, this.reader, transfTag);
+            component.transform(transformation);
+            transfRef = true;
+        } else {
+            /*
+            * If transfRef is true, a transformationref has been parsed and
+            * other types of transformation cannot be parsed.
+            * If transfRef is false or undefined, transformations can be parsed.
+            */
+            if(transfRef === true)
+              return ('Component with id ' + component.id + ' has transformationref and other transformations mixed.');
 
-        component.transform(transformation);
+            transformation = parseTransformation(this.scene, this.reader, transfTag);
+            component.transform(transformation);
+            transfRef = false;
+        }
     }
 }
 
