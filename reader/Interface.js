@@ -26,7 +26,7 @@ Interface.prototype.init = function(application) {
     //  http://workshop.chromeexperiments.com/examples/gui
 
     this.gui = new dat.GUI();
-	this.gui.lights = this.gui.addFolder("Lights");
+	this.lightGroup = this.gui.addFolder("Lights");
 
     // add a button:
     // the first parameter is the object that is being controlled (in this case the scene)
@@ -129,9 +129,13 @@ Interface.prototype.processKeyUp = function(event) {
     switch (event.keyCode) {
         case (77): // 'M'
             this.scene.switchMaterials();
-            break;
+             break;
         case (86): //'V'
             this.scene.nextCamera();
             break;
     };
 };
+
+Interface.prototype.addLightControls = function(i,id){
+    this.lightGroup.add(this.scene.lightStatus,i,this.scene.lightStatus[i]).name(id);
+}

@@ -8,6 +8,8 @@ XMLscene.prototype.constructor = XMLscene;
 XMLscene.prototype.init = function(application) {
     CGFscene.prototype.init.call(this, application);
     this.lights = [];
+    this.lightIDs = [];
+    this.lightStatus = [];
 
     this.initCameras();
 
@@ -64,13 +66,11 @@ XMLscene.prototype.onGraphLoaded = function() {
     this.interface.setActiveCamera(this.camera);
 
     //GUI for light control
-    this.lightGui = new LightGui(this);
-    this.lightControls = [];
+    console.log(this.lights);
 
-    for(l in this.lights){
-
-        this.lightControls.push(l.enabled);
-
+    for(var i = 0; i < this.lights.length; i++){
+        this.lightStatus.push(this.lights[i].enabled);
+        this.interface.addLightControls(i,this.lightIDs[i]);
     }
 
 
@@ -125,4 +125,13 @@ XMLscene.prototype.display = function() {
         this.camera = this.cameras[this.currentCamera];
         this.interface.setActiveCamera(this.camera);
     };
+
+    for(let i=0; i < this.lights.length; i++){
+        if(this.lightStatus[i])
+            this.lights[i].enable();
+
+        else this.lights[i].disable();
+
+        this.lights[i].update();
+    }
 };

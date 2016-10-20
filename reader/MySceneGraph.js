@@ -153,7 +153,7 @@ MySceneGraph.prototype.parseLights = function(lights) {
         return ('Blocks not ordered correctly. Expected "lights", found "' + lights.nodeName + '".');
 
     let error;
-    let ids = {};
+    this.ids = {};
 
     if (!lights.children.length) {
         return "No lights detected in the dsx";
@@ -168,24 +168,24 @@ MySceneGraph.prototype.parseLights = function(lights) {
         if (enabled === undefined)
             return ("Light with id " + id + " has no valid 'enabled' attribute");
 
-        if (ids[id])
+        if (this.ids[id])
             return ('Light with id ' + id + ' already exists.');
 
         let type = light.nodeName;
 
         switch (type) {
             case 'omni':
-                error = this.parseOmniLight(light, this.scene.lights.length, enabled);
+                error = this.parseOmniLight(light, this.scene.lights.length, enabled, id);
                 break;
 
             case 'spot':
-                error = this.parseSpotLight(light, this.scene.lights.length, enabled);
+                error = this.parseSpotLight(light, this.scene.lights.length, enabled ,id);
                 break;
 
             default:
                 error = ("Light with id " + id + " has an invalid type");
         }
-        ids[id] = id;
+        this.ids[id] = id;
     }
 
     return error;
@@ -194,7 +194,7 @@ MySceneGraph.prototype.parseLights = function(lights) {
 /**
  * Parses an omni type light from the lights block
  */
-MySceneGraph.prototype.parseOmniLight = function(light, id, enabled) {
+MySceneGraph.prototype.parseOmniLight = function(light, n_lights, enabled, id) {
 
     let locationTag = light.getElementsByTagName('location')[0];
     let location = parseVec4(this.reader, locationTag);
@@ -216,7 +216,7 @@ MySceneGraph.prototype.parseOmniLight = function(light, id, enabled) {
     if (!specular)
         return ("Light with id " + id + " is missing a valid specular setting!");
 
-    let newLight = new CGFlight(this.scene, id);
+    let newLight = new CGFlight(this.scene, n_lights);
     if (enabled)
         newLight.enable();
 
@@ -227,10 +227,11 @@ MySceneGraph.prototype.parseOmniLight = function(light, id, enabled) {
     newLight.setVisible(true);
 
     this.scene.lights.push(newLight);
+    this.scene.lightIDs.push(id);
     newLight.update();
 }
 
-MySceneGraph.prototype.parseSpotLight = function(light, id, enabled) {
+MySceneGraph.prototype.parseSpotLight = function(light, n_lights, enabled, id) {
     let angle = this.reader.getFloat(light, 'angle', true);
     if (!angle)
         return ("Light with id " + id + " has an invalid angle");
@@ -270,7 +271,7 @@ MySceneGraph.prototype.parseSpotLight = function(light, id, enabled) {
     direction[0] = target[0] - location[0];
     direction[1] = target[1] - location[1];
     direction[2] = target[2] - location[2];
-    let newLight = new CGFlight(this.scene, id);
+    let newLight = new CGFlight(this.scene, n_lights);
 
     if (enabled)
         newLight.enable();
@@ -285,6 +286,7 @@ MySceneGraph.prototype.parseSpotLight = function(light, id, enabled) {
     newLight.setVisible(true);
 
     this.scene.lights.push(newLight);
+    this.scene.lightIDs.push(id);
     newLight.update();
 }
 
