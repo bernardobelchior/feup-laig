@@ -21,9 +21,9 @@ BaselessCylinder.prototype.initBuffers = function() {
     this.vertices = [];
     this.normals = [];
     this.indices = [];
-    this.texCoords = [];
+    this.originalTexCoords = [];
 
-    let multiplier = (this.base-this.top)/(this.stacks);
+    let multiplier = (this.base - this.top) / (this.stacks);
     var patchLengthx = 1 / this.slices;
     var patchLengthy = 1 / this.stacks;
     var xCoord = 0;
@@ -32,9 +32,9 @@ BaselessCylinder.prototype.initBuffers = function() {
 
     for (i = 0; i <= this.stacks; i++) {
         for (j = 0; j < this.slices; j++) {
-            this.vertices.push(Math.cos(ang * j)*((this.stacks-i)*multiplier+this.top), Math.sin(ang * j)*((this.stacks-i)*multiplier+this.top), i / this.stacks * this.height);
+            this.vertices.push(Math.cos(ang * j) * ((this.stacks - i) * multiplier + this.top), Math.sin(ang * j) * ((this.stacks - i) * multiplier + this.top), i / this.stacks * this.height);
             this.normals.push(Math.cos(ang * j), Math.sin(ang * j), 0);
-            this.texCoords.push(xCoord, yCoord);
+            this.originalTexCoords.push(xCoord, yCoord);
             xCoord += patchLengthx;
         }
         xCoord = 0;
@@ -51,7 +51,16 @@ BaselessCylinder.prototype.initBuffers = function() {
         this.indices.push(i * this.slices, i * this.slices + this.slices, (i + 1) * this.slices + this.slices - 1);
     }
 
-
+    this.texCoords = this.originalTexCoords.slice();
     this.primitiveType = this.scene.gl.TRIANGLES;
     this.initGLBuffers();
 };
+
+BaselessCylinder.prototype.amplifyTexture = function(amplifierS, amplifierT) {
+    for (let i = 0; i < this.originalTexCoords.length; i += 2) {
+        this.texCoords[i] = this.originalTexCoords[i] / amplifierS;
+        this.texCoords[i + 1] = this.originalTexCoords[i + 1] / amplifierT;
+    }
+
+    this.updateTexCoordsGLBuffers();
+}

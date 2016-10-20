@@ -60,13 +60,23 @@ Rectangle.prototype.initBuffers = function() {
 
     ];
 
-    this.texCoords = [
+    this.originalTexCoords = [
         this.minS, this.maxT,
         this.minS, this.minT,
         this.maxS, this.maxT,
         this.maxS, this.minT
     ];
 
+    this.texCoords = this.originalTexCoords.slice();
     this.primitiveType = this.scene.gl.TRIANGLES;
     this.initGLBuffers();
+};
+
+Rectangle.prototype.amplifyTexture = function(amplifierS, amplifierT) {
+    for (let i = 0; i < this.originalTexCoords.length; i += 2) {
+        this.texCoords[i] = this.originalTexCoords[i] / amplifierS;
+        this.texCoords[i + 1] = this.originalTexCoords[i + 1] / amplifierT;
+    }
+
+    this.updateTexCoordsGLBuffers();
 };
