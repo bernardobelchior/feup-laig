@@ -26,6 +26,7 @@ Interface.prototype.init = function(application) {
     //  http://workshop.chromeexperiments.com/examples/gui
 
     this.gui = new dat.GUI();
+	this.gui.lights = this.gui.addFolder("Lights");
 
     // add a button:
     // the first parameter is the object that is being controlled (in this case the scene)

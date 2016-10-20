@@ -224,8 +224,10 @@ MySceneGraph.prototype.parseOmniLight = function(light, id, enabled) {
     newLight.setAmbient(ambient[0], ambient[1], ambient[2], ambient[3]);
     newLight.setDiffuse(diffuse[0], diffuse[1], diffuse[2], diffuse[3]);
     newLight.setSpecular(specular[0], specular[1], specular[2], specular[3]);
+    newLight.setVisible(true);
 
     this.scene.lights.push(newLight);
+    newLight.update();
 }
 
 MySceneGraph.prototype.parseSpotLight = function(light, id, enabled) {
@@ -283,6 +285,7 @@ MySceneGraph.prototype.parseSpotLight = function(light, id, enabled) {
     newLight.setVisible(true);
 
     this.scene.lights.push(newLight);
+    newLight.update();
 }
 
 

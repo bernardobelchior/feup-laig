@@ -62,6 +62,19 @@ XMLscene.prototype.onGraphLoaded = function() {
     //Sets default camera
     this.camera = this.cameras[this.currentCamera];
     this.interface.setActiveCamera(this.camera);
+
+    //GUI for light control
+    this.lightGui = new LightGui(this);
+    this.lightControls = [];
+
+    for(l in this.lights){
+
+        this.lightControls.push(l.enabled);
+
+    }
+
+
+
 };
 
 XMLscene.prototype.display = function() {
