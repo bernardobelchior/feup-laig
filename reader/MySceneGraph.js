@@ -476,20 +476,27 @@ MySceneGraph.prototype.createSceneGraph = function(components) {
  * Parses the transformations and adds it to the component.
  */
 MySceneGraph.prototype.parseComponentTransformations = function(component, tag) {
+    //Used to prevent the dsx from having transformation ref and other
+    //transformations in the same block.
+    enum { TRANSFORMATIONREF, TRANSFORMATION} type = TRANSFORMATIONREF;
+
     for (let transfTag of tag.children) {
         let transformation;
 
-        if (transfTag.nodeName === 'transformationref') {
+        if (transfTag.nodeName === 'transformationref' && type == TRANSFORMATIONREF) {
             let id = this.reader.getString(transfTag, 'id', true);
 
             if (!this.transformations[id])
                 return ('Transformation with id ' + id + ' does not exist.');
 
             transformation = this.transformations[id];
-        } else
+            component.transform(transformation);
+            return;
+        } else {
             transformation = parseTransformation(this.scene, this.reader, transfTag);
-
-        component.transform(transformation);
+            component.transform(transformation);
+            type = TRANSFORMATION;
+        }
     }
 }
 
