@@ -66,8 +66,6 @@ XMLscene.prototype.onGraphLoaded = function() {
     this.interface.setActiveCamera(this.camera);
 
     //GUI for light control
-    console.log(this.lights);
-
     for(var i = 0; i < this.lights.length; i++){
         this.lightStatus.push(this.lights[i].enabled);
         this.interface.addLightControls(i,this.lightIDs[i]);
