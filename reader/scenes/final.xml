@@ -20,14 +20,18 @@
 
     <views default="default">
         <perspective id="default" near="0.1" far="500" angle="22.91">
-            <from x="30" y="30" z="30"/>
+            <from x="15" y="15" z="15"/>
             <to x="0" y="0" z="0"/>
         </perspective>
         <perspective id="camera1" near="0.1" far="500" angle="22.91">
-            <from x="-30" y="-30" z="-30"/>
+            <from x="30" y="30" z="30"/>
             <to x="0" y="0" z="0"/>
         </perspective>
         <perspective id="camera2" near="0.1" far="500" angle="22.91">
+            <from x="-30" y="-30" z="-30"/>
+            <to x="0" y="0" z="0"/>
+        </perspective>
+        <perspective id="camera3" near="0.1" far="500" angle="22.91">
             <from x="30" y="30" z="-30"/>
             <to x="0" y="0" z="0"/>
         </perspective>
