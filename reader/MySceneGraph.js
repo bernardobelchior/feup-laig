@@ -1,3 +1,7 @@
+/**
+ * intializes the reader, root id, as well as the dictionaries for the materials, transformations, primitives and textures
+ * @constructor
+ */
 function MySceneGraph(filename, scene) {
     this.loadedOk = null;
 
@@ -12,16 +16,16 @@ function MySceneGraph(filename, scene) {
     this.transformations = {};
     this.primitives = {};
     this.textures = {};
+
     /*
      * Read the contents of the xml file, and refer to this class for loading and error handlers.
      * After the file is read, the reader calls onXMLReady on this object.
      * If any error occurs, the reader calls onXMLError on this object, with an error message
      */
-
     this.reader.open('scenes/' + filename, this);
 }
 
-/*
+/**
  * Callback to be executed after successful reading
  */
 MySceneGraph.prototype.onXMLReady = function() {
@@ -41,6 +45,10 @@ MySceneGraph.prototype.onXMLReady = function() {
     this.loadedOk = true;
 };
 
+/**
+ * Calls the parsing functions on every block of the dsx, checking for an error in any of them
+ * @param dsx
+ */
 MySceneGraph.prototype.parseDsx = function(dsx) {
     //Mandatory in order to ensure the blocks order.
     let scene = dsx.children[0];
@@ -52,9 +60,6 @@ MySceneGraph.prototype.parseDsx = function(dsx) {
     let transformations = dsx.children[6];
     let primitives = dsx.children[7];
     let components = dsx.children[8];
-
-    //NOTE: There cannot be a carriage return between the 'return' keyword and
-    //the OR statement, otherwise the functions are not called.
 
     return (this.parseScene(scene) || this.parseViews(views) || this.parseIllumination(illumination) || this.parseLights(lights) || this.parseTextures(textures) || this.parseMaterials(materials) || this.parseTransformations(transformations) || this.parsePrimitives(primitives) || this.parseComponents(components));
 }
@@ -80,8 +85,6 @@ MySceneGraph.prototype.parseScene = function(scene) {
 MySceneGraph.prototype.parseViews = function(views) {
     if (views.nodeName !== 'views')
         return ('Blocks not ordered correctly. Expected "views", found "' + views.nodeName + '".');
-
-    let defaultCamera;
 
     let defaultPerspectiveId = this.reader.getString(views, 'default', true);
 
@@ -111,14 +114,11 @@ MySceneGraph.prototype.parseViews = function(views) {
 
     if (this.scene.currentCamera == null)
         return 'The default perspective is not a child of views.';
-
-
-    //this.scene.camera = this.cameras[defaultCamera];
 }
 
 
-/*
- * Parses illumination in DSX
+/**
+ * Parses the illumination block of the DSX
  */
 MySceneGraph.prototype.parseIllumination = function(illumination) {
     if (illumination.nodeName !== 'illumination')
@@ -146,7 +146,7 @@ MySceneGraph.prototype.parseIllumination = function(illumination) {
 }
 
 /**
- * Parses the lights from the dsx root element.
+ * Parses the lights block from the dsx.
  */
 MySceneGraph.prototype.parseLights = function(lights) {
     if (lights.nodeName !== 'lights')
@@ -159,6 +159,9 @@ MySceneGraph.prototype.parseLights = function(lights) {
         return "No lights detected in the dsx";
     }
 
+    /*
+     * For every light, checks it attributes and if it is an omni or spot light, calling the appropriate parser
+     */
     for (let light of lights.children) {
         let id = this.reader.getString(light, 'id', true);
         if (!id)
@@ -227,6 +230,7 @@ MySceneGraph.prototype.parseOmniLight = function(light, n_lights, enabled, id) {
     newLight.setVisible(true);
 
     this.scene.lights.push(newLight);
+    //needed for GUI
     this.scene.lightIDs.push(id);
     newLight.update();
 }
@@ -286,13 +290,14 @@ MySceneGraph.prototype.parseSpotLight = function(light, n_lights, enabled, id) {
     newLight.setVisible(true);
 
     this.scene.lights.push(newLight);
+    //needed for GUI
     this.scene.lightIDs.push(id);
     newLight.update();
 }
 
 
 /**
- * Parses the textures from the dsx root element.
+ * Parses the textures block from the dsx.
  */
 MySceneGraph.prototype.parseTextures = function(textures) {
     if (textures.nodeName !== 'textures')
@@ -339,7 +344,7 @@ MySceneGraph.prototype.parseTextures = function(textures) {
 }
 
 /**
- * Parses the materials from the dsx root element.
+ * Parses the materials block from the dsx.
  */
 MySceneGraph.prototype.parseMaterials = function(materials) {
     if (materials.nodeName !== 'materials')
@@ -384,7 +389,7 @@ MySceneGraph.prototype.parseMaterials = function(materials) {
 }
 
 /**
- * Parses the components from the dsx root element
+ * Parses the components block from the dsx.
  * And creates the scene graph.
  */
 MySceneGraph.prototype.parseComponents = function(compsTag) {
@@ -688,7 +693,7 @@ MySceneGraph.prototype.parseTransformations = function(transformations) {
     }
 };
 
-/*
+/**
  * Callback to be executed on any read error
  */
 MySceneGraph.prototype.onXMLError = function(message) {
