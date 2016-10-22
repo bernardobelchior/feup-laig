@@ -1,7 +1,6 @@
 /**
  *Parses the given tag and returns a Vec3 with the result.
  * Attributes are named x, y and z concatenated with the number.
- *TODO:Check if the read values are valid
  */
 function parseVec3(reader, tag, number) {
     if (!number)
@@ -15,6 +14,10 @@ function parseVec3(reader, tag, number) {
     return vec3;
 }
 
+/**
+ *Parses the given tag and returns a Vec4 with the result.
+ * Attributes are named x, y, and w concatenated with the number.
+ */
 function parseVec4(reader, tag, number) {
    if (!number)
        number = '';
@@ -56,6 +59,9 @@ function parseRGBA(reader, tag) {
     ];
 }
 
+/**
+ * Parses a transformation block, creating the appropriate object
+ */
 function parseTransformation(scene, reader, tag) {
     let transformation = new Transformation(scene);
 
@@ -97,8 +103,4 @@ function parseTransformation(scene, reader, tag) {
     }
 
     return transformation;
-}
-
-function distance3d(a, b) {
-  return Math.sqrt(Math.pow(a[0]-b[0], 2) + Math.pow(a[1]-b[1], 2) + Math.pow(a[2], b[2], 2));
 }
