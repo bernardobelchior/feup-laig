@@ -128,7 +128,7 @@ MySceneGraph.prototype.parseIllumination = function(illumination) {
     this.local = this.reader.getBoolean(illumination, 'local', true);
 
     if (this.doublesided == null || this.local == null)
-        return "boolean value(s) in illumination missing";
+        return 'Boolean value(s) in illumination missing.';
 
     let ambientTag = illumination.getElementsByTagName('ambient')[0];
     this.ambient = parseRGBA(this.reader, ambientTag);
@@ -138,11 +138,10 @@ MySceneGraph.prototype.parseIllumination = function(illumination) {
 
 
     if (this.ambient == null)
-        return "ambient illumination missing"
+        return 'Ambient illumination missing.';
 
     if (this.bg == null)
-        return "background illumination missing";
-
+        return 'Background illumination missing.';
 }
 
 /**
@@ -322,19 +321,17 @@ MySceneGraph.prototype.parseTextures = function(textures) {
             return ('Texture with id ' + id + ' does not have a file associated.');
 
 
-
         let length_s = this.reader.getFloat(texture, 'length_s', false);
 
-        if (!length_s) {
+        if (!length_s || length_s <= 0) {
             console.log('Texture with id ' + id + ' does not have length_s defined or is invalid. Assuming 1.0.');
             length_s = 1;
         }
 
 
-
         let length_t = this.reader.getFloat(texture, 'length_t', false);
 
-        if (!length_t) {
+        if (!length_t || length_t <= 0) {
             console.log('Texture with id ' + id + ' does not have length_t defined or is invalid. Assuming 1.0.');
             length_t = 1;
         }
@@ -383,6 +380,7 @@ MySceneGraph.prototype.parseMaterials = function(materials) {
         appearance.setDiffuse(diffuseRGBA[0], diffuseRGBA[1], diffuseRGBA[2], diffuseRGBA[3]);
         appearance.setSpecular(specularRGBA[0], specularRGBA[1], specularRGBA[2], specularRGBA[3]);
         appearance.setShininess(shininessValue);
+        appearance.setTextureWrap('REPEAT','REPEAT');
 
         this.materials[id] = appearance;
     }

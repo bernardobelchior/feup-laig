@@ -69,6 +69,13 @@ Torus.prototype.initBuffers = function() {
 
 }
 
+
+/**
+* Amplifies the texture according to the s and t variables.
+* The cylinder body does not need amplifying as it is a quadric surface.
+* Even though it does not do anything, it needs to be present due to
+* inheritance.
+*/
 Torus.prototype.amplifyTexture = function(amplifierS, amplifierT) {
     for (let i = 0; i < this.originalTexCoords.length; i += 2) {
         this.texCoords[i] = this.originalTexCoords[i] / amplifierS;

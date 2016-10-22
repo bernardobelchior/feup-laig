@@ -32,3 +32,9 @@ Cylinder.prototype.display = function() {
     this.bottom.display();
     this.scene.popMatrix();
 }
+
+Cylinder.prototype.amplifyTexture = function(amplifierS, amplifierT) {
+  this.baselessCylinder.amplifyTexture(amplifierS, amplifierT);
+  this.top.amplifyTexture(amplifierS, amplifierT);
+  this.bottom.amplifyTexture(amplifierS, amplifierT);
+}

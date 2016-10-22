@@ -62,13 +62,13 @@
     </lights>
 
     <textures>
-        <texture id="building_side" file="assets/building_side.jpg" length_s="1" length_t="1"/>
-        <texture id="building_roof" file="assets/building_roof.jpg" length_s="1" length_t="1"/>
-        <texture id="ground" file="assets/ground.jpg" length_s="1" length_t="1"/>
-        <texture id="concrete" file="assets/concrete.jpg" length_s="1" length_t="1"/>
+        <texture id="building_side" file="assets/building_side.png" length_s="1" length_t="0.5"/>
+        <texture id="building_roof" file="assets/building_roof.png" length_s="1" length_t="1"/>
+        <texture id="ground" file="assets/ground.png" length_s="1" length_t="1"/>
+        <texture id="concrete" file="assets/concrete.png" length_s="1" length_t="1"/>
         <texture id="saturn" file="assets/saturn.png" length_s="1" length_t="1"/>
-        <texture id="saturn_ring" file="assets/saturn_ring.jpg" length_s="1" length_t="1"/>
-        <texture id="metal" file="assets/metal.jpg" length_s="1" length_t="1"/>
+        <texture id="saturn_ring" file="assets/saturn_ring.png" length_s="1" length_t="1"/>
+        <texture id="metal" file="assets/metal.png" length_s="1" length_t="1"/>
     </textures>
 
     <materials>

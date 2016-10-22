@@ -114,14 +114,16 @@ Component.prototype.display = function(parent) {
     else
         this.material = this.materials[this.currentMaterial];
 
-    if (this.texture)
+    if (this.texture) {
         this.texture.apply(this.material);
-    else
+    } else
         this.material.setTexture(null);
 
     this.material.apply();
 
     for (let child of this.children) {
+        if(this.texture)
+            this.texture.amplify(child);
         child.display(this);
     }
 
@@ -152,4 +154,13 @@ Component.prototype.nextMaterial = function() {
         this.currentMaterial = 0;
     else
         this.currentMaterial++;
+};
+
+/**
+ * Amplifies the texture of a component. Only primitives can be amplified,
+ * so this function is used in order to avoid calling a function on an object
+ * that does not have it.
+ */
+Component.prototype.amplifyTexture = function(amplifierS, amplifierT) {
+
 };

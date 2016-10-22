@@ -45,11 +45,10 @@ Circle.prototype.initBuffers = function() {
     this.initGLBuffers();
 };
 
-Circle.prototype.amplifyTexture = function(amplifierS, amplifierT) {
-    for (let i = 0; i < this.originalTexCoords.length; i += 2) {
-        this.texCoords[i] = this.originalTexCoords[i] / amplifierS;
-        this.texCoords[i + 1] = this.originalTexCoords[i + 1] / amplifierT;
-    }
-
-    this.updateTexCoordsGLBuffers();
-}
+/**
+* Amplifies the texture according to the s and t variables.
+* The sphere does not need amplifying as it is a quadric surface.
+* Even though it does not do anything, it needs to be present due to
+* inheritance.
+*/
+Circle.prototype.amplifyTexture = function(amplifierS, amplifierT) {}

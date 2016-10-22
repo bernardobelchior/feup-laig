@@ -11,5 +11,11 @@ Texture.prototype.constructor = Texture;
  */
 Texture.prototype.apply = function(appearance) {
     appearance.setTexture(this.texture);
-//    appearance.setTextureWrap(this.length_s, this.length_t);
+}
+
+/**
+* Amplifies the texture by calling amplifyTexture on the given primitive.
+*/
+Texture.prototype.amplify = function(component) {
+  component.amplifyTexture(this.length_s, this.length_t);
 }

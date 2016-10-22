@@ -73,7 +73,7 @@ function parseTransformation(scene, reader, tag) {
             }
             break;
         case 'rotate':
-            let axis = reader.getString(tag, 'axis', true);
+            let axis = reader.getString(tag, 'axis', true);            
             let angle = reader.getFloat(tag, "angle", true);
 
             switch (axis) {
