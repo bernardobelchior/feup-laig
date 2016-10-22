@@ -7,6 +7,7 @@ XMLscene.prototype.constructor = XMLscene;
 
 XMLscene.prototype.init = function(application) {
     CGFscene.prototype.init.call(this, application);
+
     this.lights = [];
     this.lightIDs = [];
     this.lightStatus = [];
@@ -27,13 +28,6 @@ XMLscene.prototype.init = function(application) {
     this.cameras = [];
     this.rootNode;
 
-};
-
-XMLscene.prototype.initLights = function() {
-
-    this.lights[0].setPosition(2, 3, 3, 1);
-    this.lights[0].setDiffuse(1.0, 1.0, 1.0, 1.0);
-    this.lights[0].update();
 };
 
 XMLscene.prototype.initCameras = function() {
