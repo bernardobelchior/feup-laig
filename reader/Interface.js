@@ -21,11 +21,13 @@ Interface.prototype.init = function(application) {
     CGFinterface.prototype.init.call(this, application);
 
     this.gui = new dat.GUI();
-	this.lightGroup = this.gui.addFolder("Lights");
+    this.lightGroup = this.gui.addFolder("Lights");
     return true;
 };
 
-Interface.prototype.processKeyDown = function(event) { CGFinterface.prototype.processKeyDown.call(this, event); };
+Interface.prototype.processKeyDown = function(event) {
+    CGFinterface.prototype.processKeyDown.call(this, event);
+};
 
 Interface.prototype.processKeyUp = function(event) {
     // call CGFinterface default code (omit if you want to override)
@@ -34,7 +36,7 @@ Interface.prototype.processKeyUp = function(event) {
     switch (event.keyCode) {
         case (77): // 'M'
             this.scene.switchMaterials();
-             break;
+            break;
         case (86): //'V'
             this.scene.nextCamera();
             break;
@@ -46,6 +48,8 @@ Interface.prototype.processKeyUp = function(event) {
  * @param the position of the current light in the scene lights array
  * @param id the id of the curretnt light
  */
-Interface.prototype.addLightControls = function(i,id){
-    this.lightGroup.add(this.scene.lightStatus,i,this.scene.lightStatus[i]).name(id);
+Interface.prototype.addLightControls = function(i, id) {
+    //console.log(this.scene.lightIDs[i]);
+    //console.log(this.scene.lightStatus[i]);
+    this.lightGroup.add(this.scene.lightStatus, i, this.scene.lightStatus[i]).name(id);
 }

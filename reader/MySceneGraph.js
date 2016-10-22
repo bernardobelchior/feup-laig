@@ -181,7 +181,7 @@ MySceneGraph.prototype.parseLights = function(lights) {
                 break;
 
             case 'spot':
-                error = this.parseSpotLight(light, this.scene.lights.length, enabled ,id);
+                error = this.parseSpotLight(light, this.scene.lights.length, enabled, id);
                 break;
 
             default:
@@ -221,6 +221,8 @@ MySceneGraph.prototype.parseOmniLight = function(light, n_lights, enabled, id) {
     let newLight = new CGFlight(this.scene, n_lights);
     if (enabled)
         newLight.enable();
+    else
+        newLight.disable();
 
     newLight.setPosition(location[0], location[1], location[2], location[3]);
     newLight.setAmbient(ambient[0], ambient[1], ambient[2], ambient[3]);
@@ -278,6 +280,8 @@ MySceneGraph.prototype.parseSpotLight = function(light, n_lights, enabled, id) {
 
     if (enabled)
         newLight.enable();
+    else
+        newLight.disable();
 
     newLight.setPosition(location[0], location[1], location[2], 1);
     newLight.setSpotDirection(direction[0], direction[1], direction[2]);
@@ -380,7 +384,7 @@ MySceneGraph.prototype.parseMaterials = function(materials) {
         appearance.setDiffuse(diffuseRGBA[0], diffuseRGBA[1], diffuseRGBA[2], diffuseRGBA[3]);
         appearance.setSpecular(specularRGBA[0], specularRGBA[1], specularRGBA[2], specularRGBA[3]);
         appearance.setShininess(shininessValue);
-        appearance.setTextureWrap('REPEAT','REPEAT');
+        appearance.setTextureWrap('REPEAT', 'REPEAT');
 
         this.materials[id] = appearance;
     }
@@ -492,17 +496,17 @@ MySceneGraph.prototype.parseComponentTransformations = function(component, tag) 
         let transformation;
 
         if (transfTag.nodeName === 'transformationref') {
-          /*
-          * If transfRef is undefined, transformationref can be parsed.
-          * If transfRef is true, a transformationref has already been parsed,
-          * and cannot be parsed again.
-          * If transfRef is undefined, nothing has been parsed and the parsing
-          * can be executed.
-          */
+            /*
+             * If transfRef is undefined, transformationref can be parsed.
+             * If transfRef is true, a transformationref has already been parsed,
+             * and cannot be parsed again.
+             * If transfRef is undefined, nothing has been parsed and the parsing
+             * can be executed.
+             */
             if (transfRef === false)
                 return ('Component with id ' + component.id + ' has transformationref and other transformations mixed.');
-            else if(transfRef === true)
-              return;
+            else if (transfRef === true)
+                return;
 
             let id = this.reader.getString(transfTag, 'id', true);
 
@@ -514,12 +518,12 @@ MySceneGraph.prototype.parseComponentTransformations = function(component, tag) 
             transfRef = true;
         } else {
             /*
-            * If transfRef is true, a transformationref has been parsed and
-            * other types of transformation cannot be parsed.
-            * If transfRef is false or undefined, transformations can be parsed.
-            */
-            if(transfRef === true)
-              return ('Component with id ' + component.id + ' has transformationref and other transformations mixed.');
+             * If transfRef is true, a transformationref has been parsed and
+             * other types of transformation cannot be parsed.
+             * If transfRef is false or undefined, transformations can be parsed.
+             */
+            if (transfRef === true)
+                return ('Component with id ' + component.id + ' has transformationref and other transformations mixed.');
 
             transformation = parseTransformation(this.scene, this.reader, transfTag);
             component.transform(transformation);

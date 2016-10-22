@@ -53,9 +53,9 @@ XMLscene.prototype.onGraphLoaded = function() {
     this.interface.setActiveCamera(this.camera);
 
     //GUI for light control
-    for(var i = 0; i < this.lights.length; i++){
+    for (var i = 0; i < this.lights.length; i++) {
         this.lightStatus.push(this.lights[i].enabled);
-        this.interface.addLightControls(i,this.lightIDs[i]);
+        this.interface.addLightControls(i, this.lightIDs[i]);
     }
 };
 
@@ -67,21 +67,21 @@ XMLscene.prototype.display = function() {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
-    // Initialize Model-View matrix as identity (no transformation
-    this.updateProjectionMatrix();
-    this.loadIdentity();
-
-    // Apply transformations corresponding to the camera position relative to the origin
-    this.applyViewMatrix();
-
-    this.setDefaultAppearance();
-
-    // ---- END Background, camera and axis setup
-
     if (this.graph.loadedOk) {
+        // Initialize Model-View matrix as identity (no transformation
+        this.updateProjectionMatrix();
+        this.loadIdentity();
+
+        // Apply transformations corresponding to the camera position relative to the origin
+        this.applyViewMatrix();
+
+        this.setDefaultAppearance();
+
+        // ---- END Background, camera and axis setup
+
         //Update lights
 
-        for(light of this.lights)
+        for (light of this.lights)
             light.update();
 
         this.rootNode.display();
@@ -108,8 +108,8 @@ XMLscene.prototype.display = function() {
         this.interface.setActiveCamera(this.camera);
     };
 
-    for(let i=0; i < this.lights.length; i++){
-        if(this.lightStatus[i])
+    for (let i = 0; i < this.lights.length; i++) {
+        if (this.lightStatus[i])
             this.lights[i].enable();
 
         else this.lights[i].disable();
