@@ -119,8 +119,6 @@ Component.prototype.display = function(parent) {
     else
         this.material.setTexture(null);
 
-    this.material.apply();
-
     for (let child of this.children) {
         if (this.texture) {
             /*
@@ -144,6 +142,7 @@ Component.prototype.display = function(parent) {
                 wrapT = 'REPEAT';
 
             this.material.setTextureWrap(wrapS, wrapT);
+            this.material.apply();
 
             this.texture.amplify(child);
         }
