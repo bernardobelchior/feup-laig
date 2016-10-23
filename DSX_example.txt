@@ -104,8 +104,11 @@
         <!-- Deve existir um ou mais blocos "transformation" -->
         <!-- Os identificadores "id" nao podem ser repetidos -->
         <transformation id="ss">
-           <!-- instrucoes a usar sem limite nem ordem -->
-           <!-- deve existir pelo menos uma transformacao -->
+           <!-- deve existir pelo menos uma instrução de transformacao; -->
+           <!-- podem ser usadas tantas instrucoes quantas as -->
+           <!-- necessárias, mas escritas pela mesma ordem que 
+           <!-- seria usada na sua escrita diretamente em código WebGL -->
+
            <translate x="ff" y="ff" z="ff" />
            <rotate axis="cc" angle="ff" />
            <scale x="ff" y="ff" z="ff" />
@@ -147,9 +150,8 @@
                 <transformationref id="ss" />
                 
                 <!-- ou, ALTERNATIVAMENTE, transformacoes explicitas, -->
-                <!-- usando zero ou mais das instrucoes seguintes, sem -->
-                <!-- limite nem ordem -->
-                <!-- ex: bloco transformation pode ficar sem conteudo -->
+                <!-- usando zero ou mais instrucoes como as seguintes,  -->
+                <!-- seguindo as mesmas regras que no bloco transformations-->
                 <translate x="ff" y="ff" z="ff" />
                 <rotate axis="cc" angle="ff" />
                 <scale x="ff" y="ff" z="ff" />
