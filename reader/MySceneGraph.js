@@ -384,7 +384,6 @@ MySceneGraph.prototype.parseMaterials = function(materials) {
         appearance.setDiffuse(diffuseRGBA[0], diffuseRGBA[1], diffuseRGBA[2], diffuseRGBA[3]);
         appearance.setSpecular(specularRGBA[0], specularRGBA[1], specularRGBA[2], specularRGBA[3]);
         appearance.setShininess(shininessValue);
-        appearance.setTextureWrap('REPEAT', 'REPEAT');
 
         this.materials[id] = appearance;
     }

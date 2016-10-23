@@ -122,8 +122,32 @@ Component.prototype.display = function(parent) {
     this.material.apply();
 
     for (let child of this.children) {
-        if (this.texture)
+        if (this.texture) {
+            /*
+             * Only textures with length_s or length_t between 0 and 1 need to be
+             * repeated. And only textures that are repeated need to have power of
+             * two width or height (depending on the t or s below 1).
+             * As such, this method is used in order to avoid black textures,
+             * when textures do not have a power of two dimension but also do not
+             * need to.
+             * The better alternative would be setTextureWrap('REPEAT', 'REPEAT')
+             * on CGFappearance creation, but that would prohibit the use of
+             * textures without power of two dimensions.
+             */
+            let wrapS = 'CLAMP_TO_EDGE';
+            let wrapT = 'CLAMP_TO_EDGE';
+
+            if (this.texture.length_s < 1)
+                wrapS = 'REPEAT';
+
+            if (this.texture.length_t < 1)
+                wrapT = 'REPEAT';
+
+            this.material.setTextureWrap(wrapS, wrapT);
+
             this.texture.amplify(child);
+        }
+
         child.display(this);
     }
 
