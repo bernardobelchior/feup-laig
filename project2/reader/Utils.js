@@ -73,7 +73,7 @@ function parseTransformation(scene, reader, tag) {
             }
             break;
         case 'rotate':
-            let axis = reader.getString(tag, 'axis', true);            
+            let axis = reader.getString(tag, 'axis', true);
             let angle = reader.getFloat(tag, "angle", true);
 
             switch (axis) {
@@ -103,4 +103,11 @@ function parseTransformation(scene, reader, tag) {
     }
 
     return transformation;
+}
+
+/**
+* Computes the 3D distance between two 3D points
+*/
+function distance(point1, point2) {
+  return Math.sqrt(Math.pow(point1[0]-point2[0], 2) + Math.pow(point1[2]-point2[2], 2) + Math.pow(point1[2]-point2[2], 2));
 }
