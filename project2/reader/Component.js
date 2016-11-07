@@ -12,6 +12,8 @@ function Component(scene, id) {
     this.children = [];
     this.currentMaterial = 0;
     this.transformation = new Transformation(scene);
+    this.animations = [];
+    this.currentAnimationId = 0;
     this.parent = null;
 }
 
@@ -188,4 +190,33 @@ Component.prototype.nextMaterial = function() {
  */
 Component.prototype.amplifyTexture = function(amplifierS, amplifierT) {
 
+};
+
+/**
+ * Adds the animation to the animations array of the component.
+ */
+Component.prototype.addAnimation = function(animation) {
+    if (this.animations)
+        this.animations = [];
+
+    this.animations.push(animation);
+};
+
+/**
+ * Animates the component.
+ */
+Component.prototype.animate = function(deltaTime) {
+    if (!this.animations)
+        return;
+
+    let currentAnimation = this.animations[this.currentAnimationId];
+
+    currentAnimation.move(deltaTime);
+
+    if (currentAnimation.isDone()) {
+        if (this.currentAnimationId >= this.animations.length)
+            this.currentAnimationId = 0;
+        else
+            this.currentAnimationId++;
+    }
 };

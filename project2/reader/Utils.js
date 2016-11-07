@@ -106,8 +106,40 @@ function parseTransformation(scene, reader, tag) {
 }
 
 /**
+ *  Parses the given tag and returns a Vec3 with the result.
+ */
+function parseControlPoint(reader, tag) {
+  let x = reader.getFloat(tag, 'xx', true);
+  let y = reader.getFloat(tag, 'yy', true);
+  let z = reader.getFloat(tag, 'zz', true);
+
+  return [x, y, z];
+}
+
+/**
+* Parses the information of a linear animation from the animation tag.
+* Returns the animation object
+*/
+function parseLinearAnimation(reader, animationTag, scene, id, span) {
+  let controlPoints = [];
+
+  for(let controlPoint of animationTag.children)
+      controlPoints.push(parseControlPoint(reader, controlPoint));
+
+  return new LinearAnimation(scene, id, span, controlPoints);
+}
+
+/**
+* Parses the information of a circular animation from the animation tag.
+* Returns the animation object
+*/
+function parseCircularAnimation(reader, animationTag, scene, id, span) {
+  //TODO
+}
+
+/**
 * Computes the 3D distance between two 3D points
 */
 function distance(point1, point2) {
-  return Math.sqrt(Math.pow(point1[0]-point2[0], 2) + Math.pow(point1[2]-point2[2], 2) + Math.pow(point1[2]-point2[2], 2));
+  return Math.sqrt(Math.pow(point1[0]-point2[0], 2) + Math.pow(point1[1]-point2[1], 2) + Math.pow(point1[2]-point2[2], 2));
 }

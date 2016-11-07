@@ -1,25 +1,22 @@
 class LinearAnimation extends Animation {
-  private controlPoints;
-  private totalAnimationDistance;
+    constructor(scene, id, time, controlPoints) {
+        super(scene, id, time);
+        this.controlPoints = controlPoints;
 
-  constructor(time, controlPoints) {
-    super(time);
-    this.controlPoints = controlPoints;
+        if (controlPoints.length < 0)
+            throw new Error('Control points array has invalid length.');
 
-    if(controlPoints.length < 0)
-      throw new Error('Control points array has invalid length.');
+        this.totalDistance = 0;
+        let lastPoint = [0, 0, 0];
+        for (let point of controlPoints) {
+            this.totalDistance += distance(lastPoint, point);
+            lastPoint = point;
+        }
 
-    totalAnimationDistance = 0;
-    let lastPoint = [0, 0,0];
-    for(let point of controlPoints) {
-      totalAnimationDistance += distance(lastPoint, point);
-      lastPoint = point;
+        this.speed = this.totalDistance/this.time;
     }
 
-    console.log(totalAnimationDistance);
-  }
+    move(deltaTime) {
 
-  move(deltaTime) {
-    
-  }
+    }
 }
