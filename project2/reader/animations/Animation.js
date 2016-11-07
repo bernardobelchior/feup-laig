@@ -1,9 +1,13 @@
 class Animation {
-  private time;
+    private scene;
+    private id;
+    private time;
 
-  constructor(time) {
-    this.time = time;
-  }
+    constructor(scene, id, time) {
+        this.scene = scene;
+        this.id = id;
+        this.time = time;
+    }
 
-  move(deltaTime);
+    move(deltaTime);
 }
