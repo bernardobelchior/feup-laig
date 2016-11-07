@@ -1,5 +1,5 @@
 class LinearAnimation extends Animation {
-  constructor() {
-    super();
+  constructor(time) {
+    super(time);
   }
 }

@@ -1,5 +1,7 @@
 class Animation {
-  constructor() {
-    
+  private time;
+
+  constructor(time) {
+    this.time = time;
   }
 }
