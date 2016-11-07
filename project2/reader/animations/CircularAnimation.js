@@ -15,7 +15,7 @@ class CircularAnimation extends Animation {
 
      move(deltaTime) {
          if(this.angleTraveled === 0)
-             setUpAnimation();
+             setupAnimation();
 
          let rotationSlice = rotAng / deltaTime;
          if(rotationSlice + angleTraveled > rotAng)                     //If the animation will make the rotation
@@ -28,8 +28,9 @@ class CircularAnimation extends Animation {
          this.angleTraveled += rotationSlice;
      }
 
-     setUpAnimation(){
+     setupAnimation(){
          this.scene.pushMatrix();
+            this.scene.translate(Math.sin(this.startAng),0,Math.cos(this.startAng));
             this.scene.translate(center[0],center[1],center[2]);
          this.scene.popMatrix();
      }
