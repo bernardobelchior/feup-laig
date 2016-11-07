@@ -4,4 +4,6 @@ class Animation {
   constructor(time) {
     this.time = time;
   }
+
+  move(deltaTime);
 }
