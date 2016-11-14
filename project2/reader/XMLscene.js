@@ -100,10 +100,7 @@ XMLscene.prototype.display = function() {
             this.lights[i].update();
         }
 
-        //this.rootNode.display();
-
-        //FIXME remove
-        this.plane.display();
+        this.rootNode.display();
 
         // Draw axis
         this.axis.display();

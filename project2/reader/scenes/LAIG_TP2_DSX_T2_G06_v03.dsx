@@ -208,6 +208,10 @@
                 <controlpoint x="2" y="0" z="2"/>
             </patch>
         </primitive>
+
+        <primitive id="plane">
+            <plane dimX="3.0" dimY="2.0" partsX="3" partsY="4"/>
+        </primitive>
     </primitives>
 
     <!--components section-->
@@ -230,6 +234,7 @@
                 <componentref id="SSETradeStation"/>
                 <componentref id="SSEColony"/>
                 <componentref id="planets"/>
+                <primitiveref id="plane"/>
             </children>
 
         </component>

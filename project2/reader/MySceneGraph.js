@@ -421,8 +421,8 @@ MySceneGraph.prototype.parseAnimations = function(animations) {
         if (span <= 0)
             return ('Invalid span for animation with id "' + id + '".');
 
-        if (type === 'linear')
-            this.animations[id] = parseLinearAnimation(this.reader, animation, this.scene, id, span);
+        if (type === 'linear'){}
+            //this.animations[id] = parseLinearAnimation(this.reader, animation, this.scene, id, span);
         else
             this.animations[id] = parseCircularAnimation(this.reader, animation, this.scene, id, span);
     }
@@ -714,20 +714,19 @@ MySceneGraph.prototype.parsePrimitives = function(primitives) {
                     object = new Torus(this.scene, inner, outer, slices, loops);
                 }
                 break;
+            case 'plane':
+            {
+                let dimX = this.reader.getFloat(shape, 'dimX', true);
+                let dimY = this.reader.getFloat(shape, 'dimY', true);
+                let partsX = this.reader.getInteger(shape, 'partsX', true);
+                let partsY = this.reader.getInteger(shape, 'partsY', true);
+
+                object = new Plane(this.scene, dimX, dimY, partsX, partsY);
+            }
+                break;
             case 'patch':
-                {
-                    let orderU = this.reader.getInteger(shape, 'orderU', true);
-                    let orderV = this.reader.getInteger(shape, 'orderV', true);
-                    let partsU = this.reader.getInteger(shape, 'partsU', true);
-                    let partsV = this.reader.getInteger(shape, 'partsV', true);
-
-                    if (shape.children.length !== (orderU + 1) * (orderV + 1))
-                        return ('Patch with id ' + id + ' expected ' + ((orderU + 1) * (orderV + 1)) +
-                            ' control points, but got ' + shape.children.length + '.');
-
-                    object = new Patch(this.scene, orderU, orderV, partsU, partsV);
-                    object.setControlPoints(parseControlPoints(this.reader, shape.children));
-                }
+            {
+            }
                 break;
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');
