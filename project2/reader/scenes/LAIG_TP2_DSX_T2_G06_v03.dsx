@@ -913,7 +913,7 @@
                 <!-- geometricas do mesmo objeto, isso significa -->
                 <!-- que as animacoes sao afetadas pelas transformacoes -->
                 <!-- geometricas do objeto.  -->
-                <animationref id="testLinear"/>
+                <!--<animationref id="testLinear"/>-->
                 <animationref id="testCircular"/>
             </animation>
 

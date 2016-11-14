@@ -29,6 +29,7 @@ class CircularAnimation extends Animation {
     }
 
     display() {
+        this.scene.rotate(this.startAng + this.currentRotAng, 0, 1, 0);
         //Put the object in the right position
         this.scene.translate(this.center[0], this.center[1], this.center[2]);
         this.scene.translate(this.radius * Math.sin(this.startAng + this.currentRotAng), 0, this.radius * Math.cos(this.startAng + this.currentRotAng));

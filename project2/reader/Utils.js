@@ -149,8 +149,8 @@ function parseCircularAnimation(reader, tag, scene, id, span){
 
     let radius = reader.getFloat(tag, "radius", true);
 
-    let startAng = reader.getFloat(tag, "startang", true);
-    let rotAng = reader.getFloat(tag, "rotang", true);
+    let startAng = reader.getFloat(tag, "startang", true)*Math.PI/180;
+    let rotAng = reader.getFloat(tag, "rotang", true)*Math.PI/180;
 
     let center = [centerX, centerY, centerZ]
 
