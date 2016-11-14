@@ -26,6 +26,8 @@ XMLscene.prototype.init = function(application) {
     this.lightStatus = [];
     this.cameras = [];
     this.rootNode;
+    this.setUpdatePeriod(1 / 60 / 1000);
+    this.lastUpdateTime = (new Date()).getTime();
 };
 
 /**
@@ -58,6 +60,14 @@ XMLscene.prototype.onGraphLoaded = function() {
         this.lightStatus.push(this.lights[i].enabled);
         this.interface.addLightControls(i, this.lightIDs[i]);
     }
+};
+
+XMLscene.prototype.update = function(currTime) {
+    if (!this.graph.loadedOk)
+        return;
+
+    this.rootNode.update(currTime - this.lastUpdateTime);
+    this.lastUpdateTime = currTime;
 };
 
 XMLscene.prototype.display = function() {
