@@ -114,5 +114,18 @@ function distance(point1, point2) {
 
 
 function parseCircularAnimation(reader, tag, scene, id, span){
-    let
+    let centerX = reader.getFloat(tag, "centerx", true);
+    let centerY = reader.getFloat(tag, "centery", true);
+    let centerZ = reader.getFloat(tag, "centerz", true);
+
+    let radius = reader.getFloat(tag, "radius", true);
+
+    let startAng = reader.getFloat(tag, "startang", true);
+    let rotAng = reader.getFloat(tag, "rotang", true);
+
+    let center = [centerX, centerY, centerZ]
+
+    let circAnimation = new CircularAnimation(scene, id, span, center, radus, startAng, rotAng);
+
+    return circAnimation;
 }
