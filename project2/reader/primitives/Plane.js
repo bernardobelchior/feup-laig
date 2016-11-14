@@ -42,5 +42,4 @@
      this.func = function(u,v){
         return this.surface.getPoint(u,v) ;
      }
-     console.log(this.surface.knots1);
  };

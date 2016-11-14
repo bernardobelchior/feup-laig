@@ -40,6 +40,9 @@ function Rectangle(scene, point1, point2, minS, maxS, minT, maxT) {
 Rectangle.prototype = Object.create(CGFobject.prototype);
 Rectangle.prototype.constructor = Rectangle;
 
+/**
+* Initializes the Rectangle buffers.
+*/
 Rectangle.prototype.initBuffers = function() {
     this.vertices = [this.point1[0], this.point1[1], 0, //0
         this.point1[0], this.point2[1], 0, //1
@@ -72,6 +75,9 @@ Rectangle.prototype.initBuffers = function() {
     this.initGLBuffers();
 };
 
+/**
+* Amplifies the Rectangle texture.
+*/
 Rectangle.prototype.amplifyTexture = function(amplifierS, amplifierT) {
     for (let i = 0; i < this.originalTexCoords.length; i += 2) {
         this.texCoords[i] = this.originalTexCoords[i] / amplifierS;
