@@ -1,8 +1,5 @@
 class CircularAnimation extends Animation {
 
-    //TODO: Angle the object according to the position
-
-
     /**
      *
      * @param scene
@@ -24,8 +21,8 @@ class CircularAnimation extends Animation {
         this.angleTraveled = 0;    // Rotation already completed by the animation
     }
 
-    move(deltaTime) {
-        if(this.totalAnimationRotation === 0)
+    update(deltaTime) {
+        if(this.angleTraveled === 0)
             this.setupAnimation();
 
 
@@ -57,5 +54,13 @@ class CircularAnimation extends Animation {
             this.scene.rotate(y, angle);
             this.scene.translate(-this.radius * Math.sin(this.startAng),0, -this.radius * Math.cos(this.startAng));
         this.scene.popMatrix();
+   }
+
+   isDone(){
+       return this.done;
+   }
+
+   resetAnimation(){
+       this.angleTraveled = 0;
    }
 }

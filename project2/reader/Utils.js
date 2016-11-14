@@ -125,7 +125,7 @@ function parseCircularAnimation(reader, tag, scene, id, span){
 
     let center = [centerX, centerY, centerZ]
 
-    let circAnimation = new CircularAnimation(scene, id, span, center, radus, startAng, rotAng);
+    let circAnimation = new CircularAnimation(scene, id, span, center, radius, startAng, rotAng);
 
     return circAnimation;
 }

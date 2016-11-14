@@ -35,7 +35,7 @@ MySceneGraph.prototype.onXMLReady = function() {
     // Here should go the calls for different functions to parse the various blocks
     var error = this.parseDsx(rootElement);
 
-    if (error != null) {
+    if (error) {
         this.onXMLError(error);
         return;
     }
@@ -58,11 +58,12 @@ MySceneGraph.prototype.parseDsx = function(dsx) {
     let textures = dsx.children[4];
     let materials = dsx.children[5];
     let transformations = dsx.children[6];
-    let primitives = dsx.children[7];
-    let components = dsx.children[8];
+    let animations = dsx.children[7];
+    let primitives = dsx.children[8];
+    let components = dsx.children[9];
 
-    return (this.parseScene(scene) || this.parseViews(views) || this.parseIllumination(illumination) || this.parseLights(lights) || this.parseTextures(textures) || this.parseMaterials(materials) || this.parseTransformations(transformations) || this.parsePrimitives(primitives) || this.parseComponents(components));
-}
+    return (this.parseScene(scene) || this.parseViews(views) || this.parseIllumination(illumination) || this.parseLights(lights) || this.parseTextures(textures) || this.parseMaterials(materials) || this.parseTransformations(transformations) || this.parseAnimations(animations) || this.parsePrimitives(primitives) || this.parseComponents(components));
+};
 
 /**
   Parses the scene tag
@@ -73,11 +74,11 @@ MySceneGraph.prototype.parseScene = function(scene) {
 
     this.rootId = this.reader.getString(scene, 'root', true);
 
-    if (this.rootId == null)
+    if (this.rootId === null)
         return 'Scene tag must define a root component.';
 
     this.scene.axisLength = this.reader.getFloat(scene, 'axis_length', false);
-}
+};
 
 /**
   Parses the views tag and its children and sets the scene's cameras accordingly.
@@ -88,7 +89,7 @@ MySceneGraph.prototype.parseViews = function(views) {
 
     let defaultPerspectiveId = this.reader.getString(views, 'default', true);
 
-    if (!(views.children.length > 0))
+    if (views.children.length <= 0)
         return 'You need to have at least one perspective defined.';
 
     for (let perspective of views.children) {
@@ -112,9 +113,9 @@ MySceneGraph.prototype.parseViews = function(views) {
         this.scene.cameras.push(new CGFcamera(fov, near, far, fromVector, toVector));
     }
 
-    if (this.scene.currentCamera == null)
+    if (this.scene.currentCamera === null)
         return 'The default perspective is not a child of views.';
-}
+};
 
 
 /**
@@ -127,7 +128,7 @@ MySceneGraph.prototype.parseIllumination = function(illumination) {
     this.doublesided = this.reader.getBoolean(illumination, 'doublesided', true);
     this.local = this.reader.getBoolean(illumination, 'local', true);
 
-    if (this.doublesided == null || this.local == null)
+    if (this.doublesided === null || this.local === null)
         return 'Boolean value(s) in illumination missing.';
 
     let ambientTag = illumination.getElementsByTagName('ambient')[0];
@@ -137,12 +138,12 @@ MySceneGraph.prototype.parseIllumination = function(illumination) {
     this.bg = parseRGBA(this.reader, backgroundTag);
 
 
-    if (this.ambient == null)
+    if (this.ambient === null)
         return 'Ambient illumination missing.';
 
-    if (this.bg == null)
+    if (this.bg === null)
         return 'Background illumination missing.';
-}
+};
 
 /**
  * Parses the lights block from the dsx.
@@ -234,7 +235,7 @@ MySceneGraph.prototype.parseOmniLight = function(light, n_lights, enabled, id) {
     //needed for GUI
     this.scene.lightIDs.push(id);
     newLight.update();
-}
+};
 
 MySceneGraph.prototype.parseSpotLight = function(light, n_lights, enabled, id) {
     let angle = this.reader.getFloat(light, 'angle', true);
@@ -296,7 +297,7 @@ MySceneGraph.prototype.parseSpotLight = function(light, n_lights, enabled, id) {
     //needed for GUI
     this.scene.lightIDs.push(id);
     newLight.update();
-}
+};
 
 
 /**
@@ -342,7 +343,7 @@ MySceneGraph.prototype.parseTextures = function(textures) {
 
         this.textures[id] = new Texture(this.scene, file, length_s, length_t);
     }
-}
+};
 
 /**
  * Parses the materials block from the dsx.
@@ -387,7 +388,45 @@ MySceneGraph.prototype.parseMaterials = function(materials) {
 
         this.materials[id] = appearance;
     }
-}
+};
+
+/**
+ * Parses the animations block from the dsx.
+ */
+MySceneGraph.prototype.parseAnimations = function(animations) {
+    if (animations.nodeName !== 'animations')
+        return ('Blocks not ordered correctly. Expected "animations", found "' + animations.nodeName + '".');
+
+    this.animations = {};
+
+    for (let animation of animations.children) {
+        if (animation.nodeName !== 'animation')
+            return 'Animation with unexpected nodeName.';
+
+        let id = this.reader.getString(animation, 'id', true);
+
+        if (!id)
+            return 'An animation must have an id. Please provide one.';
+
+        if (animations[id])
+            return ('An animation with id ' + id + ' already exists.');
+
+        let type = this.reader.getString(animation, 'type', true);
+
+        if (type !== 'linear' && type !== 'circular')
+            return ('Unexpected type on animation with id "' + id + '".');
+
+        let span = this.reader.getFloat(animation, 'span', true);
+
+        if (span <= 0)
+            return ('Invalid span for animation with id "' + id + '".');
+
+        if (type === 'linear'){}
+            //this.animations[id] = parseLinearAnimation(this.reader, animation, this.scene, id, span);
+        else
+            this.animations[id] = parseCircularAnimation(this.reader, animation, this.scene, id, span);
+    }
+};
 
 /**
  * Parses the components block from the dsx.
@@ -411,6 +450,7 @@ MySceneGraph.prototype.parseComponents = function(compsTag) {
         let component = new Component(this.scene, id);
 
         let transformationTag = compTag.getElementsByTagName('transformation')[0];
+        let animationsTag = compTag.getElementsByTagName('animation')[0];
         let materialsTag = compTag.getElementsByTagName('materials')[0];
 
         //Error checking
@@ -418,7 +458,11 @@ MySceneGraph.prototype.parseComponents = function(compsTag) {
         if (error)
             return error;
 
-        error = this.parseComponentMaterials(component, materialsTag)
+        error = this.parseComponentAnimations(component, animationsTag);
+        if (error)
+            return error;
+
+        error = this.parseComponentMaterials(component, materialsTag);
         if (error)
             return error;
 
@@ -444,7 +488,7 @@ MySceneGraph.prototype.parseComponents = function(compsTag) {
         //Children parsing
         let childrenTag = compTag.getElementsByTagName('children')[0];
 
-        error = this.parseComponentChildren(components, component, childrenTag)
+        error = this.parseComponentChildren(components, component, childrenTag);
         if (error)
             return error;
     }
@@ -453,7 +497,8 @@ MySceneGraph.prototype.parseComponents = function(compsTag) {
 
     if (error)
         return error;
-}
+};
+
 
 /**
  * Creates the scene graph used to display the scene
@@ -481,6 +526,28 @@ MySceneGraph.prototype.createSceneGraph = function(components) {
     /*
      * Handle materials inheritance
      */
+};
+
+/**
+ * Parses the component animations.
+ */
+MySceneGraph.prototype.parseComponentAnimations = function(component, animationsTag) {
+    if (animationsTag) {
+        for (let animation of animationsTag.children) {
+            if (animation.nodeName !== 'animationref')
+                return ('Unexpected animation node name on component ' + component.id + '.');
+
+            let id = this.reader.getString(animation, 'id', true);
+
+            if (!id)
+                return ('Animation without id on component ' + component.id + '.');
+
+            if (!this.animations[id])
+                return ('Animation with unknown id "' + id + '" declared in a component.');
+
+            component.addAnimation(this.animations[id]);
+        }
+    }
 };
 
 /**
@@ -529,7 +596,7 @@ MySceneGraph.prototype.parseComponentTransformations = function(component, tag) 
             transfRef = false;
         }
     }
-}
+};
 
 /**
  * Parses the component materials and adds it to the component.
@@ -551,7 +618,7 @@ MySceneGraph.prototype.parseComponentMaterials = function(component, tag) {
 
         component.addMaterial(this.materials[id]);
     }
-}
+};
 
 /**
  * Parses the children of the given component and:
@@ -586,7 +653,7 @@ MySceneGraph.prototype.parseComponentChildren = function(components, component, 
         'component': component,
         'children': children
     };
-}
+};
 
 /**
  *  Parses the primitives from the dsx root element.
@@ -649,7 +716,6 @@ MySceneGraph.prototype.parsePrimitives = function(primitives) {
                 break;
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');
-                break;
         }
 
         if (this.primitives[id])
@@ -658,7 +724,7 @@ MySceneGraph.prototype.parsePrimitives = function(primitives) {
         if (object)
             this.primitives[id] = object;
     }
-}
+};
 
 /**
  * Parses transformation element of DSX
