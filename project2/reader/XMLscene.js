@@ -26,6 +26,8 @@ XMLscene.prototype.init = function(application) {
     this.lightStatus = [];
     this.cameras = [];
     this.rootNode;
+    this.setUpdatePeriod(1 / 60 * 1000);
+    this.lastUpdateTime = (new Date()).getTime();
 };
 
 /**
@@ -51,12 +53,21 @@ XMLscene.prototype.onGraphLoaded = function() {
     //Sets default camera
     this.camera = this.cameras[this.currentCamera];
     this.interface.setActiveCamera(this.camera);
+    this.setUpdatePeriod(20);
 
     //GUI for light control
     for (var i = 0; i < this.lights.length; i++) {
         this.lightStatus.push(this.lights[i].enabled);
         this.interface.addLightControls(i, this.lightIDs[i]);
     }
+};
+
+XMLscene.prototype.update = function(currTime) {
+    if (!this.graph.loadedOk)
+        return;
+
+    this.rootNode.update(currTime - this.lastUpdateTime);
+    this.lastUpdateTime = currTime;
 };
 
 XMLscene.prototype.display = function() {
@@ -80,40 +91,36 @@ XMLscene.prototype.display = function() {
         // ---- END Background, camera and axis setup
 
         //Update lights
+        for (let i = 0; i < this.lights.length; i++) {
+            if (this.lightStatus[i])
+                this.lights[i].enable();
+            else
+                this.lights[i].disable();
 
-        for (light of this.lights)
-            light.update();
+            this.lights[i].update();
+        }
 
         this.rootNode.display();
 
         // Draw axis
         this.axis.display();
 
-    };
-
-    XMLscene.prototype.switchMaterials = function() {
-        this.rootNode.switchMaterials();
-    };
-
-    /**
-     * Switches camera to the next one on the scene cameras array
-     */
-    XMLscene.prototype.nextCamera = function() {
-        if (this.currentCamera === this.cameras.length - 1)
-            this.currentCamera = 0;
-        else
-            this.currentCamera++;
-
-        this.camera = this.cameras[this.currentCamera];
-        this.interface.setActiveCamera(this.camera);
-    };
-
-    for (let i = 0; i < this.lights.length; i++) {
-        if (this.lightStatus[i])
-            this.lights[i].enable();
-
-        else this.lights[i].disable();
-
-        this.lights[i].update();
     }
+};
+
+XMLscene.prototype.switchMaterials = function() {
+    this.rootNode.switchMaterials();
+};
+
+/**
+ * Switches camera to the next one on the scene cameras array
+ */
+XMLscene.prototype.nextCamera = function() {
+    if (this.currentCamera === this.cameras.length - 1)
+        this.currentCamera = 0;
+    else
+        this.currentCamera++;
+
+    this.camera = this.cameras[this.currentCamera];
+    this.interface.setActiveCamera(this.camera);
 };

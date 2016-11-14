@@ -19,8 +19,8 @@ function parseVec3(reader, tag, number) {
  * Attributes are named x, y, and w concatenated with the number.
  */
 function parseVec4(reader, tag, number) {
-   if (!number)
-       number = '';
+    if (!number)
+        number = '';
 
     let w = reader.getFloat(tag, 'w' + number, true);
 
@@ -106,8 +106,103 @@ function parseTransformation(scene, reader, tag) {
 }
 
 /**
-* Computes the 3D distance between two 3D points
-*/
+ *  Parses the given tag and returns a Vec3 with the result.
+ */
+function parseControlPoint(reader, tag) {
+    let x = reader.getFloat(tag, 'xx', true);
+    let y = reader.getFloat(tag, 'yy', true);
+    let z = reader.getFloat(tag, 'zz', true);
+
+    return [x, y, z];
+}
+
+/**
+ * Parses the information of a linear animation from the animation tag.
+ * Returns the animation object
+ */
+function parseLinearAnimation(reader, animationTag, scene, id, span) {
+    let listRoot;
+    let prevNode;
+    let node;
+    for (let controlPoint of animationTag.children) {
+        node = new ListNode(parseControlPoint(reader, controlPoint));
+        if (!listRoot)
+            listRoot = node;
+        if (prevNode)
+            prevNode.next = node;
+
+        prevNode = node;
+    }
+    node.next = listRoot;
+
+    return new LinearAnimation(scene, id, span, listRoot);
+}
+
+/**
+ * Parses the information of a circular animation from the animation tag.
+ * Returns the animation object
+ */
+function parseCircularAnimation(reader, tag, scene, id, span){
+    let centerX = reader.getFloat(tag, "centerx", true);
+    let centerY = reader.getFloat(tag, "centery", true);
+    let centerZ = reader.getFloat(tag, "centerz", true);
+
+    let radius = reader.getFloat(tag, "radius", true);
+
+    let startAng = reader.getFloat(tag, "startang", true)*Math.PI/180;
+    let rotAng = reader.getFloat(tag, "rotang", true)*Math.PI/180;
+
+    let center = [centerX, centerY, centerZ]
+
+    return new CircularAnimation(scene, id, span, center, radius, startAng, rotAng);
+}
+
+/**
+ * Computes the 3D distance between two 3D points
+ */
 function distance(point1, point2) {
-  return Math.sqrt(Math.pow(point1[0]-point2[0], 2) + Math.pow(point1[2]-point2[2], 2) + Math.pow(point1[2]-point2[2], 2));
+    return Math.sqrt(Math.pow(point1[0] - point2[0], 2) + Math.pow(point1[1] - point2[1], 2) + Math.pow(point1[2] - point2[2], 2));
+}
+
+/**
+ * Returns the substraction of point2 with point1.
+ * In mathematical terms, it returns the vector from point1 to point2.
+ */
+function subtractPoints(point1, point2) {
+    return [point2[0] - point1[0], point2[1] - point1[1], point2[2] - point1[2]];
+}
+
+/**
+ * Returns the addition of point1 with point2.
+ */
+function addPoints(point1, point2) {
+    return [point1[0] + point2[0], point1[1] + point2[1], point1[2] + point2[2]];
+}
+
+/**
+ * Multiplies a vector by a constant. Does the modify any of the objects.
+ */
+function multVector(vector, constant) {
+    return [vector[0] * constant, vector[1] * constant, vector[2] * constant];
+}
+
+/**
+ * Returns the vector norm
+ */
+function vectorNorm(vector) {
+    return Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2]);
+}
+
+/**
+ * Returns the vectors dot product
+ */
+function dotProduct(vector1, vector2) {
+    return (vector1[0] * vector2[0] + vector1[1] * vector2[1] + vector1[2] * vector2[2]);
+}
+
+/**
+ * Returns the angle between two vectors.
+ */
+function angleBetweenVectors(vector1, vector2) {
+    return Math.acos(dotProduct(vector1, vector2) / (vectorNorm(vector1) + vectorNorm(vector2)));
 }
