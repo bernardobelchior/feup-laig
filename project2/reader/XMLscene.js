@@ -26,6 +26,9 @@ XMLscene.prototype.init = function(application) {
     this.lightStatus = [];
     this.cameras = [];
     this.rootNode;
+
+    //FIXME debug, remove
+    this.plane = new Plane(this,3,3,10,10);
 };
 
 /**
@@ -90,7 +93,10 @@ XMLscene.prototype.display = function() {
             this.lights[i].update();
         }
 
-        this.rootNode.display();
+        //this.rootNode.display();
+
+        //FIXME remove
+        this.plane.display();
 
         // Draw axis
         this.axis.display();
