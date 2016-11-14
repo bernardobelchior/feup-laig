@@ -158,6 +158,20 @@ function parseCircularAnimation(reader, tag, scene, id, span){
 }
 
 /**
+* Parses the control points from a patch
+*/
+function parseControlPoints(reader, patchChildren) {
+    let controlPoints = [];
+
+    for(let controlPoint of patchChildren) {
+        let point = parseVec3(reader, controlPoint);
+        controlPoints.push(point);
+    }
+
+    return controlPoints;
+}
+
+/**
  * Computes the 3D distance between two 3D points
  */
 function distance(point1, point2) {

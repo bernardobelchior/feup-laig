@@ -714,6 +714,21 @@ MySceneGraph.prototype.parsePrimitives = function(primitives) {
                     object = new Torus(this.scene, inner, outer, slices, loops);
                 }
                 break;
+            case 'patch':
+                {
+                    let orderU = this.reader.getInteger(shape, 'orderU', true);
+                    let orderV = this.reader.getInteger(shape, 'orderV', true);
+                    let partsU = this.reader.getInteger(shape, 'partsU', true);
+                    let partsV = this.reader.getInteger(shape, 'partsV', true);
+
+                    if (shape.children.length !== (orderU + 1) * (orderV + 1))
+                        return ('Patch with id ' + id + ' expected ' + ((orderU + 1) * (orderV + 1)) +
+                            ' control points, but got ' + shape.children.length + '.');
+
+                    object = new Patch(this.scene, orderU, orderV, partsU, partsV);
+                    object.setControlPoints(parseControlPoints(this.reader, shape.children));
+                }
+                break;
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');
         }
