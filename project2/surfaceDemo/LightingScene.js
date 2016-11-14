@@ -22,23 +22,23 @@ LightingScene.prototype.init = function (application) {
     this.gl.enable(this.gl.DEPTH_TEST);
 	this.gl.enable(this.gl.CULL_FACE);
     this.gl.depthFunc(this.gl.LEQUAL);
-    
+
 	this.axis=new CGFaxis(this);
 	this.enableTextures(true);
-   
+
     this.setUpdatePeriod(500);
-	
+
 	this.appearance = new CGFappearance(this);
 	this.appearance.setAmbient(0.3, 0.3, 0.3, 1);
 	this.appearance.setDiffuse(0.7, 0.7, 0.7, 1);
-	this.appearance.setSpecular(0.0, 0.0, 0.0, 1);	
+	this.appearance.setSpecular(0.0, 0.0, 0.0, 1);
 	this.appearance.setShininess(120);
 	this.texture = new CGFtexture(this, "texture.jpg");
 	this.appearance.setTexture(this.texture);
 	this.appearance.setTextureWrap ('REPEAT', 'REPEAT');
-	
+
 	this.surfaces = [];
-	
+
 
 	this.makeSurface("0", 1, // degree on U: 2 control vertexes U
 					 1, // degree on V: 2 control vertexes on V
@@ -46,12 +46,12 @@ LightingScene.prototype.init = function (application) {
 						[ // V = 0..1;
 							 [-2.0, -2.0, 0.0, 1 ],
 							 [-2.0,  2.0, 0.0, 1 ]
-							
+
 						],
 						// U = 1
 						[ // V = 0..1
 							 [ 2.0, -2.0, 0.0, 1 ],
-							 [ 2.0,  2.0, 0.0, 1 ]							 
+							 [ 2.0,  2.0, 0.0, 1 ]
 						]
 					]);
 
@@ -61,15 +61,15 @@ LightingScene.prototype.init = function (application) {
 						[ // V = 0..1;
 							 [ -1.5, -1.5, 0.0, 1 ],
 							 [ -1.5,  1.5, 0.0, 1 ]
-							
+
 						],
 						// U = 1
 						[ // V = 0..1
 							 [ 0, -1.5, 3.0, 1 ],
-							 [ 0,  1.5, 3.0, 1 ]							 
+							 [ 0,  1.5, 3.0, 1 ]
 						],
 						// U = 2
-						[ // V = 0..1							 
+						[ // V = 0..1
 							[ 1.5, -1.5, 0.0, 1 ],
 							[ 1.5,  1.5, 0.0, 1 ]
 						]
@@ -83,17 +83,17 @@ LightingScene.prototype.init = function (application) {
 							 [ -2.0, -2.0, 2.0, 1 ],
 							 [ -2.0,  2.0, 2.0, 1 ],
 							 [ -1.5,  1.5, 0.0, 1 ]
-							
+
 						],
 						// U = 1
 						[ // V = 0..3
 							 [ 0, 0, 3.0, 1 ],
 							 [ 0, -2.0, 3.0, 1],
 							 [ 0,  2.0, 3.0, 1 ],
-							 [ 0,  0, 3.0, 1 ]							 
+							 [ 0,  0, 3.0, 1 ]
 						],
 						// U = 2
-						[ // V = 0..3							 
+						[ // V = 0..3
 							 [ 1.5, -1.5, 0.0, 1 ],
 							 [ 2.0, -2.0, 2.0, 1 ],
 							 [ 2.0,  2.0, 2.0, 1 ],
@@ -133,7 +133,7 @@ LightingScene.prototype.init = function (application) {
 };
 
 LightingScene.prototype.getKnotsVector = function(degree) { // TODO (CGF 0.19.3): add to CGFnurbsSurface
-	
+
 	var v = new Array();
 	for (var i=0; i<=degree; i++) {
 		v.push(0);
@@ -146,17 +146,17 @@ LightingScene.prototype.getKnotsVector = function(degree) { // TODO (CGF 0.19.3)
 
 
 LightingScene.prototype.makeSurface = function (id, degree1, degree2, controlvertexes, translation) {
-		
+
 	var knots1 = this.getKnotsVector(degree1); // to be built inside webCGF in later versions ()
 	var knots2 = this.getKnotsVector(degree2); // to be built inside webCGF in later versions
-		
+
 	var nurbsSurface = new CGFnurbsSurface(degree1, degree2, knots1, knots2, controlvertexes); // TODO  (CGF 0.19.3): remove knots1 and knots2 from CGFnurbsSurface method call. Calculate inside method.
 	getSurfacePoint = function(u, v) {
 		return nurbsSurface.getPoint(u, v);
 	};
 
 	var obj = new CGFnurbsObject(this, getSurfacePoint, 20, 20 );
-	this.surfaces.push(obj);		
+	this.surfaces.push(obj);
 }
 
 LightingScene.prototype.initLights = function () {
@@ -166,7 +166,7 @@ LightingScene.prototype.initLights = function () {
 		this.lights[0].setAmbient(0.1,0.1,0.1,1);
 		this.lights[0].setDiffuse(0.9,0.9,0.9,1);
 		this.lights[0].setSpecular(0,0,0,1);
-		this.lights[0].enable();		
+		this.lights[0].enable();
 		this.lights[0].update();
 	}
 };
@@ -180,10 +180,10 @@ LightingScene.prototype.setDefaultAppearance = function () {
     this.setAmbient(0.1,0.1,0.1, 1.0);
     this.setDiffuse(0.8,0.8,0.8, 1.0);
     this.setSpecular(0.0, 0.0, 0.0,1.0);
-    this.setShininess(10.0);	
+    this.setShininess(10.0);
 };
 
-LightingScene.prototype.display = function () 
+LightingScene.prototype.display = function ()
 {
 	// Clear image and depth buffer every time we update the scene
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
@@ -197,20 +197,20 @@ LightingScene.prototype.display = function ()
 
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
-	
+
 	// Update all lights used
 	if (this.lights.length > 0) {
 		this.lights[0].update();
 	}
 
 	// Draw axis
-	this.axis.display();	
-	
+	this.axis.display();
+
 	// draw scene
 	this.appearance.apply();
 	for (i =0; i<this.surfaces.length; i++) {
 		this.pushMatrix();
-	
+
 		this.translate(this.translations[i][0], this.translations[i][1], this.translations[i][2]);
 
 		this.surfaces[i].display();
