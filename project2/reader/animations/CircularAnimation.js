@@ -34,7 +34,7 @@ class CircularAnimation extends Animation {
         if(rotationSlice + this.angleTraveled > this.rotAng)                    // If the animation will make the rotation
             rotationSlice = rotationSlice + this.angleTraveled - this.rotAng;   // exceed what was wanted, make it only rotate to
                                                                                 // completion
-        this.angle_component(rotationSlice + this.angleTraveled);
+        this.angleComponent(rotationSlice + this.angleTraveled);
 
         this.scene.pushMatrix();
             this.scene.rotate(y,rotationSlice);
@@ -52,7 +52,7 @@ class CircularAnimation extends Animation {
         this.scene.popMatrix();
     }
 
-   angle_component(angle){
+   angleComponent(angle){
         this.scene.pushMatrix();
             this.scene.rotate(y, angle);
             this.scene.translate(-this.radius * Math.sin(this.startAng),0, -this.radius * Math.cos(this.startAng));

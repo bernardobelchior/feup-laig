@@ -111,3 +111,8 @@ function parseTransformation(scene, reader, tag) {
 function distance(point1, point2) {
   return Math.sqrt(Math.pow(point1[0]-point2[0], 2) + Math.pow(point1[2]-point2[2], 2) + Math.pow(point1[2]-point2[2], 2));
 }
+
+
+function parseCircularAnimation(reader, tag, scene, id, span){
+    let
+}
