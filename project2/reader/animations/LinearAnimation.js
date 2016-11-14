@@ -10,8 +10,8 @@ class LinearAnimation extends Animation {
         let point = this.listRoot;
         this.totalDistance = 0;
         while (point.next !== this.listRoot) {
-          this.totalDistance += distance(point.value, point.next.value);
-          point = point.next;
+            this.totalDistance += distance(point.value, point.next.value);
+            point = point.next;
         }
 
         this.speed = this.totalDistance / this.time;
@@ -22,14 +22,11 @@ class LinearAnimation extends Animation {
         if (this.done)
             return;
 
-        this.position = addPoints(this.position, multVector(this.currentDirection, this.speed * deltaTime));
-        this.timeElapsed += deltaTime;
-        console.log('Position: ' + this.position + '\tDirection: ' + this.currentDirection);
-        console.log('Elapsed: ' + this.timeElapsed + '\tExpected: ' + this.timeExpected);
+        this.position = addPoints(this.position, multVector(this.currentDirection, this.speed * deltaTime / 1000));
+        this.timeElapsed += deltaTime / 1000;
 
         if (this.timeElapsed >= this.timeExpected) {
-            this.currentPoint = this.currentPoint.next;
-            updateState();
+            this.updateState();
         }
     }
 
@@ -42,20 +39,22 @@ class LinearAnimation extends Animation {
         this.angle = 0;
         this.currentPoint = this.listRoot;
         this.timeElapsed = 0;
-        this.timeExpected = this.speed / distance(this.currentPoint.value, this.currentPoint.next.value);
+        this.timeExpected = 1 / (this.speed / distance(this.currentPoint.value, this.currentPoint.next.value));
         this.position = this.listRoot.value;
         this.currentDirection = subtractPoints(this.currentPoint.value, this.currentPoint.next.value);
         this.done = false;
     }
 
     updateState() {
-        if (this.currentPoint === this.listRoot) {
+        if (this.currentPoint.next.next === this.listRoot) {
             this.done = true;
             return;
         }
 
         this.timeElapsed = 0;
-        this.timeExpected = this.speed / distance(this.currentPoint.value, this.currentPoint.next.value);
+        this.timeExpected = 1 / (this.speed / distance(this.currentPoint.value, this.currentPoint.next.value));
+
+        this.currentPoint = this.currentPoint.next;
         this.position = this.currentPoint.value;
         let newDirection = subtractPoints(this.currentPoint.value, this.currentPoint.next.value);
         this.angle += angleBetweenVectors(this.currentDirection, newDirection) % (2 * Math.PI);

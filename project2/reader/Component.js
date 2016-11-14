@@ -222,15 +222,17 @@ Component.prototype.addAnimation = function(animation) {
  * Updates the component animation.
  */
 Component.prototype.update = function(deltaTime) {
-    if (!this.animationsRoot)
-        return;
+    if (this.animationsRoot) {
+        this.currentAnimation.value.update(deltaTime);
 
-    this.currentAnimation.value.update(deltaTime);
+        if (this.currentAnimation.value.isDone()) {
+          this.currentAnimation = this.currentAnimation.next;
+          this.currentAnimation.value.resetAnimation();
+        }
+    }
 
-    if (this.currentAnimation.value.isDone())
-        this.currentAnimation = this.currentAnimation.next;
-
-    for(let child of this.children) {
-      child.update(deltaTime);
+    for (let child of this.children) {
+        if (child instanceof Component)
+            child.update(deltaTime);
     }
 };

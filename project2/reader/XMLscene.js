@@ -26,7 +26,7 @@ XMLscene.prototype.init = function(application) {
     this.lightStatus = [];
     this.cameras = [];
     this.rootNode;
-    this.setUpdatePeriod(1 / 60 / 1000);
+    this.setUpdatePeriod(1 / 60 * 1000);
     this.lastUpdateTime = (new Date()).getTime();
 };
 
