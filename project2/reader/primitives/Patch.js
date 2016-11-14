@@ -4,32 +4,30 @@
  * @constructor
  */
 
-function Patch(scene, orderU, orderV, partsU, partsV) {
-    CGFnurbsObject.call(this, scene);
+function Patch(scene, orderU, orderV, partsU, partsV, controlPoints) {
+    let knotsU = getKnotsVector(orderU);
+    let knotsV = getKnotsVector(orderV);
+
+    nurbsSurface = new CGFnurbsSurface(orderU, orderV, knotsU, knotsV, controlPoints);
+    getSurfacePoint = function(u, v) {
+      return nurbsSurface.getPoint(u, v);
+    };
+
+    CGFnurbsObject.call(this, scene, getSurfacePoint, partsU, partsV);
 
     this.orderU = orderU;
     this.orderV = orderV;
     this.partsU = partsU;
     this.partsV = partsV;
-
-    //this.initBuffers();
+    console.log(this);
+  //  this.initBuffers();
 };
 
 Patch.prototype = Object.create(CGFnurbsObject.prototype);
-Patch.prototype.constructor = Rectangle;
-
-Patch.prototype.setControlPoints = function(controlPoints) {
-  this.controlPoints = controlPoints;
-};
-
-Patch.prototype.initBuffers = function() {
-
-    this.primitiveType = this.scene.gl.TRIANGLES;
-//    this.initGLBuffers();
-};
+Patch.prototype.constructor = Patch;
 
 Patch.prototype.amplifyTexture = function(amplifierS, amplifierT) {
 
 
-  //  this.updateTexCoordsGLBuffers();
+    //  this.updateTexCoordsGLBuffers();
 };

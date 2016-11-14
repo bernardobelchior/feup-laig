@@ -160,12 +160,26 @@ function parseCircularAnimation(reader, tag, scene, id, span){
 /**
 * Parses the control points from a patch
 */
-function parseControlPoints(reader, patchChildren) {
+function parseControlPoints(reader, patchChildren, orderU, orderV) {
     let controlPoints = [];
 
+    for(let i = 0; i <= orderU; i++) {
+        controlPoints.push([]);
+    }
+
+    let pointV = 0;
+    let pointU = 0;
     for(let controlPoint of patchChildren) {
         let point = parseVec3(reader, controlPoint);
-        controlPoints.push(point);
+        point.push(1);
+
+        controlPoints[pointU].push(point);
+
+        if(pointV === orderV) {
+            pointU++;
+            pointV = 0;
+        } else
+            pointV++;
     }
 
     return controlPoints;
@@ -220,3 +234,17 @@ function dotProduct(vector1, vector2) {
 function angleBetweenVectors(vector1, vector2) {
     return Math.acos(dotProduct(vector1, vector2) / (vectorNorm(vector1) + vectorNorm(vector2)));
 }
+
+/**
+* Gets the Knots Vector.
+*/
+function getKnotsVector(degree) { // TODO (CGF 0.19.3): add to CGFnurbsSurface
+    let v = [];
+    for (let i = 0; i <= degree; i++)
+        v.push(0);
+
+    for (let i = 0; i <= degree; i++)
+        v.push(1);
+
+    return v;
+};

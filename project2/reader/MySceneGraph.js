@@ -725,8 +725,8 @@ MySceneGraph.prototype.parsePrimitives = function(primitives) {
                         return ('Patch with id ' + id + ' expected ' + ((orderU + 1) * (orderV + 1)) +
                             ' control points, but got ' + shape.children.length + '.');
 
-                    object = new Patch(this.scene, orderU, orderV, partsU, partsV);
-                    object.setControlPoints(parseControlPoints(this.reader, shape.children));
+                    let controlPoints = parseControlPoints(this.reader, shape.children, orderU, orderV);
+                    object = new Patch(this.scene, orderU, orderV, partsU, partsV, controlPoints);
                 }
                 break;
             default:
