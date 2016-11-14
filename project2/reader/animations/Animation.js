@@ -3,5 +3,6 @@ class Animation {
         this.scene = scene;
         this.id = id;
         this.time = time;
+        this.done = false;
     }
 }

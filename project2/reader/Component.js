@@ -226,8 +226,8 @@ Component.prototype.update = function(deltaTime) {
         this.currentAnimation.value.update(deltaTime);
 
         if (this.currentAnimation.value.isDone()) {
-          this.currentAnimation = this.currentAnimation.next;
-          this.currentAnimation.value.resetAnimation();
+            this.currentAnimation = this.currentAnimation.next;
+            this.currentAnimation.value.resetAnimation();
         }
     }
 

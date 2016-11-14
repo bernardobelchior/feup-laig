@@ -164,7 +164,10 @@
             <controlpoint xx="1" yy="0" zz="0"/>
             <controlpoint xx="1" yy="1" zz="0"/>
         </animation>
-        <animation id="testCircular" span="20" type="circular" center="10 10 10" radius="5" startang="40" rotang="20"/>
+
+        <animation id="testCircular" span="20" type="circular"
+         centerx="1 " centery="1" centerz="1"
+         radius="5" startang="40" rotang="20"/>
     </animations>
 
     <primitives>
@@ -911,6 +914,7 @@
                 <!-- que as animacoes sao afetadas pelas transformacoes -->
                 <!-- geometricas do objeto.  -->
                 <animationref id="testLinear"/>
+                <animationref id="testCircular"/>
             </animation>
 
             <materials>
