@@ -1,5 +1,4 @@
 class CircularAnimation extends Animation {
-
     /**
      *
      * @param scene
@@ -11,56 +10,50 @@ class CircularAnimation extends Animation {
      * @param rotAng        Final angle of the animation (relative to the starting angle)
      * @constructor
      */
-    constructor(scene, id, time,center,radius,startAng,rotAng) {
-        super(scene,id,time);
+    constructor(scene, id, time, center, radius, startAng, rotAng) {
+        super(scene, id, time);
 
         this.center = center;
         this.radius = radius;
         this.startAng = startAng;
         this.rotAng = rotAng;
-        this.angleTraveled = 0;    // Rotation already completed by the animation
+        this.resetAnimation();
     }
 
     update(deltaTime) {
-        if(this.angleTraveled === 0)
-            this.setupAnimation();
+        let rotationSlice = this.rotAng * (deltaTime/1000/this.time); // Rotation to be done in this iteration
+        this.currentRotAng += rotationSlice;
 
-
-        let rotationSlice = rotAng / deltaTime;                                 // Rotation to be done in this iteration
-
-        if(rotationSlice + this.angleTraveled > this.rotAng)                    // If the animation will make the rotation
-            rotationSlice = rotationSlice + this.angleTraveled - this.rotAng;   // exceed what was wanted, make it only rotate to
-                                                                                // completion
-        this.angleComponent(rotationSlice + this.angleTraveled);
-
-        this.scene.pushMatrix();
-            this.scene.rotate(y,rotationSlice);
-        this.scene.popMatrix();
-
-        this.angleTraveled += rotationSlice;
+        if (this.currentRotAng >= this.rotAng) // If the animation will make the rotation
+            this.done = true;
     }
 
+    display() {
+        this.scene.rotate(this.startAng + this.currentRotAng, 0, 1, 0);
+        //Put the object in the right position
+        this.scene.translate(this.center[0], this.center[1], this.center[2]);
+        this.scene.translate(this.radius * Math.sin(this.startAng + this.currentRotAng), 0, this.radius * Math.cos(this.startAng + this.currentRotAng));
+    }
 
-
-   setupAnimation(){
+    angleComponent(angle) {
         this.scene.pushMatrix();
-            this.scene.translate(this.radius * Math.sin(this.startAng),0, this.radius * Math.cos(this.startAng));
-            this.scene.translate(center[0],center[1],center[2]);
+        this.scene.rotate(angle, 0, 1, 0);
+        this.scene.translate(-this.radius * Math.sin(this.startAng), 0, -this.radius * Math.cos(this.startAng));
         this.scene.popMatrix();
     }
 
-   angleComponent(angle){
-        this.scene.pushMatrix();
-            this.scene.rotate(y, angle);
-            this.scene.translate(-this.radius * Math.sin(this.startAng),0, -this.radius * Math.cos(this.startAng));
-        this.scene.popMatrix();
-   }
+    isDone() {
+        return this.done;
+    }
 
-   isDone(){
-       return this.done;
-   }
+    resetAnimation() {
+        this.angleTraveled = 0; // Rotation already completed by the animation
+        this.position = [this.radius * Math.sin(this.startAng), 0, this.radius * Math.cos(this.startAng)];
+        this.done = false;
+        this.currentRotAng = 0;
+    }
 
-   resetAnimation(){
-       this.angleTraveled = 0;
-   }
+    clone() {
+        return new CircularAnimation(this.scene, this.id, this.time, this.center, this.radius, this.startAng, this.rotAng);
+    }
 }

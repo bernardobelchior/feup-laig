@@ -164,6 +164,7 @@
             <controlpoint xx="1" yy="0" zz="0"/>
             <controlpoint xx="1" yy="1" zz="0"/>
         </animation>
+
         <animation id="testCircular" span="20" type="circular"
          centerx="1 " centery="1" centerz="1"
          radius="5" startang="40" rotang="20"/>
@@ -194,6 +195,19 @@
             <torus inner="0.05" outer="1" slices="20" loops="20"/>
         </primitive>
 
+        <primitive id="patch">
+            <patch orderU="2" orderV="2" partsU="5" partsV="10">
+                <controlpoint x="0" y="0" z="0"/>
+                <controlpoint x="1" y="0" z="0"/>
+                <controlpoint x="2" y="0" z="0"/>
+                <controlpoint x="0" y="0" z="1"/>
+                <controlpoint x="1" y="0" z="1"/>
+                <controlpoint x="2" y="0" z="1"/>
+                <controlpoint x="0" y="0" z="2"/>
+                <controlpoint x="1" y="0" z="2"/>
+                <controlpoint x="2" y="0" z="2"/>
+            </patch>
+        </primitive>
     </primitives>
 
     <!--components section-->
@@ -912,6 +926,7 @@
                 <!-- geometricas do mesmo objeto, isso significa -->
                 <!-- que as animacoes sao afetadas pelas transformacoes -->
                 <!-- geometricas do objeto.  -->
+                <!--<animationref id="testLinear"/>-->
                 <animationref id="testCircular"/>
             </animation>
 

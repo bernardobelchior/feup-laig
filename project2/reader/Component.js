@@ -12,8 +12,8 @@ function Component(scene, id) {
     this.children = [];
     this.currentMaterial = 0;
     this.transformation = new Transformation(scene);
-    this.animations = [];
-    this.currentAnimationId = 0;
+    this.animationsRoot;
+    this.currentAnimation;
     this.parent = null;
 }
 
@@ -123,6 +123,10 @@ Component.prototype.display = function(parent) {
 
     this.material.apply();
 
+    if (this.currentAnimation)
+        this.currentAnimation.value.display();
+
+
     for (let child of this.children) {
         if (this.texture) {
             /*
@@ -193,30 +197,42 @@ Component.prototype.amplifyTexture = function(amplifierS, amplifierT) {
 };
 
 /**
- * Adds the animation to the animations array of the component.
+ * Adds the animation to the animations list of the component.
  */
 Component.prototype.addAnimation = function(animation) {
-    if (this.animations)
-        this.animations = [];
+    let node = new ListNode(animation.clone());
 
-    this.animations.push(animation.copy);
+    if (!this.animationsRoot) {
+        this.animationsRoot = node;
+        this.animationsRoot.next = this.animationsRoot;
+        this.currentAnimation = this.animationsRoot;
+        return;
+    }
+
+    node.next = this.animationsRoot;
+
+    let itNode = this.animationsRoot;
+    while (itNode.next !== this.animationsRoot)
+        itNode = itNode.next;
+
+    itNode.next = node;
 };
 
 /**
- * Animates the component.
+ * Updates the component animation.
  */
-Component.prototype.animate = function(deltaTime) {
-    if (!this.animations)
-        return;
+Component.prototype.update = function(deltaTime) {
+    if (this.animationsRoot) {
+        this.currentAnimation.value.update(deltaTime);
 
-    let currentAnimation = this.animations[this.currentAnimationId];
+        if (this.currentAnimation.value.isDone()) {
+            this.currentAnimation = this.currentAnimation.next;
+            this.currentAnimation.value.resetAnimation();
+        }
+    }
 
-    currentAnimation.move(deltaTime);
-
-    if (currentAnimation.isDone()) {
-        if (this.currentAnimationId >= this.animations.length)
-            this.currentAnimationId = 0;
-        else
-            this.currentAnimationId++;
+    for (let child of this.children) {
+        if (child instanceof Component)
+            child.update(deltaTime);
     }
 };
