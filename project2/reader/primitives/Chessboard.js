@@ -13,6 +13,7 @@
  */
 function Chessboard(scene, du, dv, texture, su, sv, c1, c2, cs){
     CGFobject.call(this,scene);
+    this.scene = scene;
 
     this.du = du;
     this.dv = dv;
@@ -35,7 +36,6 @@ function Chessboard(scene, du, dv, texture, su, sv, c1, c2, cs){
 
 
     this.plane = new Plane(scene, 1.0, 1.0, du, dv);
-
     this.initBuffers();
 
     this.shader = new CGFshader(this.scene.gl, 'shaders/chessboard.vert', 'shaders/chessboard.frag');
