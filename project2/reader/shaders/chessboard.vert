@@ -1,11 +1,16 @@
-uniform vec3 aVertexPosition;
-uniform vec3 aVertexNormal;
-uniform vec2 aTextureCoord;
-uniform vec3 selectedCoord;
+attribute vec3 aVertexPosition;
+attribute vec3 aVertexNormal;
+attribute vec2 aTextureCoord;
 
-varying vec4 coords;
-varying vec4 normal;
+uniform mat4 uMVMatrix;
+uniform mat4 uPMatrix;
+uniform mat4 uNMatrix;
 
-void main(){
-    gl_Position = vec4(aVertexPosition);
+varying vec2 vTextureCoord;
+
+void main() {
+
+	gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+
+	vTextureCoord = aTextureCoord;
 }
