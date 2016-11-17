@@ -195,6 +195,10 @@
              <transformation>
             </transformation>
 
+            <animation>
+                <animationref id="testLinear"/>
+            </animation>
+
             <materials>
                 <material id="spaceship"/>
             </materials>

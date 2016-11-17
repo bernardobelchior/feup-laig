@@ -421,9 +421,8 @@ MySceneGraph.prototype.parseAnimations = function (animations) {
         if (span <= 0)
             return ('Invalid span for animation with id "' + id + '".');
 
-        if (type === 'linear') {
-        }
-        //this.animations[id] = parseLinearAnimation(this.reader, animation, this.scene, id, span);
+        if (type === 'linear')
+            this.animations[id] = parseLinearAnimation(this.reader, animation, this.scene, id, span);
         else
             this.animations[id] = parseCircularAnimation(this.reader, animation, this.scene, id, span);
     }

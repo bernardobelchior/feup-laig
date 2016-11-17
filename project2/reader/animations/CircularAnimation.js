@@ -36,10 +36,12 @@ class CircularAnimation extends Animation {
      * Applies the transformations according to the current state of the animation.
      */
      display() {
-        this.scene.rotate(this.startAng + this.currentRotAng, 0, 1, 0);
-        //Put the object in the right position
+        //Translates the object to the right position.
         this.scene.translate(this.center[0], this.center[1], this.center[2]);
         this.scene.translate(this.radius * Math.sin(this.startAng + this.currentRotAng), 0, this.radius * Math.cos(this.startAng + this.currentRotAng));
+
+        //Rotates the object so it faces the right direction.
+        this.scene.rotate(Math.PI/2 + this.startAng + this.currentRotAng, 0, 1, 0);
     }
 
     /**

@@ -104,6 +104,11 @@ class Vehicle {
      * Displays the vehicle.
      */
     display() {
+        this.scene.pushMatrix();
+        this.scene.rotate(Math.PI/2, 1, 0, 0);
+        this.scene.translate(0, -this.bodyHeight/2, 0);
+
+
         //Display body
         this.scene.pushMatrix();
         this.scene.scale(0.75, 1, 0.75);
@@ -129,6 +134,9 @@ class Vehicle {
         this.scene.translate(0, 0, 0.65);
         this.scene.scale(-1, 1, -1);
         this.wing.display();
+        this.scene.popMatrix();
+
+
         this.scene.popMatrix();
     }
 
