@@ -13,8 +13,8 @@ function Patch(scene, orderU, orderV, partsU, partsV, controlPoints) {
     let knotsV = getKnotsVector(orderV);
 
     let nurbsSurface = new CGFnurbsSurface(orderU, orderV, knotsU, knotsV, controlPoints);
-    let getSurfacePoint = function(u, v) {
-      return nurbsSurface.getPoint(u, v);
+    let getSurfacePoint = function (u, v) {
+        return nurbsSurface.getPoint(u, v);
     };
 
     CGFnurbsObject.call(this, scene, getSurfacePoint, partsU, partsV);
@@ -29,8 +29,9 @@ Patch.prototype = Object.create(CGFnurbsObject.prototype);
 Patch.prototype.constructor = Patch;
 
 /**
-* Amplifies the Patch texture.
-*/
-Patch.prototype.amplifyTexture = function(amplifierS, amplifierT) {
+ * This function is needed in order to avoid TypeError due to amplifying a texture
+ * that must not be amplified.
+ */
+Patch.prototype.amplifyTexture = function (amplifierS, amplifierT) {
 
 };

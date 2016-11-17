@@ -106,6 +106,7 @@ class Vehicle {
     display() {
         //Display body
         this.scene.pushMatrix();
+        this.scene.scale(0.75, 1, 0.75);
         this.scene.rotate(-Math.PI / 2, 1, 0, 0);
         this.body.display();
         this.scene.popMatrix();
@@ -113,20 +114,30 @@ class Vehicle {
         //Display tip
         this.scene.pushMatrix();
         this.scene.translate(0, this.bodyHeight, 0);
+        this.scene.scale(0.75, 0.75, 0.75);
         this.tip.display();
         this.scene.popMatrix();
 
         //Display right wing
         this.scene.pushMatrix();
-        this.scene.translate(0, 0, -0.8);
+        this.scene.translate(0, 0, -0.65);
         this.wing.display();
         this.scene.popMatrix();
 
         //Display left wing
         this.scene.pushMatrix();
-        this.scene.translate(0, 0, 0.8);
+        this.scene.translate(0, 0, 0.65);
         this.scene.scale(-1, 1, -1);
         this.wing.display();
         this.scene.popMatrix();
     }
+
+    /**
+     * This function is needed in order to avoid TypeError due to amplifying a texture
+     * that must not be amplified.
+     */
+    amplifyTexture() {
+
+    }
 }
+

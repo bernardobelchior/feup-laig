@@ -62,13 +62,7 @@
     </lights>
 
     <textures>
-        <texture id="building_side" file="assets/building_side.png" length_s="1" length_t="0.5"/>
-        <texture id="building_roof" file="assets/building_roof.png" length_s="1" length_t="1"/>
-        <texture id="ground" file="assets/ground.png" length_s="1" length_t="1"/>
-        <texture id="concrete" file="assets/concrete.png" length_s="1" length_t="1"/>
-        <texture id="saturn" file="assets/saturn.png" length_s="1" length_t="1"/>
-        <texture id="saturn_ring" file="assets/saturn_ring.png" length_s="1" length_t="1"/>
-        <texture id="metal" file="assets/metal.png" length_s="1" length_t="1"/>
+        <texture id="spaceship" file="assets/spaceship.jpg" length_s="1" length_t="1"/>
     </textures>
 
     <materials>
@@ -78,46 +72,6 @@
             <specular r="0.5" g="0.5" b="0.5" a="1"/>
             <emission r="0" g="0" b="0" a="1"/>
             <shininess value="200"/>
-        </material>
-
-        <material id="concrete">
-            <ambient r="0.2" g="0.2" b="0.2" a="1"/>
-            <diffuse r="0.4" g="0.4" b="0.4" a="1"/>
-            <specular r="0.1" g="0.1" b="0.1" a="1"/>
-            <emission r="0" g="0" b="0" a="1"/>
-            <shininess value="1"/>
-        </material>
-
-        <material id="darker_concrete">
-            <ambient r="0.2" g="0.2" b="0.2" a="1"/>
-            <diffuse r="0.1" g="0.1" b="0.1" a="1"/>
-            <specular r="0.1" g="0.1" b="0.1" a="1"/>
-            <emission r="0" g="0" b="0" a="1"/>
-            <shininess value="1"/>
-        </material>
-
-        <material id="ground">
-            <ambient r="0.2" g="0.2" b="0.2" a="1"/>
-            <diffuse r="0.2" g="0.2" b="0.2" a="1"/>
-            <specular r="0.1" g="0.1" b="0.1" a="1"/>
-            <emission r="0" g="0" b="0" a="1"/>
-            <shininess value="1"/>
-        </material>
-
-        <material id="building_side">
-            <ambient r="0.2" g="0.2" b="0.2" a="1"/>
-            <diffuse r="0.8" g="0.8" b="0.8" a="1"/>
-            <specular r="0.8" g="0.8" b="0.8" a="1"/>
-            <emission r="0" g="0" b="0" a="1"/>
-            <shininess value="200"/>
-        </material>
-
-        <material id="building_roof">
-            <ambient r="0.2" g="0.2" b="0.2" a="1"/>
-            <diffuse r="0.3" g="0.3" b="0.3" a="1"/>
-            <specular r="0.1" g="0.1" b="0.1" a="1"/>
-            <emission r="0" g="0" b="0" a="1"/>
-            <shininess value="10"/>
         </material>
 
         <material id="planet">
@@ -220,7 +174,6 @@
 
     <!--components section-->
     <components>
-
         <component id="root">
 
             <transformation>
@@ -233,9 +186,24 @@
             <texture id="none"/>
 
             <children>
-                <primitiveref id="vehicle"/>
+                <componentref id="spaceship"/>
             </children>
 
+        </component>
+
+        <component id="spaceship">
+             <transformation>
+            </transformation>
+
+            <materials>
+                <material id="spaceship"/>
+            </materials>
+
+            <texture id="spaceship"/>
+
+            <children>
+                <primitiveref id="vehicle"/>
+            </children>
         </component>
 </components>
 
