@@ -28,7 +28,7 @@ XMLscene.prototype.init = function(application) {
     this.rootNode;
     this.setUpdatePeriod(1 / 60 * 1000);
     this.lastUpdateTime = (new Date()).getTime();
-    this.chessboard = new Chessboard(this, 8, 8, 'res/wood.jpg', 2,2,[0,1,0,1],[0,0,1,1],[1,0,0,0]);
+    this.chessboard = new Chessboard(this, 8, 8, 'res/wood.jpg', 2,2,[0,1,0,1],[0,0,1,1],[1,0,0,1]);
 };
 
 /**
