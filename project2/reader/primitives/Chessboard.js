@@ -65,6 +65,12 @@ function Chessboard(scene, du, dv, texture, su, sv, c1, c2, cs){
     this.shader.setUniformsValues({colorsg: this.cs[1]});
     this.shader.setUniformsValues({colorsb: this.cs[2]});
     this.shader.setUniformsValues({colorsa: this.cs[3]});
+
+    this.shader.setUniformsValues({divU: du});
+    this.shader.setUniformsValues({divV: dv});
+
+    this.shader.setUniformsValues({selectedU: su});
+    this.shader.setUniformsValues({selectedV: sv});
     }
 
 Chessboard.prototype = Object.create(CGFobject.prototype);

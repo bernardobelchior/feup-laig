@@ -24,12 +24,39 @@ uniform float colorsg;
 uniform float colorsb;
 uniform float colorsa;
 
+uniform float divU;
+uniform float divV;
+
+uniform float selectedU;
+uniform float selectedV;
+
 void main(){
 	vec4 color1 = vec4(color1r, color1g, color1b, color1a);
 	vec4 color2 = vec4(color2r, color2g, color2b, color2a);
 	vec4 colors = vec4(colorsr, colorsg, colorsb, colorsa);
 
-	vec4 color = texture2D(sampler, vTextureCoord);
+	vec4 color = color1;
+	vec2 divLen = vec2(1.0/divU, 1.0/divV);
+	vec2 position = vec2(vTextureCoord.x / divLen.x, vTextureCoord.y / divLen.y);
+	position = floor(position);
 
-	gl_FragColor = color * color1;
+	vec2 selectedPosition = vec2(selectedU, selectedV);
+
+	vec2 positionParity = mod(position, vec2(2.0,2.0));
+	if(positionParity.x == 0.0){
+		if(positionParity.y == 0.0)
+			color = color2;
+	}
+	else
+		if(positionParity.y == 1.0)
+			color = color2;
+
+	bvec2 isSelectedPosition = equal(position, selectedPosition);
+
+	if(isSelectedPosition[0] == true && isSelectedPosition[1] == true)
+		color = colors;
+
+	vec4 texColor = texture2D(sampler, vTextureCoord);
+
+	gl_FragColor = texColor * color;
 }
