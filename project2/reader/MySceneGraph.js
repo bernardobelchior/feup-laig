@@ -28,7 +28,7 @@ function MySceneGraph(filename, scene) {
 /**
  * Callback to be executed after successful reading
  */
-MySceneGraph.prototype.onXMLReady = function() {
+MySceneGraph.prototype.onXMLReady = function () {
     console.log("XML Loading finished.");
     var rootElement = this.reader.xmlDoc.documentElement;
 
@@ -49,7 +49,7 @@ MySceneGraph.prototype.onXMLReady = function() {
  * Calls the parsing functions on every block of the dsx, checking for an error in any of them
  * @param dsx
  */
-MySceneGraph.prototype.parseDsx = function(dsx) {
+MySceneGraph.prototype.parseDsx = function (dsx) {
     //Mandatory in order to ensure the blocks order.
     let scene = dsx.children[0];
     let views = dsx.children[1];
@@ -66,9 +66,9 @@ MySceneGraph.prototype.parseDsx = function(dsx) {
 };
 
 /**
-  Parses the scene tag
-*/
-MySceneGraph.prototype.parseScene = function(scene) {
+ Parses the scene tag
+ */
+MySceneGraph.prototype.parseScene = function (scene) {
     if (scene.nodeName !== 'scene')
         return ('Blocks not ordered correctly. Expected "scene", found "' + scene.nodeName + '".');
 
@@ -81,9 +81,9 @@ MySceneGraph.prototype.parseScene = function(scene) {
 };
 
 /**
-  Parses the views tag and its children and sets the scene's cameras accordingly.
-*/
-MySceneGraph.prototype.parseViews = function(views) {
+ Parses the views tag and its children and sets the scene's cameras accordingly.
+ */
+MySceneGraph.prototype.parseViews = function (views) {
     if (views.nodeName !== 'views')
         return ('Blocks not ordered correctly. Expected "views", found "' + views.nodeName + '".');
 
@@ -121,7 +121,7 @@ MySceneGraph.prototype.parseViews = function(views) {
 /**
  * Parses the illumination block of the DSX
  */
-MySceneGraph.prototype.parseIllumination = function(illumination) {
+MySceneGraph.prototype.parseIllumination = function (illumination) {
     if (illumination.nodeName !== 'illumination')
         return ('Blocks not ordered correctly. Expected "illumination", found "' + illumination.nodeName + '".');
 
@@ -148,7 +148,7 @@ MySceneGraph.prototype.parseIllumination = function(illumination) {
 /**
  * Parses the lights block from the dsx.
  */
-MySceneGraph.prototype.parseLights = function(lights) {
+MySceneGraph.prototype.parseLights = function (lights) {
     if (lights.nodeName !== 'lights')
         return ('Blocks not ordered correctly. Expected "lights", found "' + lights.nodeName + '".');
 
@@ -197,7 +197,7 @@ MySceneGraph.prototype.parseLights = function(lights) {
 /**
  * Parses an omni type light from the lights block
  */
-MySceneGraph.prototype.parseOmniLight = function(light, n_lights, enabled, id) {
+MySceneGraph.prototype.parseOmniLight = function (light, n_lights, enabled, id) {
 
     let locationTag = light.getElementsByTagName('location')[0];
     let location = parseVec4(this.reader, locationTag);
@@ -237,7 +237,7 @@ MySceneGraph.prototype.parseOmniLight = function(light, n_lights, enabled, id) {
     newLight.update();
 };
 
-MySceneGraph.prototype.parseSpotLight = function(light, n_lights, enabled, id) {
+MySceneGraph.prototype.parseSpotLight = function (light, n_lights, enabled, id) {
     let angle = this.reader.getFloat(light, 'angle', true);
     if (!angle)
         return ("Light with id " + id + " has an invalid angle");
@@ -303,7 +303,7 @@ MySceneGraph.prototype.parseSpotLight = function(light, n_lights, enabled, id) {
 /**
  * Parses the textures block from the dsx.
  */
-MySceneGraph.prototype.parseTextures = function(textures) {
+MySceneGraph.prototype.parseTextures = function (textures) {
     if (textures.nodeName !== 'textures')
         return ('Blocks not ordered correctly. Expected "textures", found "' + textures.nodeName + '".');
 
@@ -348,7 +348,7 @@ MySceneGraph.prototype.parseTextures = function(textures) {
 /**
  * Parses the materials block from the dsx.
  */
-MySceneGraph.prototype.parseMaterials = function(materials) {
+MySceneGraph.prototype.parseMaterials = function (materials) {
     if (materials.nodeName !== 'materials')
         return ('Blocks not ordered correctly. Expected "materials", found "' + materials.nodeName + '".');
 
@@ -393,7 +393,7 @@ MySceneGraph.prototype.parseMaterials = function(materials) {
 /**
  * Parses the animations block from the dsx.
  */
-MySceneGraph.prototype.parseAnimations = function(animations) {
+MySceneGraph.prototype.parseAnimations = function (animations) {
     if (animations.nodeName !== 'animations')
         return ('Blocks not ordered correctly. Expected "animations", found "' + animations.nodeName + '".');
 
@@ -421,8 +421,9 @@ MySceneGraph.prototype.parseAnimations = function(animations) {
         if (span <= 0)
             return ('Invalid span for animation with id "' + id + '".');
 
-        if (type === 'linear'){}
-            //this.animations[id] = parseLinearAnimation(this.reader, animation, this.scene, id, span);
+        if (type === 'linear') {
+        }
+        //this.animations[id] = parseLinearAnimation(this.reader, animation, this.scene, id, span);
         else
             this.animations[id] = parseCircularAnimation(this.reader, animation, this.scene, id, span);
     }
@@ -432,7 +433,7 @@ MySceneGraph.prototype.parseAnimations = function(animations) {
  * Parses the components block from the dsx.
  * And creates the scene graph.
  */
-MySceneGraph.prototype.parseComponents = function(compsTag) {
+MySceneGraph.prototype.parseComponents = function (compsTag) {
     if (compsTag.nodeName !== 'components')
         return ('Blocks not ordered correctly. Expected "components", found "' + compsTag.nodeName + '".');
 
@@ -503,7 +504,7 @@ MySceneGraph.prototype.parseComponents = function(compsTag) {
 /**
  * Creates the scene graph used to display the scene
  */
-MySceneGraph.prototype.createSceneGraph = function(components) {
+MySceneGraph.prototype.createSceneGraph = function (components) {
     for (let id in components) {
         for (let child of components[id].children) {
             components[id].component.addChild(components[child].component);
@@ -531,7 +532,7 @@ MySceneGraph.prototype.createSceneGraph = function(components) {
 /**
  * Parses the component animations.
  */
-MySceneGraph.prototype.parseComponentAnimations = function(component, animationsTag) {
+MySceneGraph.prototype.parseComponentAnimations = function (component, animationsTag) {
     if (animationsTag) {
         for (let animation of animationsTag.children) {
             if (animation.nodeName !== 'animationref')
@@ -553,7 +554,7 @@ MySceneGraph.prototype.parseComponentAnimations = function(component, animations
 /**
  * Parses the transformations and adds it to the component.
  */
-MySceneGraph.prototype.parseComponentTransformations = function(component, tag) {
+MySceneGraph.prototype.parseComponentTransformations = function (component, tag) {
     //Used to prevent the dsx from having transformation ref and other
     //transformations in the same block.
     let transfRef;
@@ -601,7 +602,7 @@ MySceneGraph.prototype.parseComponentTransformations = function(component, tag) 
 /**
  * Parses the component materials and adds it to the component.
  */
-MySceneGraph.prototype.parseComponentMaterials = function(component, tag) {
+MySceneGraph.prototype.parseComponentMaterials = function (component, tag) {
     if (!tag.children.length)
         return 'There is a component that does not have a material.';
 
@@ -627,7 +628,7 @@ MySceneGraph.prototype.parseComponentMaterials = function(component, tag) {
  *
  * In the end, it adds the component and its children to the components dictionary.
  */
-MySceneGraph.prototype.parseComponentChildren = function(components, component, tag) {
+MySceneGraph.prototype.parseComponentChildren = function (components, component, tag) {
     let children = [];
 
     for (let child of tag.children) {
@@ -658,7 +659,7 @@ MySceneGraph.prototype.parseComponentChildren = function(components, component, 
 /**
  *  Parses the primitives from the dsx root element.
  */
-MySceneGraph.prototype.parsePrimitives = function(primitives) {
+MySceneGraph.prototype.parsePrimitives = function (primitives) {
     if (primitives.nodeName !== 'primitives')
         return ('Blocks not ordered correctly. Expected "primitives", found "' + primitives.nodeName + '".');
 
@@ -684,38 +685,34 @@ MySceneGraph.prototype.parsePrimitives = function(primitives) {
                     parseVec3(this.reader, shape, '2'),
                     parseVec3(this.reader, shape, '3'));
                 break;
-            case 'cylinder':
-                {
-                    let base = this.reader.getFloat(shape, 'base', true);
-                    let top = this.reader.getFloat(shape, 'top', true);
-                    let height = this.reader.getFloat(shape, 'height', true);
-                    let slices = this.reader.getFloat(shape, 'slices', true);
-                    let stacks = this.reader.getFloat(shape, 'stacks', true);
+            case 'cylinder': {
+                let base = this.reader.getFloat(shape, 'base', true);
+                let top = this.reader.getFloat(shape, 'top', true);
+                let height = this.reader.getFloat(shape, 'height', true);
+                let slices = this.reader.getFloat(shape, 'slices', true);
+                let stacks = this.reader.getFloat(shape, 'stacks', true);
 
-                    object = new Cylinder(this.scene, base, top, height, slices, stacks);
-                }
+                object = new Cylinder(this.scene, base, top, height, slices, stacks);
+            }
                 break;
-            case 'sphere':
-                {
-                    let radius = this.reader.getFloat(shape, 'radius', true);
-                    let slices = this.reader.getFloat(shape, 'slices', true);
-                    let stacks = this.reader.getFloat(shape, 'stacks', true);
+            case 'sphere': {
+                let radius = this.reader.getFloat(shape, 'radius', true);
+                let slices = this.reader.getFloat(shape, 'slices', true);
+                let stacks = this.reader.getFloat(shape, 'stacks', true);
 
-                    object = new Sphere(this.scene, radius, slices, stacks);
-                }
+                object = new Sphere(this.scene, radius, slices, stacks);
+            }
                 break;
-            case 'torus':
-                {
-                    let inner = this.reader.getFloat(shape, 'inner', true);
-                    let outer = this.reader.getFloat(shape, 'outer', true);
-                    let slices = this.reader.getInteger(shape, 'slices', true);
-                    let loops = this.reader.getInteger(shape, 'loops', true);
+            case 'torus': {
+                let inner = this.reader.getFloat(shape, 'inner', true);
+                let outer = this.reader.getFloat(shape, 'outer', true);
+                let slices = this.reader.getInteger(shape, 'slices', true);
+                let loops = this.reader.getInteger(shape, 'loops', true);
 
-                    object = new Torus(this.scene, inner, outer, slices, loops);
-                }
+                object = new Torus(this.scene, inner, outer, slices, loops);
+            }
                 break;
-            case 'plane':
-            {
+            case 'plane': {
                 let dimX = this.reader.getFloat(shape, 'dimX', true);
                 let dimY = this.reader.getFloat(shape, 'dimY', true);
                 let partsX = this.reader.getInteger(shape, 'partsX', true);
@@ -724,20 +721,23 @@ MySceneGraph.prototype.parsePrimitives = function(primitives) {
                 object = new Plane(this.scene, dimX, dimY, partsX, partsY);
             }
                 break;
-            case 'patch':
-                {
-                    let orderU = this.reader.getInteger(shape, 'orderU', true);
-                    let orderV = this.reader.getInteger(shape, 'orderV', true);
-                    let partsU = this.reader.getInteger(shape, 'partsU', true);
-                    let partsV = this.reader.getInteger(shape, 'partsV', true);
+            case 'patch': {
+                let orderU = this.reader.getInteger(shape, 'orderU', true);
+                let orderV = this.reader.getInteger(shape, 'orderV', true);
+                let partsU = this.reader.getInteger(shape, 'partsU', true);
+                let partsV = this.reader.getInteger(shape, 'partsV', true);
 
-                    if (shape.children.length !== (orderU + 1) * (orderV + 1))
-                        return ('Patch with id ' + id + ' expected ' + ((orderU + 1) * (orderV + 1)) +
-                            ' control points, but got ' + shape.children.length + '.');
+                if (shape.children.length !== (orderU + 1) * (orderV + 1))
+                    return ('Patch with id ' + id + ' expected ' + ((orderU + 1) * (orderV + 1)) +
+                    ' control points, but got ' + shape.children.length + '.');
 
-                    let controlPoints = parseControlPoints(this.reader, shape.children, orderU, orderV);
-                    object = new Patch(this.scene, orderU, orderV, partsU, partsV, controlPoints);
-                }
+                let controlPoints = parseControlPoints(this.reader, shape.children, orderU, orderV);
+                object = new Patch(this.scene, orderU, orderV, partsU, partsV, controlPoints);
+            }
+                break;
+            case 'vehicle': {
+                object = new Vehicle(this.scene);
+            }
                 break;
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');
@@ -758,7 +758,7 @@ MySceneGraph.prototype.parsePrimitives = function(primitives) {
  * the first element of the value array is the function to be called (transtale/rotate/scale)
  * the remainder of the array are the arguments to the function
  */
-MySceneGraph.prototype.parseTransformations = function(transformations) {
+MySceneGraph.prototype.parseTransformations = function (transformations) {
     if (transformations.nodeName !== 'transformations')
         return ('Blocks not ordered correctly. Expected "transformations", found "' + transformations.nodeName + '".');
 
@@ -788,7 +788,7 @@ MySceneGraph.prototype.parseTransformations = function(transformations) {
 /**
  * Callback to be executed on any read error
  */
-MySceneGraph.prototype.onXMLError = function(message) {
+MySceneGraph.prototype.onXMLError = function (message) {
     console.error("XML Loading Error: " + message);
     this.loadedOk = false;
 };

@@ -12,8 +12,8 @@ function Patch(scene, orderU, orderV, partsU, partsV, controlPoints) {
     let knotsU = getKnotsVector(orderU);
     let knotsV = getKnotsVector(orderV);
 
-    nurbsSurface = new CGFnurbsSurface(orderU, orderV, knotsU, knotsV, controlPoints);
-    getSurfacePoint = function(u, v) {
+    let nurbsSurface = new CGFnurbsSurface(orderU, orderV, knotsU, knotsV, controlPoints);
+    let getSurfacePoint = function(u, v) {
       return nurbsSurface.getPoint(u, v);
     };
 
