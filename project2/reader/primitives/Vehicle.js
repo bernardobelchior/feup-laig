@@ -17,8 +17,9 @@ class Vehicle {
 
         //Initialize vehicle parts
         this.body = new BaselessCylinder(scene, 1, 1, this.bodyHeight, 32, this.bodyHeight);
-        this.tip = this.createTip(32, 16, 1.5);
+        this.tip = this.createTip();
         this.wing = this.createWing();
+        this.bottom = new Circle(this.scene, 32, 1);
     }
 
     /**
@@ -80,6 +81,13 @@ class Vehicle {
 
     createWing() {
         let controlPoints = [
+            [
+                [0, 0, 0, 1],
+                [0, 0, -1.9, 1],
+                [0, 0, -2, 1],
+                [0, 0, -1.9, 1],
+                [0, 0, 0, 1]
+            ],
             [
                 [-0.2, 0, 0, 1],
                 [-0.2, 0, -1.9, 1],
@@ -148,17 +156,23 @@ class Vehicle {
 
         //Display right wing
         this.scene.pushMatrix();
-        this.scene.translate(0, 0, -0.65);
+        this.scene.translate(-0.25, 0, -0.6);
         this.wing.display();
         this.scene.popMatrix();
 
         //Display left wing
         this.scene.pushMatrix();
-        this.scene.translate(0, 0, 0.65);
+        this.scene.translate(-0.25, 0, 0.6);
         this.scene.scale(-1, 1, -1);
         this.wing.display();
         this.scene.popMatrix();
 
+        //Spaceship bottom
+        this.scene.pushMatrix();
+        this.scene.scale(0.75, 1, 0.75);
+        this.scene.rotate(Math.PI / 2, 1, 0, 0);
+        this.bottom.display();
+        this.scene.popMatrix();
 
         this.scene.popMatrix();
     }
