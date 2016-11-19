@@ -39,20 +39,20 @@ class Vehicle {
             controlPoints.push([]);
 
             for (let v = slices; v >= 0; v--) {
-                console.log(angle * v / Math.PI * 180);
+//                console.log(angle * v / Math.PI * 180);
                 let point = [
                     Math.cos(angle * v) * Math.sqrt(u / stacks),
                     height - yInc * u,
                     Math.sin(angle * v) * Math.sqrt(u / stacks),
                     1
                 ];
-                console.log('Sin: ' + Math.sin(angle * v) + '\tCos: ' + Math.cos(angle * v));
+ //               console.log('Sin: ' + Math.sin(angle * v) + '\tCos: ' + Math.cos(angle * v));
                 controlPoints[u].push(point);
             }
-            console.log('Next');
+  //          console.log('Next');
         }
 
-        console.log(controlPoints);
+   //     console.log(controlPoints);
         return new Patch(this.scene, stacks, slices, stacks, slices, controlPoints);
     }
 
