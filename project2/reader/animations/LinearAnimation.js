@@ -71,7 +71,7 @@ class LinearAnimation extends Animation {
         this.timeExpected = 1 / (this.speed / distance(this.currentPoint.value, this.currentPoint.next.value));
 
         this.currentPoint = this.currentPoint.next;
-        this.position = this.currentPoint.value;
+        this.position += this.currentPoint.value;
         this.currentDirection = subtractPoints(this.currentPoint.value, this.currentPoint.next.value);
         this.updateAngle(this.currentDirection);
     }
