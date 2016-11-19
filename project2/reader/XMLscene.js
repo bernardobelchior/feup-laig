@@ -9,7 +9,7 @@ XMLscene.prototype.constructor = XMLscene;
  * init
  * initializes the scene settings, camera, and light arrays
  */
-XMLscene.prototype.init = function(application) {
+XMLscene.prototype.init = function (application) {
     CGFscene.prototype.init.call(this, application);
 
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -33,7 +33,7 @@ XMLscene.prototype.init = function(application) {
 /**
  * set the default scene appearance
  */
-XMLscene.prototype.setDefaultAppearance = function() {
+XMLscene.prototype.setDefaultAppearance = function () {
     this.setAmbient(0.2, 0.4, 0.8, 1.0);
     this.setDiffuse(0.2, 0.4, 0.8, 1.0);
     this.setSpecular(0.2, 0.4, 0.8, 1.0);
@@ -43,7 +43,7 @@ XMLscene.prototype.setDefaultAppearance = function() {
 
 // Handler called when the graph is finally loaded.
 // As loading is asynchronous, this may be called already after the application has started the run loop
-XMLscene.prototype.onGraphLoaded = function() {
+XMLscene.prototype.onGraphLoaded = function () {
     this.setGlobalAmbientLight(this.graph.ambient[0], this.graph.ambient[1], this.graph.ambient[2], this.graph.ambient[3]);
     this.gl.clearColor(this.graph.bg[0], this.graph.bg[1], this.graph.bg[2], this.graph.bg[3]);
 
@@ -62,7 +62,7 @@ XMLscene.prototype.onGraphLoaded = function() {
     }
 };
 
-XMLscene.prototype.update = function(currTime) {
+XMLscene.prototype.update = function (currTime) {
     if (!this.graph.loadedOk)
         return;
 
@@ -70,7 +70,7 @@ XMLscene.prototype.update = function(currTime) {
     this.lastUpdateTime = currTime;
 };
 
-XMLscene.prototype.display = function() {
+XMLscene.prototype.display = function () {
     // ---- BEGIN Background, camera and axis setup
 
     // Clear image and depth buffer everytime we update the scene
@@ -108,14 +108,14 @@ XMLscene.prototype.display = function() {
     }
 };
 
-XMLscene.prototype.switchMaterials = function() {
+XMLscene.prototype.switchMaterials = function () {
     this.rootNode.switchMaterials();
 };
 
 /**
  * Switches camera to the next one on the scene cameras array
  */
-XMLscene.prototype.nextCamera = function() {
+XMLscene.prototype.nextCamera = function () {
     if (this.currentCamera === this.cameras.length - 1)
         this.currentCamera = 0;
     else

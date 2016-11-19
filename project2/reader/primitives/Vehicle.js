@@ -28,32 +28,54 @@ class Vehicle {
      * @param height Final height of the object
      * @returns {Patch} Patch that represents the spaceship tip.
      */
-    createTip(slices, stacks, height) {
-        let controlPoints = [];
+    createTip() {
+        let controlPoints = [
+            [
+                [-0.019, -0.400, 0.216, 1],
+                [-0.039, -0.405, 0.150, 1],
+                [-0.048, -0.401, 0.166, 1],
+                [-0.030, -0.408, 0.177, 1],
+                [-0.053, -0.399, 0.166, 1],
+                [-0.044, -0.402, 0.179, 1]
+            ], [
+                [0.000, -1.000, 0.400, 1],
+                [-1.000, -1.000, 0.400, 1],
+                [-1.000, 1.000, 0.400, 1],
+                [1.000, 1.000, 0.400, 1],
+                [1.000, -1.000, 0.400, 1],
+                [0.000, -1.000, 0.400, 1]
+            ], [
+                [0.000, -1.000, 0.800, 1],
+                [-1.000, -1.000, 0.800, 1],
+                [-1.000, 1.000, 0.800, 1],
+                [1.000, 1.000, 0.800, 1],
+                [1.000, -1.000, 0.800, 1],
+                [0.000, -1.000, 0.800, 1]
+            ], [
+                [0.000, -1.000, 1.200, 1],
+                [-1.000, -1.000, 1.200, 1],
+                [-1.000, 1.000, 1.200, 1],
+                [1.000, 1.000, 1.200, 1],
+                [1.000, -1.000, 1.200, 1],
+                [0.000, -1.000, 1.200, 1]
+            ], [
+                [0.000, -1.000, 1.600, 1],
+                [-1.000, -1.000, 1.600, 1],
+                [-1.000, 1.000, 1.600, 1],
+                [1.000, 1.000, 1.600, 1],
+                [1.000, -1.000, 1.600, 1],
+                [0.000, -1.000, 1.600, 1]
+            ], [
+                [0.000, -1.000, 2.000, 1],
+                [-1.000, -1.000, 2.000, 1],
+                [-1.000, 1.000, 2.000, 1],
+                [1.000, 1.000, 2.000, 1],
+                [1.000, -1.000, 2.000, 1],
+                [0.000, -1.000, 2.000, 1]
+            ]
+        ];
 
-        let angle = (2 * Math.PI) / slices;
-        let yInc = height / stacks;
-
-        //Creates the tip using a quadratic function.
-        for (let u = 0; u <= stacks; u++) {
-            controlPoints.push([]);
-
-            for (let v = slices; v >= 0; v--) {
-//                console.log(angle * v / Math.PI * 180);
-                let point = [
-                    Math.cos(angle * v) * Math.sqrt(u / stacks),
-                    height - yInc * u,
-                    Math.sin(angle * v) * Math.sqrt(u / stacks),
-                    1
-                ];
- //               console.log('Sin: ' + Math.sin(angle * v) + '\tCos: ' + Math.cos(angle * v));
-                controlPoints[u].push(point);
-            }
-  //          console.log('Next');
-        }
-
-   //     console.log(controlPoints);
-        return new Patch(this.scene, stacks, slices, stacks, slices, controlPoints);
+        return new Patch(this.scene, controlPoints.length - 1, controlPoints[0].length - 1, 16, 32, controlPoints);
     }
 
     createWing() {
@@ -105,8 +127,8 @@ class Vehicle {
      */
     display() {
         this.scene.pushMatrix();
-        this.scene.rotate(Math.PI/2, 1, 0, 0);
-        this.scene.translate(0, -this.bodyHeight/2, 0);
+        this.scene.rotate(Math.PI / 2, 1, 0, 0);
+        this.scene.translate(0, -this.bodyHeight / 2, 0);
 
 
         //Display body
@@ -118,8 +140,9 @@ class Vehicle {
 
         //Display tip
         this.scene.pushMatrix();
-        this.scene.translate(0, this.bodyHeight, 0);
-        this.scene.scale(0.75, 0.75, 0.75);
+        this.scene.translate(0, this.bodyHeight + 2, .45);
+        this.scene.scale(1.3, 1.2, 1.17);
+        this.scene.rotate(Math.PI / 2, 1, 0, 0);
         this.tip.display();
         this.scene.popMatrix();
 
