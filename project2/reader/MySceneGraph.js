@@ -234,7 +234,7 @@ MySceneGraph.prototype.parseOmniLight = function (light, n_lights, enabled, id) 
     this.scene.lights.push(newLight);
     //needed for GUI
     this.scene.lightIDs.push(id);
-    newLight.update();
+    // newLight.update();
 };
 
 MySceneGraph.prototype.parseSpotLight = function (light, n_lights, enabled, id) {
@@ -296,7 +296,7 @@ MySceneGraph.prototype.parseSpotLight = function (light, n_lights, enabled, id) 
     this.scene.lights.push(newLight);
     //needed for GUI
     this.scene.lightIDs.push(id);
-    newLight.update();
+    // newLight.update();
 };
 
 

@@ -43,3 +43,7 @@
         return this.surface.getPoint(u,v) ;
      }
  };
+
+Plane.prototype.amplifyTexture = function(amplifierS, amplifierT) {
+
+};
