@@ -196,6 +196,10 @@
         <primitive id="vehicle">
             <vehicle/>
         </primitive>
+
+        <primitive id="cone">
+            <cylinder base="1" top="0" height="1" slices="20" stacks="5"/>
+        </primitive>
     </primitives>
 
     <!--components section-->
@@ -243,7 +247,22 @@
                 <componentref id="support_base"/>
                 <componentref id="support_tower"/>
                 <componentref id="support_head"/>
+                <componentref id="support_tower_connector"/>
                 <!-- Base, tower, head, latch, head_tower_connector, latch_head_connector-->
+            </children>
+        </component>
+
+        <component id="support_tower_connector">
+            <transformation>
+                <translate x="0" y="0" z="5"/>
+                <scale x="0.5" y="0.5" z="1"/>
+            </transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+            <texture id="none"/>
+            <children>
+                <primitiveref id="cone"/>
             </children>
         </component>
 
