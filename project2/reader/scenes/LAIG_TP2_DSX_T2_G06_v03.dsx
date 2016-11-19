@@ -130,13 +130,15 @@
         <!-- demorar. Nesta versão do formato DSX, type pode ter -->
         <!-- o valor "linear" ou "circular"; na animacao circular -->
         <!-- os angulos sao expressos em graus  -->
-        <animation id="spaceship_animation" span="20" type="linear">
+        <animation id="spaceship_animation" span="2" type="linear">
             <controlpoint xx="0" yy="0" zz="0"/>
+            <controlpoint xx="0" yy="0" zz="2"/>
             <controlpoint xx="0" yy="0" zz="5"/>
         </animation>
 
-        <animation id="stop" span="1" type="linear">
+        <animation id="stop" span="3" type="linear">
             <controlpoint xx="0" yy="0" zz="0"/>
+            <controlpoint xx="0" yy="0" zz="0.001"/>
         </animation>
 
         <animation id="testCircular" span="20" type="circular" centerx="1 " centery="1" centerz="1" radius="5" startang="40" rotang="20"/>
@@ -237,6 +239,7 @@
         <component id="spaceship">
 
             <animation>
+                <animationref id="stop"/>
                 <animationref id="spaceship_animation"/>
             </animation>
             <transformation>
