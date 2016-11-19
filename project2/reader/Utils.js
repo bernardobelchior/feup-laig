@@ -66,11 +66,10 @@ function parseTransformation(scene, reader, tag) {
     let transformation = new Transformation(scene);
 
     switch (tag.nodeName) {
-        case 'translate':
-            {
-                let vec = parseVec3(reader, tag);
-                transformation.translate(vec[0], vec[1], vec[2]);
-            }
+        case 'translate': {
+            let vec = parseVec3(reader, tag);
+            transformation.translate(vec[0], vec[1], vec[2]);
+        }
             break;
         case 'rotate':
             let axis = reader.getString(tag, 'axis', true);
@@ -91,11 +90,10 @@ function parseTransformation(scene, reader, tag) {
                     return null;
             }
             break;
-        case 'scale':
-            {
-                let vec = parseVec3(reader, tag);
-                transformation.scale(vec[0], vec[1], vec[2]);
-            }
+        case 'scale': {
+            let vec = parseVec3(reader, tag);
+            transformation.scale(vec[0], vec[1], vec[2]);
+        }
             break;
         default:
             throw new Error('Invalid node name.');
@@ -142,15 +140,15 @@ function parseLinearAnimation(reader, animationTag, scene, id, span) {
  * Parses the information of a circular animation from the animation tag.
  * Returns the animation object
  */
-function parseCircularAnimation(reader, tag, scene, id, span){
+function parseCircularAnimation(reader, tag, scene, id, span) {
     let centerX = reader.getFloat(tag, "centerx", true);
     let centerY = reader.getFloat(tag, "centery", true);
     let centerZ = reader.getFloat(tag, "centerz", true);
 
     let radius = reader.getFloat(tag, "radius", true);
 
-    let startAng = reader.getFloat(tag, "startang", true)*Math.PI/180;
-    let rotAng = reader.getFloat(tag, "rotang", true)*Math.PI/180;
+    let startAng = reader.getFloat(tag, "startang", true) * Math.PI / 180;
+    let rotAng = reader.getFloat(tag, "rotang", true) * Math.PI / 180;
 
     let center = [centerX, centerY, centerZ]
 
@@ -158,24 +156,24 @@ function parseCircularAnimation(reader, tag, scene, id, span){
 }
 
 /**
-* Parses the control points from a patch
-*/
+ * Parses the control points from a patch
+ */
 function parseControlPoints(reader, patchChildren, orderU, orderV) {
     let controlPoints = [];
 
-    for(let i = 0; i <= orderU; i++) {
+    for (let i = 0; i <= orderU; i++) {
         controlPoints.push([]);
     }
 
     let pointV = 0;
     let pointU = 0;
-    for(let controlPoint of patchChildren) {
+    for (let controlPoint of patchChildren) {
         let point = parseVec3(reader, controlPoint);
         point.push(1);
 
         controlPoints[pointU].push(point);
 
-        if(pointV === orderV) {
+        if (pointV === orderV) {
             pointU++;
             pointV = 0;
         } else
@@ -236,9 +234,9 @@ function angleBetweenVectors(vector1, vector2) {
 }
 
 /**
-* Gets the Knots Vector.
-*/
-function getKnotsVector(degree) { // TODO (CGF 0.19.3): add to CGFnurbsSurface
+ * Gets the Knots Vector.
+ */
+function getKnotsVector(degree) {
     let v = [];
     for (let i = 0; i <= degree; i++)
         v.push(0);
