@@ -42,7 +42,7 @@ void main() {
 		isSelectedPosition = equal(vec2(posFloor.x, posFloor.y - 1.0), selectedPosition);
 
 	if(isSelectedPosition[0] == true && isSelectedPosition[1] == true)
-		selectedPositionScale = 0.5;
+		selectedPositionScale = 5.0;
 
 	gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition + aVertexNormal * selectedPositionScale * 0.1, 1.0);
 }

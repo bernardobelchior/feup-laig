@@ -43,7 +43,8 @@ function Chessboard(scene, du, dv, texture, su, sv, c1, c2, cs){
     this.appearance.setSpecular(1.0, 1.0, 1.0, 1.0);
     this.appearance.setShininess(100);
 
-    this.texture = new CGFtexture(scene,texture);
+    // this.texture = new CGFtexture(scene,"assets/wood.jpg");
+    this.texture = texture;
     this.appearance.setTexture(this.texture);
     this.appearance.setTextureWrap('REPEAT','REPEAT');
 

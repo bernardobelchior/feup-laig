@@ -739,6 +739,22 @@ MySceneGraph.prototype.parsePrimitives = function(primitives) {
                     object = new Patch(this.scene, orderU, orderV, partsU, partsV, controlPoints);
                 }
                 break;
+            case 'chessboard':
+                {
+                    let divU = this.reader.getInteger(shape, 'du', true);
+                    let divV = this.reader.getInteger(shape, 'dv', true);
+                    let texRef = this.reader.getString(shape, 'textureref', true);
+                    let texture = this.textures[texRef];
+                    let selectedU = this.reader.getInteger(shape, 'su', false);
+                    let selectedV = this.reader.getInteger(shape, 'sv', false);
+
+                    let color1 = parseRGBA(this.reader, shape.children[0]);
+                    let color2 = parseRGBA(this.reader, shape.children[1]);
+                    let selectedColor = parseRGBA(this.reader, shape.children[2]);
+
+                    object = new Chessboard(this.scene, divU, divV, texture.texture, selectedU, selectedV, color1, color2, selectedColor);
+                }
+                break;
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');
         }

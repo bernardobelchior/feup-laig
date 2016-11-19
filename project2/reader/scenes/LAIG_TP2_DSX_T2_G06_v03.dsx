@@ -20,7 +20,7 @@
 
     <views default="default">
         <perspective id="default" near="0.1" far="500" angle="22.91">
-            <from x="15" y="15" z="15"/>
+            <from x="0" y="5" z="25"/>
             <to x="0" y="0" z="0"/>
         </perspective>
         <perspective id="camera1" near="0.1" far="500" angle="22.91">
@@ -39,24 +39,24 @@
 
     <illumination doublesided="1" local="1">
 
-        <ambient r="0.04" g="0.04" b="0.09" a="0.8"/>
-        <background r="0.01" g="0.01" b="0.05" a="1.0"/>
+        <ambient r="0.4" g="0.04" b="0.09" a="0.8"/>
+        <background r="0.603" g="0.918" b="0.929" a="0.8"/>
 
     </illumination>
 
     <lights>
-        <omni id="omni1" enabled="true">
-            <location x="0.0" y="0.0" z="0.0" w="1.0"/>
+        <omni id="sun" enabled="true">
+            <location x="0.0" y="15.0" z="0.0" w="1.0"/>
             <ambient r="1.0" g="1.0" b="1.0" a="1.0"/>
-            <diffuse r="1.0" g="0.0" b="0.0" a="1.0"/>
+            <diffuse r="1.0" g="1.0" b="1.0" a="1.0"/>
             <specular r="1.0" g="1.0" b="1.0" a="1.0"/>
         </omni>
 
         <spot id="spot1" enabled="true" angle="15.0" exponent="1.0">
             <target x="0.0" y="0.0" z="0.0"/>
-            <location x="1.0" y="1.0" z="1.0"/>
-            <ambient r="1.0" g="1.0" b="1.0" a="1.0"/>
-            <diffuse r="1.0" g="0.0" b="0.0" a="1.0"/>
+            <location x="7.0" y="0.0" z="7.0"/>
+            <ambient r="0.8" g="0.8" b="1.0" a="1.0"/>
+            <diffuse r="0.8" g="0.8" b="1.0" a="1.0"/>
             <specular r="1.0" g="1.0" b="1.0" a="1.0"/>
         </spot>
     </lights>
@@ -69,6 +69,8 @@
         <texture id="saturn" file="assets/saturn.png" length_s="1" length_t="1"/>
         <texture id="saturn_ring" file="assets/saturn_ring.png" length_s="1" length_t="1"/>
         <texture id="metal" file="assets/metal.png" length_s="1" length_t="1"/>
+        <texture id="grass" file="assets/grass.png" length_s="0.1" length_t="0.1"/>
+        <texture id="wood" file="assets/wood.jpg" length_s="1" length_t="1"/>
     </textures>
 
     <materials>
@@ -165,9 +167,7 @@
             <controlpoint xx="1" yy="1" zz="0"/>
         </animation>
 
-        <animation id="testCircular" span="20" type="circular"
-         centerx="1 " centery="1" centerz="1"
-         radius="5" startang="40" rotang="20"/>
+        <animation id="testCircular" span="20" type="circular" centerx="1 " centery="1" centerz="1" radius="5" startang="40" rotang="20"/>
     </animations>
 
     <primitives>
@@ -210,7 +210,15 @@
         </primitive>
 
         <primitive id="plane">
-            <plane dimX="3.0" dimY="2.0" partsX="3" partsY="4"/>
+            <plane dimX="100.0" dimY="100.0" partsX="10" partsY="10"/>
+        </primitive>
+
+        <primitive id="chessboard">
+            <chessboard du="5" dv="5" textureref="concrete" su="2" sv="2">
+                <c1 r="0.8" g="0.7" b="0.7" a="1"/>
+                <c2 r="0.1" g="0.1" b="0.1" a="1"/>
+                <cs r="1.0" g="0.0" b="0.0" a="1"/>
+            </chessboard>
         </primitive>
     </primitives>
 
@@ -230,10 +238,51 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="SSESpaceship"/>
+                <!-- <componentref id="SSESpaceship"/>
                 <componentref id="SSETradeStation"/>
                 <componentref id="SSEColony"/>
-                <componentref id="planets"/>
+                <componentref id="planets"/> -->
+                <componentref id="platform"/>
+                <componentref id="base_ground"/>
+            </children>
+
+        </component>
+
+        <!-- Platform -->
+        <component id="platform">
+
+            <transformation>
+                <scale x="10" y="10" z="1"/>
+                <translate x="-0.5" y="-0.5" z="0"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="chessboard"/>
+            </children>
+
+        </component>
+
+        <!-- Ground -->
+        <component id="base_ground">
+
+            <transformation>
+                <translate x="-50" y="-50" z="-0.01"/>
+            </transformation>
+
+            <materials>
+                <material id="ground"/>
+            </materials>
+
+            <texture id="grass"/>
+
+            <children>
+                <primitiveref id="plane"/>
             </children>
 
         </component>

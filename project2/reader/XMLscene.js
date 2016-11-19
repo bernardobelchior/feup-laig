@@ -28,7 +28,6 @@ XMLscene.prototype.init = function(application) {
     this.rootNode;
     this.setUpdatePeriod(1 / 60 * 1000);
     this.lastUpdateTime = (new Date()).getTime();
-    this.chessboard = new Chessboard(this, 8, 8, 'res/wood.jpg', 5,5,[0.8,0.7,0.7,1],[0.1,0.1,0.1,1],[1,0,0,1]);
 };
 
 /**
@@ -101,11 +100,7 @@ XMLscene.prototype.display = function() {
             this.lights[i].update();
         }
 
-        // FIXME uncomment
-        // this.rootNode.display();
-
-        // FIXME delete after
-        this.chessboard.display();
+        this.rootNode.display();
 
         // Draw axis
         this.axis.display();
