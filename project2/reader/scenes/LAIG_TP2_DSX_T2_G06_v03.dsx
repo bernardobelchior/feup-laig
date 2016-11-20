@@ -135,9 +135,9 @@
         <!-- os angulos sao expressos em graus  -->
         <animation id="spaceship_animation" span="20" type="linear">
             <controlpoint xx="0" yy="0" zz="0"/>
-            <controlpoint xx="0" yy="0" zz="0"/>
             <controlpoint xx="0" yy="0" zz="2"/>
             <controlpoint xx="0" yy="0" zz="5"/>
+            <controlpoint xx="0" yy="0" zz="15"/>
         </animation>
 
         <animation id="stop" span="3" type="linear">
@@ -147,7 +147,7 @@
 
         <animation id="support_animation" span="20" type="circular" centerx="0" centery="0" centerz="0" radius="0" startang="-90" rotang="60"/>
 
-        <animation id="support_latch_animation" span="2" type="linear">
+        <animation id="support_latch_animation" span="20" type="linear">
             <controlpoint xx="0" yy="0" zz="0"/>
             <controlpoint xx="0" yy="0" zz="0.8"/>
             <controlpoint xx="0" yy="0" zz="0.8"/>
