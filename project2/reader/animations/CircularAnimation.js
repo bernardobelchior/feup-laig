@@ -28,7 +28,7 @@ class CircularAnimation extends Animation {
         let rotationSlice = this.rotAng * (deltaTime / 1000 / this.time); // Rotation to be done in this iteration
         this.currentRotAng += rotationSlice;
 
-        if (this.currentRotAng >= this.rotAng) // If the animation will make the rotation
+        if (this.currentRotAng >= this.rotAng) // If the animation will complete the rotation
             this.done = true;
     }
 
