@@ -53,7 +53,6 @@ class LinearAnimation extends Animation {
         this.position = this.listRoot.value;
         this.done = false;
         this.updateAnimation();
-        this.t0 = performance.now();
     }
 
     /**
@@ -62,8 +61,6 @@ class LinearAnimation extends Animation {
     updateState() {
         if (this.currentPoint.next.next === this.listRoot) {
             this.done = true;
-            this.t1 = performance.now();
-            console.log('Linear animation duration: ' + (this.t1 - this.t0));
             return;
         }
 
@@ -82,8 +79,6 @@ class LinearAnimation extends Animation {
         /* Updates rotation angle in order to align the object with the direction of animation */
         this.angleXZ = Math.atan2(this.currentDirection[0], this.currentDirection[2]);
         this.angleYZ = -Math.atan2(this.currentDirection[1], this.currentDirection[2]);
-
-        console.log(this);
     }
 
     /**
