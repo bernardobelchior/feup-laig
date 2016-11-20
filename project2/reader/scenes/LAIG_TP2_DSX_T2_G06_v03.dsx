@@ -83,6 +83,14 @@
             <shininess value="200"/>
         </material>
 
+        <material id="red_metal">
+            <ambient r="0.8" g="0.2" b="0.2" a="1"/>
+            <diffuse r="0.8" g="0.1" b="0.1" a="1"/>
+            <specular r="0.5" g="0.5" b="0.5" a="1"/>
+            <emission r="0" g="0" b="0" a="1"/>
+            <shininess value="2000"/>
+        </material>
+
         <material id="planet">
             <ambient r="0.2" g="0.2" b="0.2" a="1"/>
             <diffuse r="0.9" g="0.9" b="0.9" a="1"/>
@@ -99,12 +107,12 @@
             <shininess value="10"/>
         </material>
 
-        <material id="star">
-            <ambient r="1" g="1" b="1" a="1"/>
-            <diffuse r="1" g="1" b="1" a="1"/>
-            <specular r="1" g="1" b="1" a="1"/>
-            <emission r="1" g="1" b="1" a="1"/>
-            <shininess value="1000"/>
+        <material id="rubber">
+            <ambient r="0.05" g="0.05" b="0.05" a="1"/>
+            <diffuse r="0.05" g="0.05" b="0.05" a="1"/>
+            <specular r="0.1" g="0.1" b="0.1" a="1"/>
+            <emission r="0" g="0" b="0" a="1"/>
+            <shininess value="20"/>
         </material>
 
         <material id="ground">
@@ -262,12 +270,12 @@
         <component id="support">
             <transformation></transformation>
             <materials>
-                <material id="default"/>
+                <material id="red_metal"/>
             </materials>
             <animation>
                 <animationref id="support_animation"/>
             </animation>
-            <texture id="none"/>
+            <texture id="spaceship"/>
             <children>
                 <componentref id="support_base"/>
                 <componentref id="support_tower"/>
@@ -287,9 +295,9 @@
                 <scale x="1" y="1" z="1.5"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="spaceship"/>
             </materials>
-            <texture id="none"/>
+            <texture id="metal"/>
             <children>
                 <primitiveref id="cylinder"/>
             </children>
@@ -301,7 +309,7 @@
                 <scale x="0.5" y="0.5" z="1"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="rubber"/>
             </materials>
             <texture id="none"/>
             <children>
@@ -316,9 +324,9 @@
                 <scale x="1" y="2" z="1"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
-            <texture id="none"/>
+            <texture id="inherit"/>
             <children>
                 <componentref id="unitCube"/>
             </children>
@@ -329,7 +337,7 @@
                 <scale x="1.2" y="1.2" z="0.8"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
             <texture id="none"/>
             <children>
@@ -342,9 +350,9 @@
                 <scale x="1" y="1" z="5"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
-            <texture id="none"/>
+            <texture id="inherit"/>
             <children>
                 <componentref id="unitCube"/>
             </children>
@@ -357,7 +365,7 @@
                 <rotate axis="x" angle="-90"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="rubber"/>
             </materials>
             <texture id="none"/>
             <children>
@@ -370,7 +378,7 @@
         <component id="support_latch_clamp">
             <transformation></transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
             <texture id="none"/>
             <children>
@@ -384,7 +392,7 @@
                 <scale x="0.1" y="0.1" z="2.2"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
             <texture id="none"/>
             <children>
@@ -398,7 +406,7 @@
                 <scale x="0.1" y="0.1" z="1"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
             <texture id="none"/>
             <children>
@@ -409,7 +417,6 @@
         <component id="spaceship">
 
             <animation>
-                <animationref id="stop"/>
                 <animationref id="spaceship_animation"/>
             </animation>
             <transformation>

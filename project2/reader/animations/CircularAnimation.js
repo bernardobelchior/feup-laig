@@ -15,8 +15,8 @@ class CircularAnimation extends Animation {
 
         this.center = center;
         this.radius = radius;
-        this.startAng = startAng;
-        this.rotAng = rotAng;
+        this.startAng = startAng;   // already onverted to radians in parser
+        this.rotAng = rotAng;       // already converted to radians in parser
         this.resetAnimation();
     }
 
@@ -25,10 +25,13 @@ class CircularAnimation extends Animation {
      * @param  {Number} deltaTime Time delta since the last update.
      */
      update(deltaTime) {
-        let rotationSlice = this.rotAng * (deltaTime / 1000 / this.time); // Rotation to be done in this iteration
+        let rotationSlice = this.rotAng * ((deltaTime / 1000) / this.time); // Rotation to be done in this iteration
+        console.log("rot slice: " + rotationSlice);
+        console.log("complete: " + this.currentRotAng);
+
         this.currentRotAng += rotationSlice;
 
-        if (this.currentRotAng >= this.rotAng) // If the animation will complete the rotation
+        if (Math.abs(this.currentRotAng) >= Math.abs(this.rotAng)) // If the animation will complete the rotation
             this.done = true;
     }
 
