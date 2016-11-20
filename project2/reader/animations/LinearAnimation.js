@@ -22,12 +22,20 @@ class LinearAnimation extends Animation {
      * Updates the object position.
      * @param  {Number} deltaTime Time delta since the last update.
      */
-    update(deltaTime) {
-        if (this.done)
+    update(deltaTime, seqNum) {
+        /* If the animation seqNum is different from the update seqNum, it means the animation
+         * has already been updated this update path. */
+        if (this.seqNum !== seqNum || this.done)
             return;
+
 
         this.position = addPoints(this.position, multVector(this.currentDirection, this.speed * deltaTime / 1000));
         this.timeElapsed += deltaTime / 1000;
+
+        /* Number used to know if a animation is updated twice in the same update path
+         * If it is, it means there is a component with more than one parent and must only
+         * be updated once. */
+        this.seqNum = (this.seqNum + 1) % 2;
 
         if (this.timeElapsed >= this.timeExpected) {
             this.updateState();
@@ -52,6 +60,7 @@ class LinearAnimation extends Animation {
         this.currentPoint = this.listRoot;
         this.position = this.listRoot.value;
         this.done = false;
+        this.seqNum = 0;
         this.updateAnimation();
     }
 
