@@ -1,11 +1,11 @@
 class CircularAnimation extends Animation {
     /**
-     *
-     * @param scene
+     * Circular animation constructor.
+     * @param scene Scene to apply the animation to
      * @param id            Id of the animation
      * @param time          Duration of the animation
      * @param center        Center of the circle followed by the animation (x,y,z)
-     * @param radius
+     * @param radius Animation radius
      * @param startAng      Angle at which the animation starts
      * @param rotAng        Final angle of the animation (relative to the starting angle)
      * @constructor
@@ -65,7 +65,6 @@ class CircularAnimation extends Animation {
         this.done = false;
         this.timeElapsed = 0;
         this.currentRotAng = 0;
-        this.t0 = performance.now();
         this.seqNum = 0;
     }
 

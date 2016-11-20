@@ -1,8 +1,3 @@
-/**
- * Created by bernardo on 17-11-2016.
- */
-
-
 class Vehicle {
     /**
      * Creates the vehicle, that is represented as a spaceship.
@@ -11,8 +6,6 @@ class Vehicle {
      */
     constructor(scene) {
         this.scene = scene;
-
-
         this.bodyHeight = 4;
 
         //Initialize vehicle parts
@@ -23,10 +16,7 @@ class Vehicle {
     }
 
     /**
-     * Creates the spaceship tip using a quadratic function.
-     * @param slices Horizontal slices
-     * @param stacks Vertical stacks
-     * @param height Final height of the object
+     * Creates the spaceship tip.
      * @returns {Patch} Patch that represents the spaceship tip.
      */
     createTip() {
@@ -79,6 +69,10 @@ class Vehicle {
         return new Patch(this.scene, controlPoints.length - 1, controlPoints[0].length - 1, 16, 32, controlPoints);
     }
 
+    /**
+     * Creates the vehicle wing patch.
+     * @returns {Patch} Vehicle wing.
+     */
     createWing() {
         let controlPoints = [
             [
@@ -178,10 +172,14 @@ class Vehicle {
     }
 
     /**
-     * This function is needed in order to avoid TypeError due to amplifying a texture
-     * that must not be amplified.
+     * Amplifies the vehicle texture.
+     * @param amplifierS Amplifier in the s direction.
+     * @param amplifierT Amplifier in the t direction.
      */
-    amplifyTexture() {
-
+    amplifyTexture(amplifierS, amplifierT) {
+        this.tip.amplifyTexture(amplifierS, amplifierT);
+        this.body.amplifyTexture(amplifierS, amplifierT);
+        this.wing.amplifyTexture(amplifierS, amplifierT);
+        this.bottom.amplifyTexture(amplifierS, amplifierT);
     }
 }
