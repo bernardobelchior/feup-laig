@@ -130,7 +130,8 @@
         <!-- demorar. Nesta versão do formato DSX, type pode ter -->
         <!-- o valor "linear" ou "circular"; na animacao circular -->
         <!-- os angulos sao expressos em graus  -->
-        <animation id="spaceship_animation" span="2" type="linear">
+        <animation id="spaceship_animation" span="20" type="linear">
+            <controlpoint xx="0" yy="0" zz="0"/>
             <controlpoint xx="0" yy="0" zz="0"/>
             <controlpoint xx="0" yy="0" zz="2"/>
             <controlpoint xx="0" yy="0" zz="5"/>
@@ -140,6 +141,8 @@
             <controlpoint xx="0" yy="0" zz="0"/>
             <controlpoint xx="0" yy="0" zz="0.001"/>
         </animation>
+
+        <animation id="support_animation" span="20" type="circular" centerx="0" centery="0" centerz="0" radius="0" startang="-90" rotang="60"/>
 
         <animation id="testCircular" span="20" type="circular" centerx="1 " centery="1" centerz="1" radius="5" startang="40" rotang="20"/>
     </animations>
@@ -162,11 +165,11 @@
         </primitive>
 
         <primitive id="torus">
-            <torus inner="0.1" outer="1" slices="20" loops="20"/>
+            <torus inner="0.2" outer="0.5" slices="20" loops="20"/>
         </primitive>
 
         <primitive id="ring">
-            <torus inner="0.05" outer="1" slices="20" loops="20"/>
+            <torus inner="0.0" outer="1" slices="20" loops="20"/>
         </primitive>
 
         <primitive id="patch">
@@ -198,6 +201,10 @@
         <primitive id="vehicle">
             <vehicle/>
         </primitive>
+
+        <primitive id="cone">
+            <cylinder base="1" top="0" height="1" slices="20" stacks="5"/>
+        </primitive>
     </primitives>
 
     <!--components section-->
@@ -219,22 +226,185 @@
                 <componentref id="base_ground"/>
                 <componentref id="spaceship"/>
                 <componentref id="left_support"/>
+                <componentref id="right_support"/>
             </children>
 
         </component>
 
-        <component id="left_support">
+        <component id="right_support">
             <transformation>
+                <translate x="0" y="3.3" z="0"/>
+                <rotate axis="z" angle="90"/>
             </transformation>
             <materials>
                 <material id="default"/>
             </materials>
             <texture id="none"/>
             <children>
+                <componentref id="support"/>
+            </children>
+        </component>
+
+        <component id="left_support">
+            <transformation>
+                <translate x="0" y="-3.3" z="0"/>
+                <rotate axis="z" angle="-90"/>
+            </transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+            <texture id="none"/>
+            <children>
+                <componentref id="support"/>
+            </children>
+        </component>
+
+        <component id="support">
+            <transformation></transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+            <animation>
+                <animationref id="support_animation"/>
+            </animation>
+            <texture id="none"/>
+            <children>
+                <componentref id="support_base"/>
+                <componentref id="support_tower"/>
+                <componentref id="support_head"/>
+                <componentref id="support_tower_connector"/>
+                <componentref id="support_latch"/>
+                <componentref id="support_pivot"/>
                 <!-- Base, tower, head, latch, head_tower_connector, latch_head_connector-->
             </children>
         </component>
 
+        <component id="support_pivot">
+            <transformation>
+                <translate x="0" y="-0.75" z="0"/>
+                <rotate axis="z" angle="90"/>
+                <rotate axis="y" angle="90"/>
+                <scale x="1" y="1" z="1.5"/>
+            </transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+            <texture id="none"/>
+            <children>
+                <primitiveref id="cylinder"/>
+            </children>
+        </component>
+
+        <component id="support_tower_connector">
+            <transformation>
+                <translate x="0" y="0" z="5"/>
+                <scale x="0.5" y="0.5" z="1"/>
+            </transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+            <texture id="none"/>
+            <children>
+                <primitiveref id="cone"/>
+            </children>
+        </component>
+
+        <component id="support_head">
+            <transformation>
+                <translate x="-0.5" y="0" z="5.2"/>
+                <rotate axis="z" angle="90"/>
+                <scale x="1" y="2" z="1"/>
+            </transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+            <texture id="none"/>
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+        </component>
+
+        <component id="support_base">
+            <transformation>
+                <scale x="1.2" y="1.2" z="0.8"/>
+            </transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+            <texture id="none"/>
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+        </component>
+
+        <component id="support_tower">
+            <transformation>
+                <scale x="1" y="1" z="5"/>
+            </transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+            <texture id="none"/>
+            <children>
+                <componentref id="unitCube"/>
+            </children>
+        </component>
+
+        <component id="support_latch">
+            <transformation>
+                <translate x="-2.5" y="0" z="5.6"/>
+                <rotate axis="z" angle="-90"/>
+                <rotate axis="x" angle="-90"/>
+            </transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+            <texture id="none"/>
+            <children>
+                <componentref id="support_latch_clamp"/>
+                <componentref id="support_latch_connector1"/>
+                <componentref id="support_latch_connector2"/>
+            </children>
+        </component>
+
+        <component id="support_latch_clamp">
+            <transformation></transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+            <texture id="none"/>
+            <children>
+                <primitiveref id="torus"/>
+            </children>
+        </component>
+
+        <component id="support_latch_connector1">
+            <transformation>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.1" y="0.1" z="2.2"/>
+            </transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+            <texture id="none"/>
+            <children>
+                <primitiveref id="cylinder"/>
+            </children>
+        </component>
+
+        <component id="support_latch_connector2">
+            <transformation>
+                <translate x="0" y="-0.5" z="0"/>
+                <scale x="0.1" y="0.1" z="1"/>
+            </transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+            <texture id="none"/>
+            <children>
+                <primitiveref id="cylinder"/>
+            </children>
+        </component>
         <!-- Spaceship -->
         <component id="spaceship">
 
@@ -243,6 +413,7 @@
                 <animationref id="spaceship_animation"/>
             </animation>
             <transformation>
+                <rotate axis="z" angle="90"/>
                 <translate x="0" y="0" z="2.5"/>
             </transformation>
 
@@ -296,5 +467,128 @@
             </children>
 
         </component>
+
+        <!-- Unit Cube -->
+        <component id="unitCube">
+            <transformation>
+                <translate x="-0.5" y="-0.5" z="0"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="unitCubeBack"/>
+                <componentref id="unitCubeTop"/>
+                <componentref id="unitCubeFront"/>
+                <componentref id="unitCubeBottom"/>
+                <componentref id="unitCubeRight"/>
+                <componentref id="unitCubeLeft"/>
+            </children>
+        </component>
+
+        <component id="unitCubeTop">
+            <transformation>
+                <translate x="0" y="0" z="1"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <primitiveref id="square"/>
+            </children>
+        </component>
+
+        <component id="unitCubeBottom">
+            <transformation>
+                <translate x="0" y="1" z="0"/>
+                <rotate axis="x" angle="180"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <primitiveref id="square"/>
+            </children>
+        </component>
+
+        <component id="unitCubeFront">
+            <transformation>
+                <rotate axis="x" angle="90"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <primitiveref id="square"/>
+            </children>
+        </component>
+
+        <component id="unitCubeBack">
+            <transformation>
+                <translate x="0" y="1" z="1"/>
+                <rotate axis="x" angle="-90"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <primitiveref id="square"/>
+            </children>
+        </component>
+
+        <component id="unitCubeRight">
+            <transformation>
+                <rotate axis="y" angle="-90"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <primitiveref id="square"/>
+            </children>
+        </component>
+
+        <component id="unitCubeLeft">
+            <transformation>
+                <translate x="1" y="0" z="1"/>
+                <rotate axis="y" angle="90"/>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <primitiveref id="square"/>
+            </children>
+        </component>
+
+        <!-- Unit Cube End -->
     </components>
 </dsx>
