@@ -32,6 +32,7 @@ class LinearAnimation extends Animation {
         if (this.timeElapsed >= this.timeExpected) {
             this.updateState();
         }
+        console.log(this.position);
     }
 
     /**
@@ -69,9 +70,7 @@ class LinearAnimation extends Animation {
 
         this.timeElapsed = 0;
         this.timeExpected = 1 / (this.speed / distance(this.currentPoint.value, this.currentPoint.next.value));
-
         this.currentPoint = this.currentPoint.next;
-        this.position += this.currentPoint.value;
         this.currentDirection = subtractPoints(this.currentPoint.value, this.currentPoint.next.value);
         this.updateAngle(this.currentDirection);
     }
