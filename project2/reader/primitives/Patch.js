@@ -18,6 +18,7 @@ function Patch(scene, orderU, orderV, partsU, partsV, controlPoints) {
     };
 
     CGFnurbsObject.call(this, scene, getSurfacePoint, partsU, partsV);
+    this.originalTexCoords = this.texCoords.slice();
 
     this.orderU = orderU;
     this.orderV = orderV;
@@ -29,9 +30,15 @@ Patch.prototype = Object.create(CGFnurbsObject.prototype);
 Patch.prototype.constructor = Patch;
 
 /**
- * This function is needed in order to avoid TypeError due to amplifying a texture
- * that must not be amplified.
+ * Amplifies the patch texture.
+ * @param amplifierS Amplifier in the s direction.
+ * @param amplifierT Amplifier in the t direction.
  */
 Patch.prototype.amplifyTexture = function (amplifierS, amplifierT) {
+    for (let i = 0; i < this.originalTexCoords.length; i += 2) {
+        this.texCoords[i] = this.originalTexCoords[i] / amplifierS;
+        this.texCoords[i + 1] = this.originalTexCoords[i + 1] / amplifierT;
+    }
 
+    this.updateTexCoordsGLBuffers();
 };

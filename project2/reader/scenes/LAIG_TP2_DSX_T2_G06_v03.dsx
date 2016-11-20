@@ -276,6 +276,7 @@
                 <material id="red_metal"/>
             </materials>
             <animation>
+                <animationref id="stop"/>
                 <animationref id="support_animation"/>
             </animation>
             <texture id="spaceship"/>
@@ -368,6 +369,7 @@
                 <rotate axis="x" angle="-90"/>
             </transformation>
             <animation>
+                <animationref id="stop"/>
                 <animationref id="support_latch_animation"/>
             </animation>
             <materials>
@@ -423,6 +425,7 @@
         <component id="spaceship">
 
             <animation>
+                <animationref id="stop"/>
                 <animationref id="spaceship_animation"/>
             </animation>
             <transformation>

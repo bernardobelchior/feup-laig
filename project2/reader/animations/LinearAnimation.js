@@ -1,4 +1,11 @@
 class LinearAnimation extends Animation {
+    /**
+     * Linear animation construction
+     * @param scene Scene to apply the animation to
+     * @param id Animation identification string
+     * @param time Animation time span.
+     * @param listRoot Control point list root.
+     */
     constructor(scene, id, time, listRoot) {
         super(scene, id, time);
 
@@ -27,7 +34,6 @@ class LinearAnimation extends Animation {
          * has already been updated this update path. */
         if (this.seqNum !== seqNum || this.done)
             return;
-
 
         this.position = addPoints(this.position, multVector(this.currentDirection, this.speed * deltaTime / 1000));
         this.timeElapsed += deltaTime / 1000;
