@@ -12,62 +12,64 @@ function Component(scene, id) {
     this.children = [];
     this.currentMaterial = 0;
     this.transformation = new Transformation(scene);
+    this.animationsRoot;
+    this.currentAnimation;
     this.parent = null;
 }
 
 /**
  * Rotates this component.
  */
-Component.prototype.rotate = function(angle, x, y, z) {
+Component.prototype.rotate = function (angle, x, y, z) {
     this.transformation.rotate(angle, x, y, z);
 }
 
 /**
  * Translates this component.
  */
-Component.prototype.translate = function(x, y, z) {
+Component.prototype.translate = function (x, y, z) {
     this.transformation.translate(x, y, z);
 }
 
 /**
  * Scales the this component
  */
-Component.prototype.scale = function(x, y, z) {
+Component.prototype.scale = function (x, y, z) {
     this.transformation.scale(x, y, z);
 }
 
 /**
  * Multiples the this component matrix by the given matrix.
  */
-Component.prototype.transform = function(transformation) {
+Component.prototype.transform = function (transformation) {
     this.transformation.multiply(transformation);
 }
 
 /**
  * Adds a material to this component available materials.
  */
-Component.prototype.addMaterial = function(material) {
+Component.prototype.addMaterial = function (material) {
     this.materials.push(material);
 }
 
 /**
  * Sets the component texture.
  */
-Component.prototype.setTexture = function(texture) {
+Component.prototype.setTexture = function (texture) {
     this.texture = texture;
 }
 
 /**
  * Gets the component id.
  */
-Component.prototype.getId = function() {
+Component.prototype.getId = function () {
     return this.id;
 }
 
 /**
  * Adds a child to this component and indicates its parent.
  */
-Component.prototype.addChild = function(component) {
+Component.prototype.addChild = function (component) {
     this.children.push(component);
     component.parent = this;
 }
@@ -76,7 +78,7 @@ Component.prototype.addChild = function(component) {
  * Updates the texture string in this.texture to
  * the texture object it refers to.
  */
-Component.prototype.updateTextures = function(textures) {
+Component.prototype.updateTextures = function (textures) {
     switch (this.texture) {
         case 'inherit':
             this.inheritTexture = true;
@@ -102,7 +104,7 @@ Component.prototype.updateTextures = function(textures) {
 /**
  * Depth-first display of components.
  */
-Component.prototype.display = function(parent) {
+Component.prototype.display = function (parent) {
     this.scene.pushMatrix();
     this.scene.multMatrix(this.transformation.getMatrix());
 
@@ -120,6 +122,10 @@ Component.prototype.display = function(parent) {
         this.material.setTexture(null);
 
     this.material.apply();
+
+    if (this.currentAnimation)
+        this.currentAnimation.value.display();
+
 
     for (let child of this.children) {
         if (this.texture) {
@@ -158,7 +164,7 @@ Component.prototype.display = function(parent) {
 /**
  * Changes the material of the component and its children.
  */
-Component.prototype.switchMaterials = function() {
+Component.prototype.switchMaterials = function () {
     this.nextMaterial();
 
     for (let child of this.children) {
@@ -171,7 +177,7 @@ Component.prototype.switchMaterials = function() {
 /**
  * Selects the next material from the available ones.
  */
-Component.prototype.nextMaterial = function() {
+Component.prototype.nextMaterial = function () {
     if (this.inheritMaterial)
         return;
 
@@ -186,6 +192,50 @@ Component.prototype.nextMaterial = function() {
  * so this function is used in order to avoid calling a function on an object
  * that does not have it.
  */
-Component.prototype.amplifyTexture = function(amplifierS, amplifierT) {
+Component.prototype.amplifyTexture = function (amplifierS, amplifierT) {
 
+};
+
+/**
+ * Adds the animation to the animations list of the component.
+ */
+Component.prototype.addAnimation = function (animation) {
+    let node = new ListNode(animation.clone());
+
+    if (!this.animationsRoot) {
+        this.animationsRoot = node;
+        this.animationsRoot.next = this.animationsRoot;
+        this.currentAnimation = this.animationsRoot;
+        return;
+    }
+
+    node.next = this.animationsRoot;
+
+    let itNode = this.animationsRoot;
+    while (itNode.next !== this.animationsRoot)
+        itNode = itNode.next;
+
+    itNode.next = node;
+};
+
+/**
+ * Updates the component animation.
+ * @param deltaTime Time delta since the last update
+ * @param seqNum Sequence number used to prevent animation update errors when an animation
+ * belongs to a component with more than one parent.
+ */
+Component.prototype.update = function (deltaTime, seqNum) {
+    if (this.animationsRoot) {
+        this.currentAnimation.value.update(deltaTime, seqNum);
+
+        if (this.currentAnimation.value.isDone()) {
+            this.currentAnimation = this.currentAnimation.next;
+            this.currentAnimation.value.resetAnimation();
+        }
+    }
+
+    for (let child of this.children) {
+        if (child instanceof Component)
+            child.update(deltaTime, seqNum);
+    }
 };

@@ -28,14 +28,14 @@ function MySceneGraph(filename, scene) {
 /**
  * Callback to be executed after successful reading
  */
-MySceneGraph.prototype.onXMLReady = function() {
+MySceneGraph.prototype.onXMLReady = function () {
     console.log("XML Loading finished.");
     var rootElement = this.reader.xmlDoc.documentElement;
 
     // Here should go the calls for different functions to parse the various blocks
     var error = this.parseDsx(rootElement);
 
-    if (error != null) {
+    if (error) {
         this.onXMLError(error);
         return;
     }
@@ -49,7 +49,7 @@ MySceneGraph.prototype.onXMLReady = function() {
  * Calls the parsing functions on every block of the dsx, checking for an error in any of them
  * @param dsx
  */
-MySceneGraph.prototype.parseDsx = function(dsx) {
+MySceneGraph.prototype.parseDsx = function (dsx) {
     //Mandatory in order to ensure the blocks order.
     let scene = dsx.children[0];
     let views = dsx.children[1];
@@ -58,37 +58,38 @@ MySceneGraph.prototype.parseDsx = function(dsx) {
     let textures = dsx.children[4];
     let materials = dsx.children[5];
     let transformations = dsx.children[6];
-    let primitives = dsx.children[7];
-    let components = dsx.children[8];
+    let animations = dsx.children[7];
+    let primitives = dsx.children[8];
+    let components = dsx.children[9];
 
-    return (this.parseScene(scene) || this.parseViews(views) || this.parseIllumination(illumination) || this.parseLights(lights) || this.parseTextures(textures) || this.parseMaterials(materials) || this.parseTransformations(transformations) || this.parsePrimitives(primitives) || this.parseComponents(components));
-}
+    return (this.parseScene(scene) || this.parseViews(views) || this.parseIllumination(illumination) || this.parseLights(lights) || this.parseTextures(textures) || this.parseMaterials(materials) || this.parseTransformations(transformations) || this.parseAnimations(animations) || this.parsePrimitives(primitives) || this.parseComponents(components));
+};
 
 /**
-  Parses the scene tag
-*/
-MySceneGraph.prototype.parseScene = function(scene) {
+ Parses the scene tag
+ */
+MySceneGraph.prototype.parseScene = function (scene) {
     if (scene.nodeName !== 'scene')
         return ('Blocks not ordered correctly. Expected "scene", found "' + scene.nodeName + '".');
 
     this.rootId = this.reader.getString(scene, 'root', true);
 
-    if (this.rootId == null)
+    if (this.rootId === null)
         return 'Scene tag must define a root component.';
 
     this.scene.axisLength = this.reader.getFloat(scene, 'axis_length', false);
-}
+};
 
 /**
-  Parses the views tag and its children and sets the scene's cameras accordingly.
-*/
-MySceneGraph.prototype.parseViews = function(views) {
+ Parses the views tag and its children and sets the scene's cameras accordingly.
+ */
+MySceneGraph.prototype.parseViews = function (views) {
     if (views.nodeName !== 'views')
         return ('Blocks not ordered correctly. Expected "views", found "' + views.nodeName + '".');
 
     let defaultPerspectiveId = this.reader.getString(views, 'default', true);
 
-    if (!(views.children.length > 0))
+    if (views.children.length <= 0)
         return 'You need to have at least one perspective defined.';
 
     for (let perspective of views.children) {
@@ -112,22 +113,22 @@ MySceneGraph.prototype.parseViews = function(views) {
         this.scene.cameras.push(new CGFcamera(fov, near, far, fromVector, toVector));
     }
 
-    if (this.scene.currentCamera == null)
+    if (this.scene.currentCamera === null)
         return 'The default perspective is not a child of views.';
-}
+};
 
 
 /**
  * Parses the illumination block of the DSX
  */
-MySceneGraph.prototype.parseIllumination = function(illumination) {
+MySceneGraph.prototype.parseIllumination = function (illumination) {
     if (illumination.nodeName !== 'illumination')
         return ('Blocks not ordered correctly. Expected "illumination", found "' + illumination.nodeName + '".');
 
     this.doublesided = this.reader.getBoolean(illumination, 'doublesided', true);
     this.local = this.reader.getBoolean(illumination, 'local', true);
 
-    if (this.doublesided == null || this.local == null)
+    if (this.doublesided === null || this.local === null)
         return 'Boolean value(s) in illumination missing.';
 
     let ambientTag = illumination.getElementsByTagName('ambient')[0];
@@ -137,17 +138,17 @@ MySceneGraph.prototype.parseIllumination = function(illumination) {
     this.bg = parseRGBA(this.reader, backgroundTag);
 
 
-    if (this.ambient == null)
+    if (this.ambient === null)
         return 'Ambient illumination missing.';
 
-    if (this.bg == null)
+    if (this.bg === null)
         return 'Background illumination missing.';
-}
+};
 
 /**
  * Parses the lights block from the dsx.
  */
-MySceneGraph.prototype.parseLights = function(lights) {
+MySceneGraph.prototype.parseLights = function (lights) {
     if (lights.nodeName !== 'lights')
         return ('Blocks not ordered correctly. Expected "lights", found "' + lights.nodeName + '".');
 
@@ -196,7 +197,7 @@ MySceneGraph.prototype.parseLights = function(lights) {
 /**
  * Parses an omni type light from the lights block
  */
-MySceneGraph.prototype.parseOmniLight = function(light, n_lights, enabled, id) {
+MySceneGraph.prototype.parseOmniLight = function (light, n_lights, enabled, id) {
 
     let locationTag = light.getElementsByTagName('location')[0];
     let location = parseVec4(this.reader, locationTag);
@@ -233,10 +234,10 @@ MySceneGraph.prototype.parseOmniLight = function(light, n_lights, enabled, id) {
     this.scene.lights.push(newLight);
     //needed for GUI
     this.scene.lightIDs.push(id);
-    newLight.update();
-}
+    // newLight.update();
+};
 
-MySceneGraph.prototype.parseSpotLight = function(light, n_lights, enabled, id) {
+MySceneGraph.prototype.parseSpotLight = function (light, n_lights, enabled, id) {
     let angle = this.reader.getFloat(light, 'angle', true);
     if (!angle)
         return ("Light with id " + id + " has an invalid angle");
@@ -295,14 +296,14 @@ MySceneGraph.prototype.parseSpotLight = function(light, n_lights, enabled, id) {
     this.scene.lights.push(newLight);
     //needed for GUI
     this.scene.lightIDs.push(id);
-    newLight.update();
-}
+    // newLight.update();
+};
 
 
 /**
  * Parses the textures block from the dsx.
  */
-MySceneGraph.prototype.parseTextures = function(textures) {
+MySceneGraph.prototype.parseTextures = function (textures) {
     if (textures.nodeName !== 'textures')
         return ('Blocks not ordered correctly. Expected "textures", found "' + textures.nodeName + '".');
 
@@ -342,12 +343,12 @@ MySceneGraph.prototype.parseTextures = function(textures) {
 
         this.textures[id] = new Texture(this.scene, file, length_s, length_t);
     }
-}
+};
 
 /**
  * Parses the materials block from the dsx.
  */
-MySceneGraph.prototype.parseMaterials = function(materials) {
+MySceneGraph.prototype.parseMaterials = function (materials) {
     if (materials.nodeName !== 'materials')
         return ('Blocks not ordered correctly. Expected "materials", found "' + materials.nodeName + '".');
 
@@ -387,13 +388,51 @@ MySceneGraph.prototype.parseMaterials = function(materials) {
 
         this.materials[id] = appearance;
     }
-}
+};
+
+/**
+ * Parses the animations block from the dsx.
+ */
+MySceneGraph.prototype.parseAnimations = function (animations) {
+    if (animations.nodeName !== 'animations')
+        return ('Blocks not ordered correctly. Expected "animations", found "' + animations.nodeName + '".');
+
+    this.animations = {};
+
+    for (let animation of animations.children) {
+        if (animation.nodeName !== 'animation')
+            return 'Animation with unexpected nodeName.';
+
+        let id = this.reader.getString(animation, 'id', true);
+
+        if (!id)
+            return 'An animation must have an id. Please provide one.';
+
+        if (animations[id])
+            return ('An animation with id ' + id + ' already exists.');
+
+        let type = this.reader.getString(animation, 'type', true);
+
+        if (type !== 'linear' && type !== 'circular')
+            return ('Unexpected type on animation with id "' + id + '".');
+
+        let span = this.reader.getFloat(animation, 'span', true);
+
+        if (span <= 0)
+            return ('Invalid span for animation with id "' + id + '".');
+
+        if (type === 'linear')
+            this.animations[id] = parseLinearAnimation(this.reader, animation, this.scene, id, span);
+        else
+            this.animations[id] = parseCircularAnimation(this.reader, animation, this.scene, id, span);
+    }
+};
 
 /**
  * Parses the components block from the dsx.
  * And creates the scene graph.
  */
-MySceneGraph.prototype.parseComponents = function(compsTag) {
+MySceneGraph.prototype.parseComponents = function (compsTag) {
     if (compsTag.nodeName !== 'components')
         return ('Blocks not ordered correctly. Expected "components", found "' + compsTag.nodeName + '".');
 
@@ -411,6 +450,7 @@ MySceneGraph.prototype.parseComponents = function(compsTag) {
         let component = new Component(this.scene, id);
 
         let transformationTag = compTag.getElementsByTagName('transformation')[0];
+        let animationsTag = compTag.getElementsByTagName('animation')[0];
         let materialsTag = compTag.getElementsByTagName('materials')[0];
 
         //Error checking
@@ -418,7 +458,11 @@ MySceneGraph.prototype.parseComponents = function(compsTag) {
         if (error)
             return error;
 
-        error = this.parseComponentMaterials(component, materialsTag)
+        error = this.parseComponentAnimations(component, animationsTag);
+        if (error)
+            return error;
+
+        error = this.parseComponentMaterials(component, materialsTag);
         if (error)
             return error;
 
@@ -444,7 +488,7 @@ MySceneGraph.prototype.parseComponents = function(compsTag) {
         //Children parsing
         let childrenTag = compTag.getElementsByTagName('children')[0];
 
-        error = this.parseComponentChildren(components, component, childrenTag)
+        error = this.parseComponentChildren(components, component, childrenTag);
         if (error)
             return error;
     }
@@ -453,12 +497,13 @@ MySceneGraph.prototype.parseComponents = function(compsTag) {
 
     if (error)
         return error;
-}
+};
+
 
 /**
  * Creates the scene graph used to display the scene
  */
-MySceneGraph.prototype.createSceneGraph = function(components) {
+MySceneGraph.prototype.createSceneGraph = function (components) {
     for (let id in components) {
         for (let child of components[id].children) {
             components[id].component.addChild(components[child].component);
@@ -484,9 +529,31 @@ MySceneGraph.prototype.createSceneGraph = function(components) {
 };
 
 /**
+ * Parses the component animations.
+ */
+MySceneGraph.prototype.parseComponentAnimations = function (component, animationsTag) {
+    if (animationsTag) {
+        for (let animation of animationsTag.children) {
+            if (animation.nodeName !== 'animationref')
+                return ('Unexpected animation node name on component ' + component.id + '.');
+
+            let id = this.reader.getString(animation, 'id', true);
+
+            if (!id)
+                return ('Animation without id on component ' + component.id + '.');
+
+            if (!this.animations[id])
+                return ('Animation with unknown id "' + id + '" declared in a component.');
+
+            component.addAnimation(this.animations[id]);
+        }
+    }
+};
+
+/**
  * Parses the transformations and adds it to the component.
  */
-MySceneGraph.prototype.parseComponentTransformations = function(component, tag) {
+MySceneGraph.prototype.parseComponentTransformations = function (component, tag) {
     //Used to prevent the dsx from having transformation ref and other
     //transformations in the same block.
     let transfRef;
@@ -529,12 +596,12 @@ MySceneGraph.prototype.parseComponentTransformations = function(component, tag) 
             transfRef = false;
         }
     }
-}
+};
 
 /**
  * Parses the component materials and adds it to the component.
  */
-MySceneGraph.prototype.parseComponentMaterials = function(component, tag) {
+MySceneGraph.prototype.parseComponentMaterials = function (component, tag) {
     if (!tag.children.length)
         return 'There is a component that does not have a material.';
 
@@ -551,7 +618,7 @@ MySceneGraph.prototype.parseComponentMaterials = function(component, tag) {
 
         component.addMaterial(this.materials[id]);
     }
-}
+};
 
 /**
  * Parses the children of the given component and:
@@ -560,7 +627,7 @@ MySceneGraph.prototype.parseComponentMaterials = function(component, tag) {
  *
  * In the end, it adds the component and its children to the components dictionary.
  */
-MySceneGraph.prototype.parseComponentChildren = function(components, component, tag) {
+MySceneGraph.prototype.parseComponentChildren = function (components, component, tag) {
     let children = [];
 
     for (let child of tag.children) {
@@ -586,12 +653,12 @@ MySceneGraph.prototype.parseComponentChildren = function(components, component, 
         'component': component,
         'children': children
     };
-}
+};
 
 /**
  *  Parses the primitives from the dsx root element.
  */
-MySceneGraph.prototype.parsePrimitives = function(primitives) {
+MySceneGraph.prototype.parsePrimitives = function (primitives) {
     if (primitives.nodeName !== 'primitives')
         return ('Blocks not ordered correctly. Expected "primitives", found "' + primitives.nodeName + '".');
 
@@ -617,39 +684,78 @@ MySceneGraph.prototype.parsePrimitives = function(primitives) {
                     parseVec3(this.reader, shape, '2'),
                     parseVec3(this.reader, shape, '3'));
                 break;
-            case 'cylinder':
-                {
-                    let base = this.reader.getFloat(shape, 'base', true);
-                    let top = this.reader.getFloat(shape, 'top', true);
-                    let height = this.reader.getFloat(shape, 'height', true);
-                    let slices = this.reader.getFloat(shape, 'slices', true);
-                    let stacks = this.reader.getFloat(shape, 'stacks', true);
+            case 'cylinder': {
+                let base = this.reader.getFloat(shape, 'base', true);
+                let top = this.reader.getFloat(shape, 'top', true);
+                let height = this.reader.getFloat(shape, 'height', true);
+                let slices = this.reader.getFloat(shape, 'slices', true);
+                let stacks = this.reader.getFloat(shape, 'stacks', true);
 
-                    object = new Cylinder(this.scene, base, top, height, slices, stacks);
-                }
+                object = new Cylinder(this.scene, base, top, height, slices, stacks);
+            }
                 break;
-            case 'sphere':
-                {
-                    let radius = this.reader.getFloat(shape, 'radius', true);
-                    let slices = this.reader.getFloat(shape, 'slices', true);
-                    let stacks = this.reader.getFloat(shape, 'stacks', true);
+            case 'sphere': {
+                let radius = this.reader.getFloat(shape, 'radius', true);
+                let slices = this.reader.getFloat(shape, 'slices', true);
+                let stacks = this.reader.getFloat(shape, 'stacks', true);
 
-                    object = new Sphere(this.scene, radius, slices, stacks);
-                }
+                object = new Sphere(this.scene, radius, slices, stacks);
+            }
                 break;
-            case 'torus':
-                {
-                    let inner = this.reader.getFloat(shape, 'inner', true);
-                    let outer = this.reader.getFloat(shape, 'outer', true);
-                    let slices = this.reader.getInteger(shape, 'slices', true);
-                    let loops = this.reader.getInteger(shape, 'loops', true);
+            case 'torus': {
+                let inner = this.reader.getFloat(shape, 'inner', true);
+                let outer = this.reader.getFloat(shape, 'outer', true);
+                let slices = this.reader.getInteger(shape, 'slices', true);
+                let loops = this.reader.getInteger(shape, 'loops', true);
 
-                    object = new Torus(this.scene, inner, outer, slices, loops);
+                object = new Torus(this.scene, inner, outer, slices, loops);
+            }
+                break;
+            case 'plane': {
+                let dimX = this.reader.getFloat(shape, 'dimX', true);
+                let dimY = this.reader.getFloat(shape, 'dimY', true);
+                let partsX = this.reader.getInteger(shape, 'partsX', true);
+                let partsY = this.reader.getInteger(shape, 'partsY', true);
+
+                object = new Plane(this.scene, dimX, dimY, partsX, partsY);
+            }
+                break;
+            case 'patch': {
+                let orderU = this.reader.getInteger(shape, 'orderU', true);
+                let orderV = this.reader.getInteger(shape, 'orderV', true);
+                let partsU = this.reader.getInteger(shape, 'partsU', true);
+                let partsV = this.reader.getInteger(shape, 'partsV', true);
+
+                if (shape.children.length !== (orderU + 1) * (orderV + 1))
+                    return ('Patch with id ' + id + ' expected ' + ((orderU + 1) * (orderV + 1)) +
+                    ' control points, but got ' + shape.children.length + '.');
+
+                let controlPoints = parseControlPoints(this.reader, shape.children, orderU, orderV);
+                object = new Patch(this.scene, orderU, orderV, partsU, partsV, controlPoints);
+            }
+                break;
+            case 'vehicle': {
+                object = new Vehicle(this.scene);
+            }
+                break;
+            case 'chessboard':
+                {
+                    let divU = this.reader.getInteger(shape, 'du', true);
+                    let divV = this.reader.getInteger(shape, 'dv', true);
+                    let texRef = this.reader.getString(shape, 'textureref', true);
+                    let texture = this.textures[texRef];
+                    let selectedU = this.reader.getInteger(shape, 'su', false);
+                    let selectedV = this.reader.getInteger(shape, 'sv', false);
+
+                    let color1 = parseRGBA(this.reader, shape.children[0]);
+                    let color2 = parseRGBA(this.reader, shape.children[1]);
+                    let selectedColor = parseRGBA(this.reader, shape.children[2]);
+
+                    object = new Chessboard(this.scene, divU, divV, texture.texture, selectedU, selectedV, color1, color2, selectedColor);
                 }
                 break;
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');
-                break;
         }
 
         if (this.primitives[id])
@@ -658,7 +764,7 @@ MySceneGraph.prototype.parsePrimitives = function(primitives) {
         if (object)
             this.primitives[id] = object;
     }
-}
+};
 
 /**
  * Parses transformation element of DSX
@@ -667,7 +773,7 @@ MySceneGraph.prototype.parsePrimitives = function(primitives) {
  * the first element of the value array is the function to be called (transtale/rotate/scale)
  * the remainder of the array are the arguments to the function
  */
-MySceneGraph.prototype.parseTransformations = function(transformations) {
+MySceneGraph.prototype.parseTransformations = function (transformations) {
     if (transformations.nodeName !== 'transformations')
         return ('Blocks not ordered correctly. Expected "transformations", found "' + transformations.nodeName + '".');
 
@@ -697,7 +803,7 @@ MySceneGraph.prototype.parseTransformations = function(transformations) {
 /**
  * Callback to be executed on any read error
  */
-MySceneGraph.prototype.onXMLError = function(message) {
+MySceneGraph.prototype.onXMLError = function (message) {
     console.error("XML Loading Error: " + message);
     this.loadedOk = false;
 };
