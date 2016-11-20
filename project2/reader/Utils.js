@@ -234,6 +234,15 @@ function angleBetweenVectors(vector1, vector2) {
 }
 
 /**
+ * Returns a new normalized vector
+ * @param vector Vector to be normalized.
+ */
+function normalizeVector(vector) {
+   let norm = distance([0, 0, 0], vector);
+    return [vector[0]/norm, vector[1]/norm, vector[2]/norm];
+}
+
+/**
  * Gets the Knots Vector.
  */
 function getKnotsVector(degree) {

@@ -32,7 +32,6 @@ class LinearAnimation extends Animation {
         if (this.timeElapsed >= this.timeExpected) {
             this.updateState();
         }
-        console.log(this.position);
     }
 
     /**
@@ -51,12 +50,10 @@ class LinearAnimation extends Animation {
         this.angleXZ = 0;
         this.angleYZ = 0;
         this.currentPoint = this.listRoot;
-        this.timeElapsed = 0;
-        this.timeExpected = 1 / (this.speed / distance(this.currentPoint.value, this.currentPoint.next.value));
         this.position = this.listRoot.value;
-        this.currentDirection = subtractPoints(this.currentPoint.value, this.currentPoint.next.value);
-        this.updateAngle(this.currentDirection);
         this.done = false;
+        this.updateAnimation();
+        this.t0 = performance.now();
     }
 
     /**
@@ -65,19 +62,28 @@ class LinearAnimation extends Animation {
     updateState() {
         if (this.currentPoint.next.next === this.listRoot) {
             this.done = true;
+            this.t1 = performance.now();
+            console.log('Linear animation duration: ' + (this.t1 - this.t0));
             return;
         }
 
-        this.timeElapsed = 0;
-        this.timeExpected = 1 / (this.speed / distance(this.currentPoint.value, this.currentPoint.next.value));
         this.currentPoint = this.currentPoint.next;
-        this.currentDirection = subtractPoints(this.currentPoint.value, this.currentPoint.next.value);
-        this.updateAngle(this.currentDirection);
+        this.updateAnimation();
     }
 
-    updateAngle(direction) {
-        this.angleXZ += Math.atan2(direction[0], direction[2]);
-        this.angleYZ -= Math.atan2(direction[1], direction[2]);
+    /**
+     * Updates animation's angles, direction and time expected.
+     */
+    updateAnimation() {
+        this.timeElapsed = 0;
+        this.timeExpected = 1 / (this.speed / distance(this.currentPoint.value, this.currentPoint.next.value));
+        this.currentDirection = normalizeVector(subtractPoints(this.currentPoint.value, this.currentPoint.next.value));
+
+        /* Updates rotation angle in order to align the object with the direction of animation */
+        this.angleXZ = Math.atan2(this.currentDirection[0], this.currentDirection[2]);
+        this.angleYZ = -Math.atan2(this.currentDirection[1], this.currentDirection[2]);
+
+        console.log(this);
     }
 
     /**
