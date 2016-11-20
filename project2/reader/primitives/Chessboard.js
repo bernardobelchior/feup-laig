@@ -35,7 +35,9 @@ function Chessboard(scene, du, dv, texture, su, sv, c1, c2, cs){
     this.divLengthV = 1.0/dv;
 
 
-    this.plane = new Plane(scene, 1.0, 1.0, du, dv);
+    var planeDivsU = 120;
+    var planeDivsV = 120;
+    this.plane = new Plane(scene, 1.0, 1.0, planeDivsU, planeDivsV);
 
     this.appearance = new CGFappearance(this.scene);
     this.appearance.setAmbient(1.0, 1.0, 1.0, 1.0);

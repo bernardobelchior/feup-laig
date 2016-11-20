@@ -31,15 +31,6 @@ void main() {
 
 	bvec2 isSelectedPosition = equal(posFloor, selectedPosition);
 
-	if(isSelectedPosition.x == false)
-		if(isSelectedPosition.y == false)
-			isSelectedPosition = equal(vec2(posFloor.x - 1.0, posFloor.y - 1.0), selectedPosition);
-
-		else
-			isSelectedPosition = equal(vec2(posFloor.x - 1.0, posFloor.y), selectedPosition);
-
-	else if(isSelectedPosition.y == false)
-		isSelectedPosition = equal(vec2(posFloor.x, posFloor.y - 1.0), selectedPosition);
 
 	if(isSelectedPosition[0] == true && isSelectedPosition[1] == true)
 		selectedPositionScale = 5.0;
