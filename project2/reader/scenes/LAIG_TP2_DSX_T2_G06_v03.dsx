@@ -62,12 +62,7 @@
     </lights>
 
     <textures>
-        <texture id="building_side" file="assets/building_side.png" length_s="1" length_t="0.5"/>
-        <texture id="building_roof" file="assets/building_roof.png" length_s="1" length_t="1"/>
-        <texture id="ground" file="assets/ground.png" length_s="1" length_t="1"/>
         <texture id="concrete" file="assets/concrete.png" length_s="1" length_t="1"/>
-        <texture id="saturn" file="assets/saturn.png" length_s="1" length_t="1"/>
-        <texture id="saturn_ring" file="assets/saturn_ring.png" length_s="1" length_t="1"/>
         <texture id="metal" file="assets/metal.png" length_s="1" length_t="1"/>
         <texture id="grass" file="assets/grass.png" length_s="0.1" length_t="0.1"/>
         <texture id="wood" file="assets/wood.jpg" length_s="1" length_t="1"/>
@@ -81,6 +76,14 @@
             <specular r="0.5" g="0.5" b="0.5" a="1"/>
             <emission r="0" g="0" b="0" a="1"/>
             <shininess value="200"/>
+        </material>
+
+        <material id="red_metal">
+            <ambient r="0.8" g="0.2" b="0.2" a="1"/>
+            <diffuse r="0.8" g="0.1" b="0.1" a="1"/>
+            <specular r="0.5" g="0.5" b="0.5" a="1"/>
+            <emission r="0" g="0" b="0" a="1"/>
+            <shininess value="2000"/>
         </material>
 
         <material id="planet">
@@ -99,12 +102,12 @@
             <shininess value="10"/>
         </material>
 
-        <material id="star">
-            <ambient r="1" g="1" b="1" a="1"/>
-            <diffuse r="1" g="1" b="1" a="1"/>
-            <specular r="1" g="1" b="1" a="1"/>
-            <emission r="1" g="1" b="1" a="1"/>
-            <shininess value="1000"/>
+        <material id="rubber">
+            <ambient r="0.05" g="0.05" b="0.05" a="1"/>
+            <diffuse r="0.05" g="0.05" b="0.05" a="1"/>
+            <specular r="0.1" g="0.1" b="0.1" a="1"/>
+            <emission r="0" g="0" b="0" a="1"/>
+            <shininess value="20"/>
         </material>
 
         <material id="ground">
@@ -132,9 +135,9 @@
         <!-- os angulos sao expressos em graus  -->
         <animation id="spaceship_animation" span="20" type="linear">
             <controlpoint xx="0" yy="0" zz="0"/>
-            <controlpoint xx="0" yy="0" zz="0"/>
             <controlpoint xx="0" yy="0" zz="2"/>
             <controlpoint xx="0" yy="0" zz="5"/>
+            <controlpoint xx="0" yy="0" zz="15"/>
         </animation>
 
         <animation id="stop" span="3" type="linear">
@@ -143,6 +146,14 @@
         </animation>
 
         <animation id="support_animation" span="20" type="circular" centerx="0" centery="0" centerz="0" radius="0" startang="-90" rotang="60"/>
+
+        <animation id="support_latch_animation" span="20" type="linear">
+            <controlpoint xx="0" yy="0" zz="0"/>
+            <controlpoint xx="0" yy="0" zz="0.8"/>
+            <controlpoint xx="0" yy="0" zz="0.8"/>
+            <controlpoint xx="0" yy="0" zz="0.8"/>
+            <controlpoint xx="0" yy="0" zz="0.8"/>
+        </animation>
 
         <animation id="testCircular" span="20" type="circular" centerx="1 " centery="1" centerz="1" radius="5" startang="40" rotang="20"/>
     </animations>
@@ -262,12 +273,12 @@
         <component id="support">
             <transformation></transformation>
             <materials>
-                <material id="default"/>
+                <material id="red_metal"/>
             </materials>
             <animation>
                 <animationref id="support_animation"/>
             </animation>
-            <texture id="none"/>
+            <texture id="spaceship"/>
             <children>
                 <componentref id="support_base"/>
                 <componentref id="support_tower"/>
@@ -287,9 +298,9 @@
                 <scale x="1" y="1" z="1.5"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="spaceship"/>
             </materials>
-            <texture id="none"/>
+            <texture id="metal"/>
             <children>
                 <primitiveref id="cylinder"/>
             </children>
@@ -301,7 +312,7 @@
                 <scale x="0.5" y="0.5" z="1"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="rubber"/>
             </materials>
             <texture id="none"/>
             <children>
@@ -316,9 +327,9 @@
                 <scale x="1" y="2" z="1"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
-            <texture id="none"/>
+            <texture id="inherit"/>
             <children>
                 <componentref id="unitCube"/>
             </children>
@@ -329,7 +340,7 @@
                 <scale x="1.2" y="1.2" z="0.8"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
             <texture id="none"/>
             <children>
@@ -342,9 +353,9 @@
                 <scale x="1" y="1" z="5"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
-            <texture id="none"/>
+            <texture id="inherit"/>
             <children>
                 <componentref id="unitCube"/>
             </children>
@@ -356,8 +367,11 @@
                 <rotate axis="z" angle="-90"/>
                 <rotate axis="x" angle="-90"/>
             </transformation>
+            <animation>
+                <animationref id="support_latch_animation"/>
+            </animation>
             <materials>
-                <material id="default"/>
+                <material id="rubber"/>
             </materials>
             <texture id="none"/>
             <children>
@@ -370,7 +384,7 @@
         <component id="support_latch_clamp">
             <transformation></transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
             <texture id="none"/>
             <children>
@@ -384,7 +398,7 @@
                 <scale x="0.1" y="0.1" z="2.2"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
             <texture id="none"/>
             <children>
@@ -398,7 +412,7 @@
                 <scale x="0.1" y="0.1" z="1"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
             <texture id="none"/>
             <children>
@@ -409,7 +423,6 @@
         <component id="spaceship">
 
             <animation>
-                <animationref id="stop"/>
                 <animationref id="spaceship_animation"/>
             </animation>
             <transformation>
