@@ -12,6 +12,9 @@ XMLscene.prototype.constructor = XMLscene;
 XMLscene.prototype.init = function (application) {
     CGFscene.prototype.init.call(this, application);
 
+    this.Hex = new Hexagon(this);
+    this.Prism = new Prism(this, 1, 6, 2);
+
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
     this.gl.clearDepth(100.0);
@@ -102,7 +105,9 @@ XMLscene.prototype.display = function () {
             this.lights[i].update();
         }
 
-        this.rootNode.display();
+        // FIXME:this.rootNode.display();
+        this.Hex.display();
+        this.Prism.display();
 
         // Draw axis
         this.axis.display();
