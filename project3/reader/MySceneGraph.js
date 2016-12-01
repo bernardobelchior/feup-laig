@@ -33,7 +33,9 @@ MySceneGraph.prototype.onXMLReady = function () {
     var rootElement = this.reader.xmlDoc.documentElement;
 
     // Here should go the calls for different functions to parse the various blocks
-    var error = this.parseDsx(rootElement);
+    let error;
+    //var error = this.parseDsx(rootElement);
+    getPrologRequest('board', this.parseBoard, this.prologRequestError);
 
     if (error) {
         this.onXMLError(error);
@@ -43,6 +45,17 @@ MySceneGraph.prototype.onXMLReady = function () {
     // As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
     this.scene.onGraphLoaded();
     this.loadedOk = true;
+};
+
+MySceneGraph.prototype.prologRequestError = function(data) {
+    console.log('Prolog request error: ');
+    console.log(data);
+}
+
+MySceneGraph.prototype.parseBoard = function(data) {
+    let board = data.target.response;
+    console.log(board);
+    console.log(JSON.parse(board));
 };
 
 /**
