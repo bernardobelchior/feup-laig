@@ -33,29 +33,36 @@ MySceneGraph.prototype.onXMLReady = function () {
     var rootElement = this.reader.xmlDoc.documentElement;
 
     // Here should go the calls for different functions to parse the various blocks
-    let error;
-    //var error = this.parseDsx(rootElement);
-    getPrologRequest('board', this.parseBoard, this.prologRequestError);
+    let error = this.parseDsx(rootElement);
 
     if (error) {
         this.onXMLError(error);
         return;
     }
 
-    // As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
-    this.scene.onGraphLoaded();
-    this.loadedOk = true;
+    getPrologRequest('board', this, this.setBoard, this.prologRequestError);
 };
 
-MySceneGraph.prototype.prologRequestError = function(data) {
+/**
+ * Function called when there is an error in a Prolog Request.
+ * @param data Data received from the request.
+ */
+MySceneGraph.prototype.prologRequestError = function (data) {
     console.log('Prolog request error: ');
     console.log(data);
 }
 
-MySceneGraph.prototype.parseBoard = function(data) {
-    let board = data.target.response;
-    console.log(board);
-    console.log(JSON.parse(board));
+/**
+ * Function called when the Prolog Request is done correctly.
+ * @param context Context given in the request call.
+ * @param data Data received from the request.
+ */
+MySceneGraph.prototype.setBoard = function (context, data) {
+    context.board = JSON.parse(data.target.response);
+
+    // As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
+    context.scene.onGraphLoaded();
+    context.loadedOk = true;
 };
 
 /**
@@ -751,21 +758,20 @@ MySceneGraph.prototype.parsePrimitives = function (primitives) {
                 object = new Vehicle(this.scene);
             }
                 break;
-            case 'chessboard':
-                {
-                    let divU = this.reader.getInteger(shape, 'du', true);
-                    let divV = this.reader.getInteger(shape, 'dv', true);
-                    let texRef = this.reader.getString(shape, 'textureref', true);
-                    let texture = this.textures[texRef];
-                    let selectedU = this.reader.getInteger(shape, 'su', false);
-                    let selectedV = this.reader.getInteger(shape, 'sv', false);
+            case 'chessboard': {
+                let divU = this.reader.getInteger(shape, 'du', true);
+                let divV = this.reader.getInteger(shape, 'dv', true);
+                let texRef = this.reader.getString(shape, 'textureref', true);
+                let texture = this.textures[texRef];
+                let selectedU = this.reader.getInteger(shape, 'su', false);
+                let selectedV = this.reader.getInteger(shape, 'sv', false);
 
-                    let color1 = parseRGBA(this.reader, shape.children[0]);
-                    let color2 = parseRGBA(this.reader, shape.children[1]);
-                    let selectedColor = parseRGBA(this.reader, shape.children[2]);
+                let color1 = parseRGBA(this.reader, shape.children[0]);
+                let color2 = parseRGBA(this.reader, shape.children[1]);
+                let selectedColor = parseRGBA(this.reader, shape.children[2]);
 
-                    object = new Chessboard(this.scene, divU, divV, texture.texture, selectedU, selectedV, color1, color2, selectedColor);
-                }
+                object = new Chessboard(this.scene, divU, divV, texture.texture, selectedU, selectedV, color1, color2, selectedColor);
+            }
                 break;
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');

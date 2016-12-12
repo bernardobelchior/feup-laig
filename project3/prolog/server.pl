@@ -103,9 +103,11 @@ print_header_line(_).
 
 % Require your Prolog Files here
 :-include('sse/sse.pl').
+:-include('to_json.pl').
 
 parse_input(board, Board):-
-  initialize(Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer).
+  initialize(PlBoard, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer),
+  matrix_to_json(PlBoard, Board).
 parse_input(quit, goodbye).
 
 /*parse_input(handshake, handshake).

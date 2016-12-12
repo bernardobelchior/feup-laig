@@ -14,10 +14,3 @@ equal_position([X1,Y1], [X2, Y2]):-
 
 not(Execute):-Execute, !, fail.
 not(_Execute).
-
-json_list([], [[]]).
-json_list([[] | OtherLines], JSON):-
-    json_list([], ),
-
-json_list([[Element | OtherElements] | OtherLines], JSON):-
-

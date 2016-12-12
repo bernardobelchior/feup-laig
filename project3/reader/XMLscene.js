@@ -68,7 +68,7 @@ XMLscene.prototype.update = function (currTime) {
         return;
 
     this.rootNode.update(currTime - this.lastUpdateTime, this.seqNum);
-    this.seqNum = (this.seqNum + 1) %2;
+    this.seqNum = (this.seqNum + 1) % 2;
     this.lastUpdateTime = currTime;
 };
 
@@ -106,7 +106,6 @@ XMLscene.prototype.display = function () {
 
         // Draw axis
         this.axis.display();
-
     }
 };
 
