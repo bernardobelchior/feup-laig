@@ -28,22 +28,26 @@ Prism.prototype.initBuffers = function() {
     var ang = (2 * Math.PI) / this.slices;
     var nverts = 0;
 
-    for(let i = 0; i < this.stacks; i++){
+    for(let i = 0; i <= this.stacks; i++){
         for(let j = 0; j < this.slices; j++){
             x = Math.cos(ang * j);
-            y = j * 2;//this.height;
+            y = i * this.height;
             z = Math.sin(ang * j);
 
             this.vertices.push(x,y,z);
             nverts++;
 
             if(i > 0 && j > 0){
-                this.indices.push(nverts - 2, nverts - this.slices - 2, nverts- this.slices - 1);
-                this.indices.push(nverts - this.slices - 1, nverts - 1, nverts - 2);
+                this.indices.push(nverts - 1, nverts - this.slices - 1, nverts - 2);
+                this.indices.push(nverts - this.slices - 1, nverts - this.slices - 2, nverts - 2);
             }
 
         }
     }
+
+    //last face
+    this.indices.push(nverts - this.slices, 0, nverts - 1);
+    this.indices.push(0, nverts - this.slices - 1, nverts - 1);
 
     console.log(this.indices);
     this.primitiveType = this.scene.gl.TRIANGLES;
@@ -56,11 +60,11 @@ Prism.prototype.initBuffers = function() {
  * Even though it does not do anything, it needs to be present due to
  * inheritance.
  */
-// Prism.prototype.amplifyTexture = function(amplifierS, amplifierT) {
-//   for (let i = 0; i < this.originalTexCoords.length; i += 2) {
-//       this.texCoords[i] = this.originalTexCoords[i] / amplifierS;
-//       this.texCoords[i + 1] = this.originalTexCoords[i + 1] / amplifierT;
-//   }
-//
-//   this.updateTexCoordsGLBuffers();
-// }
+Prism.prototype.amplifyTexture = function(amplifierS, amplifierT) {
+  for (let i = 0; i < this.originalTexCoords.length; i += 2) {
+      this.texCoords[i] = this.originalTexCoords[i] / amplifierS;
+      this.texCoords[i + 1] = this.originalTexCoords[i + 1] / amplifierT;
+  }
+
+  this.updateTexCoordsGLBuffers();
+}
