@@ -3,11 +3,11 @@
  * @constructor
  */
 function Prism(scene, height, slices, stacks) {
-    CGFobject.call(this, scene);
+    CGFobject.call(this,scene);
 
+    this.height = height;
     this.slices = slices;
     this.stacks = stacks;
-    this.height = height;
 
     this.initBuffers();
 };
@@ -16,55 +16,71 @@ Prism.prototype = Object.create(CGFobject.prototype);
 Prism.prototype.constructor = Prism;
 
 Prism.prototype.initBuffers = function() {
+
     this.vertices = [];
-    // this.normals = [];
+    this.normals = [];
     this.indices = [];
-    // this.originalTexCoords = [];
+    this.texCoords = [];
 
-    var patchLengthx = 1 / this.slices;
-    var patchLengthy = 1 / this.stacks;
-    var xCoord = 0;
-    var yCoord = 0;
-    var ang = (2 * Math.PI) / this.slices;
-    var nverts = 0;
+    var ang=(2*Math.PI)/this.slices;
 
-    for(let i = 0; i <= this.stacks; i++){
-        for(let j = 0; j < this.slices; j++){
-            x = Math.cos(ang * j);
-            y = i * this.height;
-            z = Math.sin(ang * j);
+    let patchLengthx = 1 / this.slices;
+    let patchLengthy = 1 / this.stacks;
+    let xCoord =0;
+    let yCoord =0;
+    let stackHeight = this.height / this.stacks;
+    let nverts = 0;
 
-            this.vertices.push(x,y,z);
-            nverts++;
+    for(let j = 0; j < this.stacks; j++){
+        for(let i=0; i<this.slices; i++){
+            let x0 = Math.cos(ang * i);
+            let y0 = j * stackHeight;
+            let z0 = Math.sin(ang * i);
 
-            if(i > 0 && j > 0){
-                this.indices.push(nverts - 1, nverts - this.slices - 1, nverts - 2);
-                this.indices.push(nverts - this.slices - 1, nverts - this.slices - 2, nverts - 2);
-            }
+            let x1 = Math.cos(ang * (i + 1));
+            let y1 = j * stackHeight;
+            let z1 = Math.sin(ang * (i + 1));
 
+            let x2 = Math.cos(ang * i);
+            let y2 = (j + 1) * stackHeight;
+            let z2 = Math.sin(ang * i);
+
+            let x3 = Math.cos(ang * (i + 1));
+            let y3 = (j + 1) * stackHeight;
+            let z3 = Math.sin(ang * (i + 1));
+
+            this.vertices.push(x0, y0, z0);
+            this.vertices.push(x1, y1, z1);
+            this.vertices.push(x2, y2, z2);
+            this.vertices.push(x3, y3, z3);
+
+            nverts += 4;
+
+            let nx = Math.cos(((ang * i) + (ang * (i + 1))) * 0.5);
+            let ny = 0;
+            let nz = Math.sin(((ang * i) + (ang * (i + 1))) * 0.5);
+
+            this.normals.push(nx, ny, nz);
+            this.normals.push(nx, ny, nz);
+            this.normals.push(nx, ny, nz);
+            this.normals.push(nx, ny, nz);
+
+            this.indices.push(nverts - 2, nverts - 3, nverts - 4);
+            this.indices.push(nverts - 2, nverts - 1, nverts - 3);
+
+            this.texCoords.push(xCoord, yCoord);
+            this.texCoords.push(xCoord+patchLengthx, yCoord);
+            this.texCoords.push(xCoord, yCoord+patchLengthy);
+            this.texCoords.push(xCoord+patchLengthx, yCoord+patchLengthy);
+
+            xCoord += patchLengthx;
         }
+
+        xCoord =0;
+        yCoord += patchLengthy;
     }
 
-    //last face
-    this.indices.push(nverts - this.slices, 0, nverts - 1);
-    this.indices.push(0, nverts - this.slices - 1, nverts - 1);
 
-    console.log(this.indices);
     this.primitiveType = this.scene.gl.TRIANGLES;
     this.initGLBuffers();
 };
-
-/**
- * Amplifies the texture according to the s and t variables.
- * The cylinder body does not need amplifying as it is a quadric surface.
- * Even though it does not do anything, it needs to be present due to
- * inheritance.
- */
-Prism.prototype.amplifyTexture = function(amplifierS, amplifierT) {
-  for (let i = 0; i < this.originalTexCoords.length; i += 2) {
-      this.texCoords[i] = this.originalTexCoords[i] / amplifierS;
-      this.texCoords[i + 1] = this.originalTexCoords[i + 1] / amplifierT;
-  }
-
-  this.updateTexCoordsGLBuffers();
-}
