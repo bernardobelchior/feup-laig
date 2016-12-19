@@ -1,7 +1,7 @@
 function Tile(scene){
     CGFobject.call(this, scene);
     this.Hex = new Hexagon(this.scene);
-    this.Prism = new Prism(this.scene, 1, 6, 1);
+    this.Prism = new Prism(this.scene, 0.1, 6, 1);
     this.initBuffers();
 };
 

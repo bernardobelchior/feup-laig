@@ -5,6 +5,21 @@
 function Prism(scene, height, slices, stacks) {
     CGFobject.call(this,scene);
 
+    if(height < 0){
+        console.error("Invalid  height on prism");
+        return;
+    }
+
+    if(slices < 3){
+        console.error("Invalid number of sides on prism");
+        return;
+    }
+
+    if(stacks < 1){
+        console.error("Invalid number of stacks on prism");
+        return;
+    }
+
     this.height = height;
     this.slices = slices;
     this.stacks = stacks;
@@ -32,6 +47,11 @@ Prism.prototype.initBuffers = function() {
     let nverts = 0;
 
     for(let j = 0; j < this.stacks; j++){
+
+        /* Each iteration builds a face of the prism
+         * Vertices end up being declared more than once to make the normals work
+         * (the same vertice has to have more than one normal)
+         */
         for(let i=0; i<this.slices; i++){
             let x0 = Math.cos(ang * i);
             let y0 = j * stackHeight;
