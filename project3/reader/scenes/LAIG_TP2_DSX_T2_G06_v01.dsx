@@ -157,6 +157,10 @@
         </animation>
 
         <animation id="testCircular" span="20" type="circular" centerx="1 " centery="1" centerz="1" radius="5" startang="40" rotang="20"/>
+        <animation type="circular" centerx="0" centery="0" centerz="0" radius="0" rotang="360" span="10" id="sun_animation" startang="0"/>
+        <animation id="small_orbit_animation" centerx="0" centery="0" centerz="0" radius="4.5" startang="0" rotang="360" span="10" type="circular"/>
+        <animation id="medium_orbit_animation" centerx="0" centery="0" centerz="0" radius="6.5" startang="0" rotang="360" span="15" type="circular"/>
+        <animation id="large_orbit_animation" centerx="0" centery="0" centerz="0" radius="8.5" startang="0" rotang="360" span="20" type="circular"/>
     </animations>
 
     <primitives>
@@ -178,7 +182,7 @@
         </primitive>
 
         <primitive id="sphere">
-            <sphere radius="1" slices="20" stacks="20"/>
+            <sphere radius="1" slices="40" stacks="40"/>
         </primitive>
 
         <primitive id="torus">
@@ -243,7 +247,152 @@
             <texture id="space_background"/>
 
             <children>
+                <componentref id="3_planet_tile"/>
+            </children>
+        </component>
+
+        <component id="3_planet_tile">
+
+            <transformation></transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="2_planet_tile"/>
+                <componentref id="large_orbit"/>
+            </children>
+        </component>
+
+        <component id="2_planet_tile">
+
+            <transformation></transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="1_planet_tile"/>
+                <componentref id="medium_orbit"/>
+            </children>
+        </component>
+
+        <component id="1_planet_tile">
+
+            <transformation></transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="empty_tile"/>
+                <componentref id="small_orbit"/>
+            </children>
+        </component>
+
+        <component id="empty_tile">
+            <transformation></transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="space_background"/>
+
+            <children>
                 <primitiveref id="tile"/>
+                <componentref id="sun"/>
+            </children>
+        </component>
+
+        <component id="large_orbit">
+            <transformation>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.08" y="0.08" z="0.08"/>
+            </transformation>
+
+            <animation>
+                <animationref id="large_orbit_animation"/>
+            </animation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="sphere"/>
+            </children>
+        </component>
+
+        <component id="medium_orbit">
+            <transformation>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.08" y="0.08" z="0.08"/>
+            </transformation>
+
+            <animation>
+                <animationref id="medium_orbit_animation"/>
+            </animation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="sphere"/>
+            </children>
+        </component>
+
+        <component id="small_orbit">
+            <transformation>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.08" y="0.08" z="0.08"/>
+            </transformation>
+
+            <animation>
+                <animationref id="small_orbit_animation"/>
+            </animation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="sphere"/>
+            </children>
+        </component>
+
+        <component id="sun">
+            <transformation>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.15" y="0.15" z="0.15"/>
+            </transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <animation>
+                <animationref id="sun_animation"/>
+            </animation>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="sphere"/>
             </children>
         </component>
 

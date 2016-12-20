@@ -533,6 +533,7 @@ MySceneGraph.prototype.createSceneGraph = function (components) {
  */
 MySceneGraph.prototype.parseComponentAnimations = function (component, animationsTag) {
     if (animationsTag) {
+        console.log("hey");
         for (let animation of animationsTag.children) {
             if (animation.nodeName !== 'animationref')
                 return ('Unexpected animation node name on component ' + component.id + '.');
@@ -544,6 +545,8 @@ MySceneGraph.prototype.parseComponentAnimations = function (component, animation
 
             if (!this.animations[id])
                 return ('Animation with unknown id "' + id + '" declared in a component.');
+
+            console.log(id);
 
             component.addAnimation(this.animations[id]);
         }
