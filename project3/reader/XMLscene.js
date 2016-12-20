@@ -12,7 +12,11 @@ XMLscene.prototype.constructor = XMLscene;
 XMLscene.prototype.init = function (application) {
     CGFscene.prototype.init.call(this, application);
 
-    this.Tile = new Tile(this);
+    this.spaceAppearance = new CGFappearance(this);
+    this.spaceAppearance.setAmbient(0.0,0.0,0.0,0.7);
+    this.spaceAppearance.setDiffuse(0.0,0.0,0.0,1.0);
+    this.spaceAppearance.setSpecular(1.0,1.0,1.0,1.0);
+    this.spaceAppearance.loadTexture("assets/space-background.jpg");
 
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -37,9 +41,9 @@ XMLscene.prototype.init = function (application) {
  * set the default scene appearance
  */
 XMLscene.prototype.setDefaultAppearance = function () {
-    this.setAmbient(0.2, 0.4, 0.8, 1.0);
-    this.setDiffuse(0.2, 0.4, 0.8, 1.0);
-    this.setSpecular(0.2, 0.4, 0.8, 1.0);
+    this.setAmbient(0.2, 0.2, 0.2, 1.0);
+    this.setDiffuse(1.0, 1.0, 1.0, 1.0);
+    this.setSpecular(1.0, 1.0, 1.0, 1.0);
     this.setShininess(10.0);
 };
 
@@ -104,8 +108,7 @@ XMLscene.prototype.display = function () {
             this.lights[i].update();
         }
 
-        // FIXME:this.rootNode.display();
-        this.Tile.display();
+        this.rootNode.display();
 
         // Draw axis
         this.axis.display();

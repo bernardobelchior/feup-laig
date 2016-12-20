@@ -182,4 +182,5 @@ class Vehicle {
         this.wing.amplifyTexture(amplifierS, amplifierT);
         this.bottom.amplifyTexture(amplifierS, amplifierT);
     }
+
 }

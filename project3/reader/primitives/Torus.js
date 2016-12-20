@@ -84,3 +84,4 @@ Torus.prototype.amplifyTexture = function(amplifierS, amplifierT) {
 
     this.updateTexCoordsGLBuffers();
 }
+
