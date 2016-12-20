@@ -189,6 +189,10 @@
             <torus inner="0.2" outer="0.5" slices="20" loops="20"/>
         </primitive>
 
+        <primitive id="orbit_ring">
+            <torus inner="0.005" outer="1" slices="20" loops="20"/>
+        </primitive>
+
         <primitive id="ring">
             <torus inner="0.0" outer="1" slices="20" loops="20"/>
         </primitive>
@@ -296,6 +300,7 @@
             <children>
                 <componentref id="empty_tile"/>
                 <componentref id="small_orbit"/>
+                <componentref id="small_orbit_indicator"/>
             </children>
         </component>
 
@@ -352,6 +357,24 @@
 
             <children>
                 <primitiveref id="sphere"/>
+            </children>
+        </component>
+
+        <component id="small_orbit_indicator">
+            <transformation>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.35" y="1.0" z="0.35"/>
+                <rotate angle="90" axis="x"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="orbit_ring"/>
             </children>
         </component>
 
