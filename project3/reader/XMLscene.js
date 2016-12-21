@@ -12,12 +12,6 @@ XMLscene.prototype.constructor = XMLscene;
 XMLscene.prototype.init = function (application) {
     CGFscene.prototype.init.call(this, application);
 
-    this.spaceAppearance = new CGFappearance(this);
-    this.spaceAppearance.setAmbient(0.0,0.0,0.0,0.7);
-    this.spaceAppearance.setDiffuse(0.0,0.0,0.0,1.0);
-    this.spaceAppearance.setSpecular(1.0,1.0,1.0,1.0);
-    this.spaceAppearance.loadTexture("assets/space-background.jpg");
-
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
     this.gl.clearDepth(100.0);

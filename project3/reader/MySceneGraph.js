@@ -764,6 +764,11 @@ MySceneGraph.prototype.parsePrimitives = function (primitives) {
             case 'unit_cube':
                 object = new UnitCube(this.scene);
                 break;
+
+            case 'wormhole_decoration':
+                object = new Wormhole(this.scene);
+                break;
+
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');
         }

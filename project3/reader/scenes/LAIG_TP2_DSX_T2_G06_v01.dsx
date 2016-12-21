@@ -146,7 +146,8 @@
             <controlpoint xx="0" yy="0" zz="0.001"/>
         </animation>
 
-        <animation id="support_animation" span="20" type="circular" centerx="0" centery="0" centerz="0" radius="0" startang="-90" rotang="60"/>
+        <animation id="support_animation" span="20" type="circular" centerx="0" centery="0" centerz="0" radius="0"
+                   startang="-90" rotang="60"/>
 
         <animation id="support_latch_animation" span="20" type="linear">
             <controlpoint xx="0" yy="0" zz="0"/>
@@ -156,11 +157,16 @@
             <controlpoint xx="0" yy="0" zz="0.8"/>
         </animation>
 
-        <animation id="testCircular" span="20" type="circular" centerx="1 " centery="1" centerz="1" radius="5" startang="40" rotang="20"/>
-        <animation type="circular" centerx="0" centery="0" centerz="0" radius="0" rotang="360" span="10" id="sun_animation" startang="0"/>
-        <animation id="small_orbit_animation" centerx="0" centery="0" centerz="0" radius="4.5" startang="0" rotang="360" span="10" type="circular"/>
-        <animation id="medium_orbit_animation" centerx="0" centery="0" centerz="0" radius="6.5" startang="0" rotang="360" span="15" type="circular"/>
-        <animation id="large_orbit_animation" centerx="0" centery="0" centerz="0" radius="8.5" startang="0" rotang="360" span="20" type="circular"/>
+        <animation id="testCircular" span="20" type="circular" centerx="1 " centery="1" centerz="1" radius="5"
+                   startang="40" rotang="20"/>
+        <animation type="circular" centerx="0" centery="0" centerz="0" radius="0" rotang="360" span="10"
+                   id="sun_animation" startang="0"/>
+        <animation id="small_orbit_animation" centerx="0" centery="0" centerz="0" radius="4.5" startang="0" rotang="360"
+                   span="10" type="circular"/>
+        <animation id="medium_orbit_animation" centerx="0" centery="0" centerz="0" radius="6.5" startang="0"
+                   rotang="360" span="15" type="circular"/>
+        <animation id="large_orbit_animation" centerx="0" centery="0" centerz="0" radius="8.5" startang="0" rotang="360"
+                   span="20" type="circular"/>
     </animations>
 
     <primitives>
@@ -190,7 +196,7 @@
         </primitive>
 
         <primitive id="orbit_ring">
-            <torus inner="0.005" outer="1" slices="20" loops="20"/>
+            <torus inner="0.01" outer="1" slices="20" loops="20"/>
         </primitive>
 
         <primitive id="ring">
@@ -235,6 +241,10 @@
             <tile/>
         </primitive>
 
+        <primitive id="wormhole_primitive">
+            <wormhole_decoration/>
+        </primitive>
+
     </primitives>
 
     <!--components section-->
@@ -251,7 +261,124 @@
             <texture id="space_background"/>
 
             <children>
-                <componentref id="3_planet_tile"/>
+                <componentref id="black_hole_tile"/>
+            </children>
+        </component>
+
+        <component id="black_hole_tile">
+
+            <transformation></transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="black_hole"/>
+                <primitiveref id="tile"/>
+            </children>
+        </component>
+
+        <component id="black_hole">
+            <transformation>
+                <translate x="0" y="-0.2" z="0"/>
+                <scale x="1.5" y="1.5" z="1.5"/>
+            </transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="black_hole_left"/>
+                <componentref id="black_hole_right"/>
+                <componentref id="black_hole_center"/>
+            </children>
+        </component>
+
+        <componentref id="black_hole_center">
+            <transformation></transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="sun"/>
+            </children>
+        </componentref>
+
+        <component id="black_hole_right">
+            <transformation>
+                <scale x="-1" y="1" z="-1"/>
+            </transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="black_hole_left"/>
+            </children>
+
+        </component>
+
+        <component id="black_hole_left">
+            <animation>
+                <animationref id="sun_animation"/>
+            </animation>
+            <transformation>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.3" y="0.3" z="0.8"/>
+                <rotate axis="x" angle="-90"/>
+            </transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="wormhole_primitive"/>
+            </children>
+
+        </component>
+
+        <component id="wormhole_tile">
+            <transformation></transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <componentref id="wormhole_decoration"/>
+                <primitiveref id="tile"/>
+            </children>
+        </component>
+
+        <component id="wormhole_decoration">
+
+            <transformation></transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <animation>
+                <animationref id="sun_animation"/>
+            </animation>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="wormhole_primitive"/>
             </children>
         </component>
 
@@ -268,6 +395,7 @@
             <children>
                 <componentref id="2_planet_tile"/>
                 <componentref id="large_orbit"/>
+                <componentref id="large_orbit_indicator"/>
             </children>
         </component>
 
@@ -284,6 +412,7 @@
             <children>
                 <componentref id="1_planet_tile"/>
                 <componentref id="medium_orbit"/>
+                <componentref id="medium_orbit_indicator"/>
             </children>
         </component>
 
@@ -318,6 +447,24 @@
             </children>
         </component>
 
+        <component id="large_orbit_indicator">
+            <transformation>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.70" y="1.0" z="0.70"/>
+                <rotate angle="90" axis="x"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="orbit_ring"/>
+            </children>
+        </component>
+
         <component id="large_orbit">
             <transformation>
                 <translate x="0" y="0.5" z="0"/>
@@ -336,6 +483,24 @@
 
             <children>
                 <primitiveref id="sphere"/>
+            </children>
+        </component>
+
+        <component id="medium_orbit_indicator">
+            <transformation>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.53" y="1.0" z="0.53"/>
+                <rotate angle="90" axis="x"/>
+            </transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="orbit_ring"/>
             </children>
         </component>
 
@@ -363,7 +528,7 @@
         <component id="small_orbit_indicator">
             <transformation>
                 <translate x="0" y="0.5" z="0"/>
-                <scale x="0.35" y="1.0" z="0.35"/>
+                <scale x="0.37" y="1.0" z="0.37"/>
                 <rotate angle="90" axis="x"/>
             </transformation>
 
