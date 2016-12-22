@@ -39,8 +39,8 @@
 
     <illumination doublesided="1" local="1">
 
-        <ambient r="0.4" g="0.04" b="0.09" a="0.8"/>
-        <background r="0.603" g="0.918" b="0.929" a="0.8"/>
+        <ambient r="0" g="0" b="0" a="0.8"/>
+        <background r="0" g="0" b="0" a="0.8"/>
 
     </illumination>
 
@@ -55,8 +55,8 @@
         <spot id="spot1" enabled="true" angle="15.0" exponent="1.0">
             <target x="0.0" y="0.0" z="0.0"/>
             <location x="7.0" y="0.0" z="7.0"/>
-            <ambient r="0.8" g="0.8" b="1.0" a="1.0"/>
-            <diffuse r="0.8" g="0.8" b="1.0" a="1.0"/>
+            <ambient r="1.0" g="1.0" b="1.0" a="1.0"/>
+            <diffuse r="1.0" g="1.0" b="1.0" a="1.0"/>
             <specular r="1.0" g="1.0" b="1.0" a="1.0"/>
         </spot>
     </lights>
@@ -67,6 +67,13 @@
         <texture id="grass" file="assets/grass.png" length_s="0.1" length_t="0.1"/>
         <texture id="wood" file="assets/wood.jpg" length_s="1" length_t="1"/>
         <texture id="spaceship" file="assets/spaceship.jpg" length_s="1" length_t="1"/>
+        <texture id="space_background" file="assets/space-background.jpg" length_s="1" length_t="1"/>
+        <texture id="earth" file="assets/earth.jpg" length_s="1" length_t="1"/>
+        <texture id="blue-planet" file="assets/blue-planet.jpg" length_s="1" length_t="1"/>
+        <texture id="k-planet" file="assets/k-planet.jpg" length_s="1" length_t="1"/>
+        <texture id="sun" file="assets/sun.png" length_s="1" length_t="1"/>
+        <texture id="wormhole" file="assets/whole.jpg" length_s="1" length_t="1"/>
+        <texture id="nebula" file="assets/nebula.jpg" length_s="1" length_t="1"/>
     </textures>
 
     <materials>
@@ -84,14 +91,6 @@
             <specular r="0.5" g="0.5" b="0.5" a="1"/>
             <emission r="0" g="0" b="0" a="1"/>
             <shininess value="2000"/>
-        </material>
-
-        <material id="planet">
-            <ambient r="0.2" g="0.2" b="0.2" a="1"/>
-            <diffuse r="0.9" g="0.9" b="0.9" a="1"/>
-            <specular r="0.1" g="0.1" b="0.1" a="1"/>
-            <emission r="0" g="0" b="0" a="1"/>
-            <shininess value="10"/>
         </material>
 
         <material id="spaceship">
@@ -117,6 +116,39 @@
             <emission r="1" g="1" b="1" a="1"/>
             <shininess value="1000"/>
         </material>
+
+        <material id="star">
+            <ambient r="0.8" g="0.8" b="0.0" a="1.0"/>
+            <specular r="1.0" g="0.8" b="0.0" a="1.0"/>
+            <diffuse r="0.8" g="0.8" b="0.0" a="1.0"/>
+            <emission r="0.8" g="0.8" b="0.0" a="1.0"/>
+            <shininess value="0"/>
+        </material>
+
+        <material id="planet">
+            <ambient r="0.3" g="0.3" b="0.3" a="1.0"/>
+            <specular r="0.3" g="0.3" b="0.3" a="1.0"/>
+            <diffuse r="0.3" g="0.3" b="0.3" a="1.0"/>
+            <emission r="0" g="0" b="0" a="1"/>
+            <shininess value="30"/>
+        </material>
+
+        <material id="orbit">
+            <ambient r="0.7" g="0.7" b="0.7" a="1.0"/>
+            <specular r="0.7" g="0.7" b="0.7" a="0.7"/>
+            <diffuse r="0.7" g="0.7" b="0.7" a="0.7"/>
+            <emission r="0.0" g="0.0" b="0.0" a="1.0"/>
+            <shininess value="0"/>
+        </material>
+
+        <material id="black_hole">
+            <ambient r="0.0" g="0.0" b="0.0" a="1.0"/>
+            <specular r="0.0" g="0.0" b="0.0" a="1.0"/>
+            <diffuse r="0.0" g="0.0" b="0.0" a="1.0"/>
+            <emission r="0.0" g="0.0" b="0.0" a="1.0"/>
+            <shininess value="0"/>
+        </material>
+
     </materials>
 
     <transformations>
@@ -145,7 +177,8 @@
             <controlpoint xx="0" yy="0" zz="0.001"/>
         </animation>
 
-        <animation id="support_animation" span="20" type="circular" centerx="0" centery="0" centerz="0" radius="0" startang="-90" rotang="60"/>
+        <animation id="support_animation" span="20" type="circular" centerx="0" centery="0" centerz="0" radius="0"
+                   startang="-90" rotang="60"/>
 
         <animation id="support_latch_animation" span="20" type="linear">
             <controlpoint xx="0" yy="0" zz="0"/>
@@ -155,10 +188,24 @@
             <controlpoint xx="0" yy="0" zz="0.8"/>
         </animation>
 
-        <animation id="testCircular" span="20" type="circular" centerx="1 " centery="1" centerz="1" radius="5" startang="40" rotang="20"/>
+        <animation id="testCircular" span="20" type="circular" centerx="1 " centery="1" centerz="1" radius="5"
+                   startang="40" rotang="20"/>
+        <animation type="circular" centerx="0" centery="0" centerz="0" radius="0" rotang="360" span="10"
+                   id="sun_animation" startang="0"/>
+        <animation id="small_orbit_animation" centerx="0" centery="0" centerz="0" radius="4.5" startang="0" rotang="360"
+                   span="10" type="circular"/>
+        <animation id="medium_orbit_animation" centerx="0" centery="0" centerz="0" radius="6.5" startang="0"
+                   rotang="360" span="15" type="circular"/>
+        <animation id="large_orbit_animation" centerx="0" centery="0" centerz="0" radius="8.5" startang="0" rotang="360"
+                   span="20" type="circular"/>
     </animations>
 
     <primitives>
+
+        <primitive id="unit_cube">
+            <unit_cube/>
+        </primitive>
+
         <primitive id="square">
             <rectangle x1="0" y1="0" x2="1" y2="1"/>
         </primitive>
@@ -172,15 +219,19 @@
         </primitive>
 
         <primitive id="sphere">
-            <sphere radius="1" slices="20" stacks="20"/>
+            <sphere radius="1" slices="40" stacks="40"/>
         </primitive>
 
         <primitive id="torus">
             <torus inner="0.2" outer="0.5" slices="20" loops="20"/>
         </primitive>
 
+        <primitive id="orbit_ring">
+            <torus inner="0.01" outer="1" slices="20" loops="20"/>
+        </primitive>
+
         <primitive id="ring">
-            <torus inner="0.0" outer="1" slices="20" loops="20"/>
+            <torus inner="0.1" outer="1" slices="20" loops="20"/>
         </primitive>
 
         <primitive id="patch">
@@ -216,6 +267,15 @@
         <primitive id="cone">
             <cylinder base="1" top="0" height="1" slices="20" stacks="5"/>
         </primitive>
+
+        <primitive id="tile">
+            <tile/>
+        </primitive>
+
+        <primitive id="wormhole_primitive">
+            <wormhole_decoration/>
+        </primitive>
+
     </primitives>
 
     <!--components section-->
@@ -223,388 +283,379 @@
         <component id="root">
 
             <transformation>
-                <rotate axis="x" angle="-90"/>
             </transformation>
 
             <materials>
                 <material id="default"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="space_background"/>
 
             <children>
-                <componentref id="platform"/>
-                <componentref id="base_ground"/>
-                <componentref id="spaceship"/>
-                <componentref id="left_support"/>
-                <componentref id="right_support"/>
-            </children>
-
-        </component>
-
-        <component id="right_support">
-            <transformation>
-                <translate x="0" y="3.3" z="0"/>
-                <rotate axis="z" angle="90"/>
-            </transformation>
-            <materials>
-                <material id="default"/>
-            </materials>
-            <texture id="none"/>
-            <children>
-                <componentref id="support"/>
+                <componentref id="black_hole_tile"/>
             </children>
         </component>
 
-        <component id="left_support">
-            <transformation>
-                <translate x="0" y="-3.3" z="0"/>
-                <rotate axis="z" angle="-90"/>
-            </transformation>
-            <materials>
-                <material id="default"/>
-            </materials>
-            <texture id="none"/>
-            <children>
-                <componentref id="support"/>
-            </children>
-        </component>
-
-        <component id="support">
+        <component id="nebula_tile">
             <transformation></transformation>
-            <materials>
-                <material id="red_metal"/>
-            </materials>
-            <animation>
-                <animationref id="stop"/>
-                <animationref id="support_animation"/>
-            </animation>
-            <texture id="spaceship"/>
-            <children>
-                <componentref id="support_base"/>
-                <componentref id="support_tower"/>
-                <componentref id="support_head"/>
-                <componentref id="support_tower_connector"/>
-                <componentref id="support_latch"/>
-                <componentref id="support_pivot"/>
-                <!-- Base, tower, head, latch, head_tower_connector, latch_head_connector-->
-            </children>
-        </component>
 
-        <component id="support_pivot">
-            <transformation>
-                <translate x="0" y="-0.75" z="0"/>
-                <rotate axis="z" angle="90"/>
-                <rotate axis="y" angle="90"/>
-                <scale x="1" y="1" z="1.5"/>
-            </transformation>
             <materials>
-                <material id="spaceship"/>
+                <material id="default"/>
             </materials>
-            <texture id="metal"/>
-            <children>
-                <primitiveref id="cylinder"/>
-            </children>
-        </component>
 
-        <component id="support_tower_connector">
-            <transformation>
-                <translate x="0" y="0" z="5"/>
-                <scale x="0.5" y="0.5" z="1"/>
-            </transformation>
-            <materials>
-                <material id="rubber"/>
-            </materials>
-            <texture id="none"/>
-            <children>
-                <primitiveref id="cone"/>
-            </children>
-        </component>
-
-        <component id="support_head">
-            <transformation>
-                <translate x="-0.5" y="0" z="5.2"/>
-                <rotate axis="z" angle="90"/>
-                <scale x="1" y="2" z="1"/>
-            </transformation>
-            <materials>
-                <material id="inherit"/>
-            </materials>
             <texture id="inherit"/>
+
             <children>
-                <componentref id="unitCube"/>
+                <primitiveref id="tile"/>
+                <componentref id="nebula_wrapper"/>
             </children>
         </component>
 
-        <component id="support_base">
-            <transformation>
-                <scale x="1.2" y="1.2" z="0.8"/>
-            </transformation>
-            <materials>
-                <material id="inherit"/>
-            </materials>
-            <texture id="none"/>
-            <children>
-                <componentref id="unitCube"/>
-            </children>
-        </component>
-
-        <component id="support_tower">
-            <transformation>
-                <scale x="1" y="1" z="5"/>
-            </transformation>
-            <materials>
-                <material id="inherit"/>
-            </materials>
-            <texture id="inherit"/>
-            <children>
-                <componentref id="unitCube"/>
-            </children>
-        </component>
-
-        <component id="support_latch">
-            <transformation>
-                <translate x="-2.5" y="0" z="5.6"/>
-                <rotate axis="z" angle="-90"/>
-                <rotate axis="x" angle="-90"/>
-            </transformation>
-            <animation>
-                <animationref id="stop"/>
-                <animationref id="support_latch_animation"/>
-            </animation>
-            <materials>
-                <material id="rubber"/>
-            </materials>
-            <texture id="none"/>
-            <children>
-                <componentref id="support_latch_clamp"/>
-                <componentref id="support_latch_connector1"/>
-                <componentref id="support_latch_connector2"/>
-            </children>
-        </component>
-
-        <component id="support_latch_clamp">
+        <component id="nebula_wrapper">
             <transformation></transformation>
+
             <materials>
-                <material id="inherit"/>
+                <material id="default"/>
             </materials>
-            <texture id="none"/>
+
+            <animation>
+                <animationref id="sun_animation"/>
+            </animation>
+
+            <texture id="inherit"/>
+
             <children>
-                <primitiveref id="torus"/>
+                <componentref id="nebula"/>
             </children>
         </component>
 
-        <component id="support_latch_connector1">
+        <component id="nebula">
             <transformation>
                 <translate x="0" y="0.5" z="0"/>
-                <scale x="0.1" y="0.1" z="2.2"/>
+                <rotate axis="z" angle="40"/>
+                <scale x="0.1" y="0.4" z="0.5"/>
             </transformation>
+
+
             <materials>
-                <material id="inherit"/>
+                <material id="default"/>
             </materials>
-            <texture id="none"/>
+
+            <texture id="nebula"/>
+
             <children>
-                <primitiveref id="cylinder"/>
+                <primitiveref id="sphere"/>
             </children>
         </component>
 
-        <component id="support_latch_connector2">
+        <component id="black_hole_tile">
+
+            <transformation></transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="black_hole"/>
+                <primitiveref id="tile"/>
+            </children>
+        </component>
+
+        <component id="black_hole">
             <transformation>
-                <translate x="0" y="-0.5" z="0"/>
-                <scale x="0.1" y="0.1" z="1"/>
+                <translate x="0" y="-0.2" z="0"/>
+                <scale x="1.5" y="1.5" z="1.5"/>
             </transformation>
             <materials>
                 <material id="inherit"/>
             </materials>
-            <texture id="none"/>
+
+            <texture id="inherit"/>
+
             <children>
-                <primitiveref id="cylinder"/>
+                <componentref id="black_hole_ring"/>
+                <componentref id="black_hole_center"/>
             </children>
         </component>
-        <!-- Spaceship -->
-        <component id="spaceship">
+
+        <componentref id="black_hole_center">
+            <transformation>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.2" y="0.2" z="0.2"/>
+            </transformation>
+            <materials>
+                <material id="black_hole"/>
+            </materials>
 
             <animation>
-                <animationref id="stop"/>
-                <animationref id="spaceship_animation"/>
+                <animationref id="sun_animation"/>
             </animation>
-            <transformation>
-                <rotate axis="z" angle="90"/>
-                <translate x="0" y="0" z="2.5"/>
-            </transformation>
 
-            <materials>
-                <material id="spaceship"/>
-            </materials>
-
-            <texture id="spaceship"/>
+            <texture id="none"/>
 
             <children>
-                <primitiveref id="vehicle"/>
+                <primitiveref id="sphere"/>
             </children>
+        </componentref>
 
+        <component id="black_hole_ring">
+            <transformation>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.25" y="0.25" z="0.25"/>
+            </transformation>
+
+            <animation>
+                <animationref id="sun_animation"/>
+            </animation>
+            <materials>
+                <material id="star"/>
+            </materials>
+
+            <texture id="sun"/>
+
+            <children>
+                <primitiveref id="ring"/>
+            </children>
         </component>
 
-        <!-- Platform -->
-        <component id="platform">
 
+        <component id="wormhole_tile">
+            <transformation></transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="wormhole_decoration"/>
+                <primitiveref id="tile"/>
+            </children>
+        </component>
+
+        <component id="wormhole_decoration">
+
+            <transformation></transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <animation>
+                <animationref id="sun_animation"/>
+            </animation>
+
+            <texture id="wormhole"/>
+
+            <children>
+                <primitiveref id="wormhole_primitive"/>
+            </children>
+        </component>
+
+        <component id="3_planet_tile">
+
+            <transformation></transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="2_planet_tile"/>
+                <componentref id="large_orbit"/>
+                <componentref id="large_orbit_indicator"/>
+            </children>
+        </component>
+
+        <component id="2_planet_tile">
+
+            <transformation></transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="1_planet_tile"/>
+                <componentref id="medium_orbit"/>
+                <componentref id="medium_orbit_indicator"/>
+            </children>
+        </component>
+
+        <component id="1_planet_tile">
+
+            <transformation></transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="empty_tile"/>
+                <componentref id="small_orbit"/>
+                <componentref id="small_orbit_indicator"/>
+            </children>
+        </component>
+
+        <component id="empty_tile">
+            <transformation></transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="space_background"/>
+
+            <children>
+                <primitiveref id="tile"/>
+                <componentref id="sun"/>
+            </children>
+        </component>
+
+        <component id="large_orbit_indicator">
             <transformation>
-                <scale x="10" y="10" z="1"/>
-                <translate x="-0.5" y="-0.5" z="0"/>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.70" y="1.0" z="0.70"/>
+                <rotate angle="90" axis="x"/>
             </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="orbit"/>
             </materials>
 
             <texture id="none"/>
 
             <children>
-                <primitiveref id="chessboard"/>
+                <primitiveref id="orbit_ring"/>
             </children>
-
         </component>
 
-        <!-- Ground -->
-        <component id="base_ground">
-
+        <component id="large_orbit">
             <transformation>
-                <translate x="-50" y="-50" z="-0.01"/>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.08" y="0.08" z="0.08"/>
             </transformation>
+
+            <animation>
+                <animationref id="large_orbit_animation"/>
+            </animation>
+
+            <materials>
+                <material id="planet"/>
+            </materials>
+
+            <texture id="earth"/>
+
+            <children>
+                <primitiveref id="sphere"/>
+            </children>
+        </component>
+
+        <component id="medium_orbit_indicator">
+            <transformation>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.53" y="1.0" z="0.53"/>
+                <rotate angle="90" axis="x"/>
+            </transformation>
+
+            <materials>
+                <material id="orbit"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="orbit_ring"/>
+            </children>
+        </component>
+
+        <component id="medium_orbit">
+            <transformation>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.08" y="0.08" z="0.08"/>
+            </transformation>
+
+            <animation>
+                <animationref id="medium_orbit_animation"/>
+            </animation>
 
             <materials>
                 <material id="default"/>
             </materials>
 
-            <texture id="grass"/>
+            <texture id="blue-planet"/>
 
             <children>
-                <primitiveref id="plane"/>
+                <primitiveref id="sphere"/>
             </children>
-
         </component>
 
-        <!-- Unit Cube -->
-        <component id="unitCube">
+        <component id="small_orbit_indicator">
             <transformation>
-                <translate x="-0.5" y="-0.5" z="0"/>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.37" y="1.0" z="0.37"/>
+                <rotate angle="90" axis="x"/>
             </transformation>
 
             <materials>
-                <material id="inherit"/>
+                <material id="orbit"/>
             </materials>
 
-            <texture id="inherit"/>
+            <texture id="none"/>
 
             <children>
-                <componentref id="unitCubeBack"/>
-                <componentref id="unitCubeTop"/>
-                <componentref id="unitCubeFront"/>
-                <componentref id="unitCubeBottom"/>
-                <componentref id="unitCubeRight"/>
-                <componentref id="unitCubeLeft"/>
+                <primitiveref id="orbit_ring"/>
             </children>
         </component>
 
-        <component id="unitCubeTop">
+        <component id="small_orbit">
             <transformation>
-                <translate x="0" y="0" z="1"/>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.08" y="0.08" z="0.08"/>
             </transformation>
 
+            <animation>
+                <animationref id="small_orbit_animation"/>
+            </animation>
+
             <materials>
-                <material id="inherit"/>
+                <material id="default"/>
             </materials>
 
-            <texture id="inherit"/>
+            <texture id="k-planet"/>
 
             <children>
-                <primitiveref id="square"/>
+                <primitiveref id="sphere"/>
             </children>
         </component>
 
-        <component id="unitCubeBottom">
+        <component id="sun">
             <transformation>
-                <translate x="0" y="1" z="0"/>
-                <rotate axis="x" angle="180"/>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.15" y="0.15" z="0.15"/>
             </transformation>
-
             <materials>
-                <material id="inherit"/>
+                <material id="star"/>
             </materials>
 
-            <texture id="inherit"/>
+            <animation>
+                <animationref id="sun_animation"/>
+            </animation>
+
+            <texture id="sun"/>
 
             <children>
-                <primitiveref id="square"/>
+                <primitiveref id="sphere"/>
             </children>
         </component>
 
-        <component id="unitCubeFront">
-            <transformation>
-                <rotate axis="x" angle="90"/>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-
-            <texture id="inherit"/>
-
-            <children>
-                <primitiveref id="square"/>
-            </children>
-        </component>
-
-        <component id="unitCubeBack">
-            <transformation>
-                <translate x="0" y="1" z="1"/>
-                <rotate axis="x" angle="-90"/>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-
-            <texture id="inherit"/>
-
-            <children>
-                <primitiveref id="square"/>
-            </children>
-        </component>
-
-        <component id="unitCubeRight">
-            <transformation>
-                <rotate axis="y" angle="-90"/>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-
-            <texture id="inherit"/>
-
-            <children>
-                <primitiveref id="square"/>
-            </children>
-        </component>
-
-        <component id="unitCubeLeft">
-            <transformation>
-                <translate x="1" y="0" z="1"/>
-                <rotate axis="y" angle="90"/>
-            </transformation>
-
-            <materials>
-                <material id="inherit"/>
-            </materials>
-
-            <texture id="inherit"/>
-
-            <children>
-                <primitiveref id="square"/>
-            </children>
-        </component>
-
-        <!-- Unit Cube End -->
     </components>
 </dsx>

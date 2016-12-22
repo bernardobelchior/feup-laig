@@ -93,3 +93,4 @@ Triangle.prototype.amplifyTexture = function(amplifierS, amplifierT) {
 
     this.updateTexCoordsGLBuffers();
 }
+

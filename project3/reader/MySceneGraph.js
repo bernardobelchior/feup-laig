@@ -16,6 +16,7 @@ function MySceneGraph(filename, scene) {
     this.transformations = {};
     this.primitives = {};
     this.textures = {};
+    this.components = {};
 
     /*
      * Read the contents of the xml file, and refer to this class for loading and error handlers.
@@ -436,7 +437,6 @@ MySceneGraph.prototype.parseComponents = function (compsTag) {
     if (compsTag.nodeName !== 'components')
         return ('Blocks not ordered correctly. Expected "components", found "' + compsTag.nodeName + '".');
 
-    let components = {};
 
     for (let compTag of compsTag.children) {
         let id = this.reader.getString(compTag, 'id', true);
@@ -444,7 +444,7 @@ MySceneGraph.prototype.parseComponents = function (compsTag) {
         if (!id)
             return 'A component must have an id. Please provide one.';
 
-        if (components[id])
+        if (this.components[id])
             return ('A component with id ' + id + ' already exists.');
 
         let component = new Component(this.scene, id);
@@ -488,12 +488,12 @@ MySceneGraph.prototype.parseComponents = function (compsTag) {
         //Children parsing
         let childrenTag = compTag.getElementsByTagName('children')[0];
 
-        error = this.parseComponentChildren(components, component, childrenTag);
+        error = this.parseComponentChildren(this.components, component, childrenTag);
         if (error)
             return error;
     }
 
-    let error = this.createSceneGraph(components);
+    let error = this.createSceneGraph(this.components);
 
     if (error)
         return error;
@@ -533,6 +533,7 @@ MySceneGraph.prototype.createSceneGraph = function (components) {
  */
 MySceneGraph.prototype.parseComponentAnimations = function (component, animationsTag) {
     if (animationsTag) {
+        console.log("hey");
         for (let animation of animationsTag.children) {
             if (animation.nodeName !== 'animationref')
                 return ('Unexpected animation node name on component ' + component.id + '.');
@@ -544,6 +545,8 @@ MySceneGraph.prototype.parseComponentAnimations = function (component, animation
 
             if (!this.animations[id])
                 return ('Animation with unknown id "' + id + '" declared in a component.');
+
+            console.log(id);
 
             component.addAnimation(this.animations[id]);
         }
@@ -754,6 +757,18 @@ MySceneGraph.prototype.parsePrimitives = function (primitives) {
                     object = new Chessboard(this.scene, divU, divV, texture.texture, selectedU, selectedV, color1, color2, selectedColor);
                 }
                 break;
+            case 'tile':
+                object = new Tile(this.scene);
+                break;
+
+            case 'unit_cube':
+                object = new UnitCube(this.scene);
+                break;
+
+            case 'wormhole_decoration':
+                object = new Wormhole(this.scene);
+                break;
+
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');
         }
