@@ -45,6 +45,7 @@ XMLscene.prototype.setDefaultAppearance = function () {
 // Handler called when the graph is finally loaded.
 // As loading is asynchronous, this may be called already after the application has started the run loop
 XMLscene.prototype.onGraphLoaded = function () {
+
     this.setGlobalAmbientLight(this.graph.ambient[0], this.graph.ambient[1], this.graph.ambient[2], this.graph.ambient[3]);
     this.gl.clearColor(this.graph.bg[0], this.graph.bg[1], this.graph.bg[2], this.graph.bg[3]);
 
@@ -61,11 +62,31 @@ XMLscene.prototype.onGraphLoaded = function () {
         this.lightStatus.push(this.lights[i].enabled);
         this.interface.addLightControls(i, this.lightIDs[i]);
     }
+
+    this.placeBoard(this.graph.board, this.graph.components);
+    this.board = new Board(this, this.graph.board, this.graph.components);
+    // this.rootNode.children = [];
+
+};
+
+XMLscene.prototype.placeBoard = function(board, components){
+    for(let row of board){
+        for(let hex of row){
+            if(!!components[hex]) {
+                let nc = components[hex].component;
+                this.rootNode.addChild(nc);
+            }
+        }
+    }
+
+    console.log(this.rootNode.children);
+    this.rootNode.updateTextures(this.graph.textures);
 };
 
 XMLscene.prototype.update = function (currTime) {
     if (!this.graph.loadedOk)
         return;
+
 
     this.rootNode.update(currTime - this.lastUpdateTime, this.seqNum);
     this.seqNum = (this.seqNum + 1) % 2;
@@ -102,7 +123,8 @@ XMLscene.prototype.display = function () {
             this.lights[i].update();
         }
 
-        this.rootNode.display();
+        // this.rootNode.display();
+        this.board.display();
 
         // Draw axis
         this.axis.display();
@@ -125,3 +147,19 @@ XMLscene.prototype.nextCamera = function () {
     this.camera = this.cameras[this.currentCamera];
     this.interface.setActiveCamera(this.camera);
 };
+
+XMLscene.prototype.cloneRoot = function(){
+    let newRoot = new Component(this, "root");
+    newRoot.materials = this.rootNode.materials;
+    newRoot.inheritMaterial = false;
+    newRoot.inheritTexture = false;
+    newRoot.children = [];
+    newRoot.currentMaterial = this.rootNode.currentMaterial;
+    newRoot.transformation = new Transformation(this);
+    newRoot.animationsRoot ;
+    newRoot.currentAnimation;
+    newRoot.parent = null;
+    newRoot.texture = null;
+
+    return newRoot;
+}

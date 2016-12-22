@@ -1,15 +1,15 @@
 create_board(Board):-
   Board = [
   [null, null, null, null, null, null, null, null, null, null, null], %0
-  [null, null, null, null, system0, system3, greenNebula, system2, null, null, null], %1
-  [null, null, null, blueNebula, system2, system1, blackHole, system1, system1, system1, null], %2
+  [null, null, null, null, system0, system3, nebula, system2, null, null, null], %1
+  [null, null, null, nebula, system2, system1, blackHole, system1, system1, system1, null], %2
   [null, null, null, system2, system3, system0, system2, system2, wormhole, system3, null], %3
-  [null, null, system3, wormhole, system1, redNebula, system1, blueNebula, system1, null, null], %4
+  [null, null, system3, wormhole, system1, nebula, system1, nebula, system1, null, null], %4
   [null, null, system0, system2, system3, system0, system0, system1, system2, null, null], %5
-  [null, space, redNebula, system3, greenNebula, system0, system1, blackHole, system1, null, null], %6
-  [null, system3, blackHole, greenNebula, system3, system2, system1, system1, null, null, null], %7
-  [space, system1, system3, redNebula, wormhole, system0, system1, system1, null, null, null], %8
-  [space, space, space, system1, blueNebula, system0, system2, null, null, null, null]]. %9
+  [null, space, nebula, system3, nebula, system0, system1, blackHole, system1, null, null], %6
+  [null, system3, blackHole, nebula, system3, system2, system1, system1, null, null, null], %7
+  [space, system1, system3, nebula, wormhole, system0, system1, system1, null, null, null], %8
+  [space, space, space, system1, nebula, system0, system2, null, null, null, null]]. %9
 
 create_players(Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer):-
   Ships = [

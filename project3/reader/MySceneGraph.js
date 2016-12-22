@@ -62,8 +62,8 @@ MySceneGraph.prototype.setBoard = function (context, data) {
     context.board = JSON.parse(data.target.response);
 
     // As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
-    context.scene.onGraphLoaded();
     context.loadedOk = true;
+    context.scene.onGraphLoaded();
 };
 
 /**
@@ -553,7 +553,6 @@ MySceneGraph.prototype.createSceneGraph = function (components) {
  */
 MySceneGraph.prototype.parseComponentAnimations = function (component, animationsTag) {
     if (animationsTag) {
-        console.log("hey");
         for (let animation of animationsTag.children) {
             if (animation.nodeName !== 'animationref')
                 return ('Unexpected animation node name on component ' + component.id + '.');
@@ -566,7 +565,6 @@ MySceneGraph.prototype.parseComponentAnimations = function (component, animation
             if (!this.animations[id])
                 return ('Animation with unknown id "' + id + '" declared in a component.');
 
-            console.log(id);
 
             component.addAnimation(this.animations[id]);
         }
@@ -667,8 +665,9 @@ MySceneGraph.prototype.parseComponentChildren = function (components, component,
             if (id === component.getId()) //Check for cylic dependency
                 return ('Cyclic dependency on component named ' + component.getId() + '.');
 
+            if(component.getId() !== "root")
             children.push(id);
-        } else //primitiveref
+        } else if(component.getId() !== "root") //primitiveref
             component.addChild(this.primitives[id]);
     }
 

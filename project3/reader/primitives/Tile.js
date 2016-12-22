@@ -21,11 +21,15 @@ Tile.prototype.display = function(){
 
     this.scene.pushMatrix();
         this.scene.translate(0, 0.1, 0);
+        this.scene.rotate(Math.PI/180.0 * 90, 0, 1, 0);
         this.scene.rotate(Math.PI/180.0 * -90.0, 1, 0, 0);
         this.Hex.display();
     this.scene.popMatrix();
 
-    this.Prism.display();
+    this.scene.pushMatrix();
+        this.scene.rotate(Math.PI/180.0 * 90, 0, 1, 0);
+        this.Prism.display();
+    this.scene.popMatrix();
 };
 
 /**
@@ -34,4 +38,4 @@ Tile.prototype.display = function(){
  * Even though it does not do anything, it needs to be present due to
  * inheritance.
  */
-Tile.prototype.amplifyTexture = function(amplifierS, amplifierT) {}
+Tile.prototype.amplifyTexture = function(amplifierS, amplifierT) {};

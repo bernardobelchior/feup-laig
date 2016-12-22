@@ -86,6 +86,9 @@ Component.prototype.updateTextures = function (textures) {
         case 'none':
             this.texture = null;
             break;
+        case null:
+            this.texture = null;
+            break;
         default:
             if (!textures[this.texture])
                 return ('There is not texture with id ' + this.texture + '.');
@@ -96,8 +99,9 @@ Component.prototype.updateTextures = function (textures) {
 
     for (let child of this.children) {
         //FIXME: Better way to do this
-        if (child instanceof Component)
+        if (child instanceof Component) {
             child.updateTextures(textures);
+        }
     }
 }
 
@@ -115,6 +119,9 @@ Component.prototype.display = function (parent) {
         this.material = parent.material;
     else
         this.material = this.materials[this.currentMaterial];
+    // console.log(this.inheritMaterial);
+    // console.log(this.parent.material);
+    // console.log(this.id + " - parent is " + this.parent.id + " - material is " + this.material);
 
     if (this.texture)
         this.texture.apply(this.material);
@@ -239,3 +246,4 @@ Component.prototype.update = function (deltaTime, seqNum) {
             child.update(deltaTime, seqNum);
     }
 };
+
