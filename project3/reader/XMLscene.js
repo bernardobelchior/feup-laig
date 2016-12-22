@@ -35,9 +35,9 @@ XMLscene.prototype.init = function (application) {
  * set the default scene appearance
  */
 XMLscene.prototype.setDefaultAppearance = function () {
-    this.setAmbient(0.2, 0.4, 0.8, 1.0);
-    this.setDiffuse(0.2, 0.4, 0.8, 1.0);
-    this.setSpecular(0.2, 0.4, 0.8, 1.0);
+    this.setAmbient(0.2, 0.2, 0.2, 1.0);
+    this.setDiffuse(1.0, 1.0, 1.0, 1.0);
+    this.setSpecular(1.0, 1.0, 1.0, 1.0);
     this.setShininess(10.0);
 };
 
