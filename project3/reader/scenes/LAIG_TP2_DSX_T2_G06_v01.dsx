@@ -72,6 +72,8 @@
         <texture id="blue-planet" file="assets/blue-planet.jpg" length_s="1" length_t="1"/>
         <texture id="k-planet" file="assets/k-planet.jpg" length_s="1" length_t="1"/>
         <texture id="sun" file="assets/sun.png" length_s="1" length_t="1"/>
+        <texture id="wormhole" file="assets/whole.jpg" length_s="1" length_t="1"/>
+        <texture id="nebula" file="assets/nebula.jpg" length_s="1" length_t="1"/>
     </textures>
 
     <materials>
@@ -135,6 +137,14 @@
             <ambient r="0.7" g="0.7" b="0.7" a="1.0"/>
             <specular r="0.7" g="0.7" b="0.7" a="0.7"/>
             <diffuse r="0.7" g="0.7" b="0.7" a="0.7"/>
+            <emission r="0.0" g="0.0" b="0.0" a="1.0"/>
+            <shininess value="0"/>
+        </material>
+
+        <material id="black_hole">
+            <ambient r="0.0" g="0.0" b="0.0" a="1.0"/>
+            <specular r="0.0" g="0.0" b="0.0" a="1.0"/>
+            <diffuse r="0.0" g="0.0" b="0.0" a="1.0"/>
             <emission r="0.0" g="0.0" b="0.0" a="1.0"/>
             <shininess value="0"/>
         </material>
@@ -221,7 +231,7 @@
         </primitive>
 
         <primitive id="ring">
-            <torus inner="0.0" outer="1" slices="20" loops="20"/>
+            <torus inner="0.1" outer="1" slices="20" loops="20"/>
         </primitive>
 
         <primitive id="patch">
@@ -282,7 +292,7 @@
             <texture id="space_background"/>
 
             <children>
-                <componentref id="3_planet_tile"/>
+                <componentref id="black_hole_tile"/>
             </children>
         </component>
 
@@ -293,7 +303,7 @@
                 <material id="default"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="inherit"/>
 
             <children>
                 <primitiveref id="tile"/>
@@ -312,7 +322,7 @@
                 <animationref id="sun_animation"/>
             </animation>
 
-            <texture id="none"/>
+            <texture id="inherit"/>
 
             <children>
                 <componentref id="nebula"/>
@@ -323,7 +333,7 @@
             <transformation>
                 <translate x="0" y="0.5" z="0"/>
                 <rotate axis="z" angle="40"/>
-                <scale x="0.5" y="0.1" z="0.7"/>
+                <scale x="0.1" y="0.4" z="0.5"/>
             </transformation>
 
 
@@ -331,7 +341,7 @@
                 <material id="default"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="nebula"/>
 
             <children>
                 <primitiveref id="sphere"/>
@@ -342,10 +352,10 @@
 
             <transformation></transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="inherit"/>
 
             <children>
                 <componentref id="black_hole"/>
@@ -359,76 +369,66 @@
                 <scale x="1.5" y="1.5" z="1.5"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="inherit"/>
 
             <children>
-                <componentref id="black_hole_left"/>
-                <componentref id="black_hole_right"/>
+                <componentref id="black_hole_ring"/>
                 <componentref id="black_hole_center"/>
             </children>
         </component>
 
         <componentref id="black_hole_center">
-            <transformation></transformation>
-            <materials>
-                <material id="default"/>
-            </materials>
-
-            <texture id="none"/>
-
-            <children>
-                <componentref id="sun"/>
-            </children>
-        </componentref>
-
-        <component id="black_hole_right">
             <transformation>
-                <scale x="-1" y="1" z="-1"/>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.2" y="0.2" z="0.2"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="black_hole"/>
             </materials>
 
-            <texture id="none"/>
-
-            <children>
-                <componentref id="black_hole_left"/>
-            </children>
-
-        </component>
-
-        <component id="black_hole_left">
             <animation>
                 <animationref id="sun_animation"/>
             </animation>
-            <transformation>
-                <translate x="0" y="0.5" z="0"/>
-                <scale x="0.3" y="0.3" z="0.8"/>
-                <rotate axis="x" angle="-90"/>
-            </transformation>
-            <materials>
-                <material id="default"/>
-            </materials>
 
             <texture id="none"/>
 
             <children>
-                <primitiveref id="wormhole_primitive"/>
+                <primitiveref id="sphere"/>
             </children>
+        </componentref>
 
+        <component id="black_hole_ring">
+            <transformation>
+                <translate x="0" y="0.5" z="0"/>
+                <scale x="0.25" y="0.25" z="0.25"/>
+            </transformation>
+
+            <animation>
+                <animationref id="sun_animation"/>
+            </animation>
+            <materials>
+                <material id="star"/>
+            </materials>
+
+            <texture id="sun"/>
+
+            <children>
+                <primitiveref id="ring"/>
+            </children>
         </component>
+
 
         <component id="wormhole_tile">
             <transformation></transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
-            <texture id="none"/>
+            <texture id="inherit"/>
 
             <children>
                 <componentref id="wormhole_decoration"/>
@@ -441,14 +441,14 @@
             <transformation></transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
             <animation>
                 <animationref id="sun_animation"/>
             </animation>
 
-            <texture id="none"/>
+            <texture id="wormhole"/>
 
             <children>
                 <primitiveref id="wormhole_primitive"/>

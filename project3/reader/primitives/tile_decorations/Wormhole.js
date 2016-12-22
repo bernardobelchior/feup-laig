@@ -92,3 +92,8 @@ Wormhole.prototype.display = function(){
     this.innerPatch.display();
     this.outerPatch.display();
 }
+
+Wormhole.prototype.amplifyTexture = function(){
+    this.innerPatch.amplifyTexture();
+    this.outerPatch.amplifyTexture();
+}
