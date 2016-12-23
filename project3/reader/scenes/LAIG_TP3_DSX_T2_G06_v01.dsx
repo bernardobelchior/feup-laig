@@ -300,7 +300,6 @@
             <texture id="none"/>
 
             <children>
-                <componentref id="black_hole_tile"/>
             </children>
         </component>
 
@@ -474,7 +473,12 @@
             <texture id="inherit"/>
 
             <children>
-                <componentref id="system2"/>
+                <componentref id="empty_tile"/>
+                <componentref id="sun"/>
+                <componentref id="small_orbit"/>
+                <componentref id="small_orbit_indicator"/>
+                <componentref id="medium_orbit"/>
+                <componentref id="medium_orbit_indicator"/>
                 <componentref id="large_orbit"/>
                 <componentref id="large_orbit_indicator"/>
             </children>
@@ -491,7 +495,10 @@
             <texture id="inherit"/>
 
             <children>
-                <componentref id="system1"/>
+                <componentref id="empty_tile"/>
+                <componentref id="sun"/>
+                <componentref id="small_orbit"/>
+                <componentref id="small_orbit_indicator"/>
                 <componentref id="medium_orbit"/>
                 <componentref id="medium_orbit_indicator"/>
             </children>
@@ -508,7 +515,8 @@
             <texture id="inherit"/>
 
             <children>
-                <componentref id="system0"/>
+                <componentref id="empty_tile"/>
+                <componentref id="sun"/>
                 <componentref id="small_orbit"/>
                 <componentref id="small_orbit_indicator"/>
             </children>
@@ -678,5 +686,28 @@
             </children>
         </component>
 
+        <component id="space">
+            <transformation></transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+            </children>
+        </component>
+
+        <component id="null">
+            <transformation></transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+            </children>
+        </component>
     </components>
 </dsx>

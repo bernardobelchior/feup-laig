@@ -63,23 +63,7 @@ XMLscene.prototype.onGraphLoaded = function () {
         this.interface.addLightControls(i, this.lightIDs[i]);
     }
 
-    this.placeBoard(this.graph.board, this.graph.components);
     this.board = new Board(this, this.graph.board, this.graph.components);
-    // this.rootNode.children = [];
-
-};
-
-XMLscene.prototype.placeBoard = function(board, components){
-    for(let row of board){
-        for(let hex of row){
-            if(!!components[hex]) {
-                let nc = components[hex].component;
-                this.rootNode.addChild(nc);
-            }
-        }
-    }
-
-    console.log(this.rootNode.children);
     this.rootNode.updateTextures(this.graph.textures);
 };
 
@@ -123,8 +107,7 @@ XMLscene.prototype.display = function () {
             this.lights[i].update();
         }
 
-        // this.rootNode.display();
-        this.board.display();
+        this.rootNode.display();
 
         // Draw axis
         this.axis.display();

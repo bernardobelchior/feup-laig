@@ -71,7 +71,6 @@ Component.prototype.getId = function () {
  */
 Component.prototype.addChild = function (component) {
     this.children.push(component);
-    component.parent = this;
 }
 
 /**
@@ -119,9 +118,6 @@ Component.prototype.display = function (parent) {
         this.material = parent.material;
     else
         this.material = this.materials[this.currentMaterial];
-    // console.log(this.inheritMaterial);
-    // console.log(this.parent.material);
-    // console.log(this.id + " - parent is " + this.parent.id + " - material is " + this.material);
 
     if (this.texture)
         this.texture.apply(this.material);

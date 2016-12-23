@@ -541,7 +541,7 @@ MySceneGraph.prototype.createSceneGraph = function (components) {
     if (this.scene.rootNode.texture === 'inherit')
         return 'Root node cannot inherit a texture.';
 
-    this.scene.rootNode.updateTextures(this.textures);
+    //this.scene.rootNode.updateTextures(this.textures);
 
     /*
      * Handle materials inheritance
