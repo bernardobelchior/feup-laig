@@ -15,6 +15,7 @@ function Component(scene, id) {
     this.animationsRoot;
     this.currentAnimation;
     this.parent = null;
+    this.pickingID;
 }
 
 /**
@@ -129,6 +130,8 @@ Component.prototype.display = function (parent) {
     if (this.currentAnimation)
         this.currentAnimation.value.display();
 
+    if (this.pickingID)
+        this.scene.registerForPick(this.pickingID, this);
 
     for (let child of this.children) {
         if (this.texture) {
@@ -160,6 +163,10 @@ Component.prototype.display = function (parent) {
 
         child.display(this);
     }
+
+    //if (this.pickingID)
+        //this.scene.registerForPick(undefined, undefined);
+    //this.scene.clearPickRegistration();
 
     this.scene.popMatrix();
 }
@@ -243,3 +250,6 @@ Component.prototype.update = function (deltaTime, seqNum) {
     }
 };
 
+Component.prototype.setPickingID = function (pickingID) {
+    this.pickingID = pickingID;
+};

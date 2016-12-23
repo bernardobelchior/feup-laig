@@ -17,3 +17,7 @@ Hex.prototype.transform = function (visibilityIndex, y) {
     this.component.translate(1.9*visibilityIndex, 0, 1.68*y);
     this.component.translate(1 * y%2, 0, 0);
 };
+
+Hex.prototype.setPickingID = function (pickingID) {
+    this.component.setPickingID(pickingID);
+};

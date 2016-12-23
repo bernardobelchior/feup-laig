@@ -1,21 +1,26 @@
 function Board(scene, boardElements, components) {
     this.scene = scene;
     this.board = [];
+    this.rows = boardElements.length;
+    this.columns = boardElements[0].length;
 
-    for (let y = 0; y < boardElements.length; y++) {
+    for (let y = 0; y < this.rows; y++) {
         this.board.push([]);
 
         // Indicates the visual horizontal index of the tile.
         // Null hexes do not increment this.
         let visibilityIndex = 0;
 
-        for (let x = 0; x < boardElements[y].length; x++) {
+        for (let x = 0; x < this.columns; x++) {
             let hex = boardElements[y][x];
 
             let tile = new Hex(scene, components[hex].component, visibilityIndex, y);
+            tile.name = hex;
 
-            if(hex !== 'null')
+            if (hex !== 'null')
                 visibilityIndex++;
+            else
+                tile.setPickingID(y * this.columns + x ); // +1 because picking ID must begin at 1
 
             this.board[y].push(tile);
         }
@@ -25,24 +30,11 @@ function Board(scene, boardElements, components) {
 Board.prototype = Object.create(Object.prototype);
 Board.prototype.constructor = Board;
 
-Board.prototype.display = function () {
-    this.scene.pushMatrix();
+Board.prototype.picked = function (pickingID) {
+    let x = pickingID % this.columns;
+    let y = (pickingID / this.columns) | 0;
 
-    for (let i = 0; i < this.board.length; i++) {
-        let row = this.board[i];
-        if (i == this.board.length - 1)
-            this.scene.translate(5 * 0.89, 0, 1.54);
-        else if (i % 2 == 0)
-            this.scene.translate(-0.91, 0, 1.54);
-        else
-            this.scene.translate(0.91, 0, 1.54);
-        this.scene.pushMatrix();
-        for (let hex of row) {
-            this.scene.translate(1.77, 0, 0);
-            hex.display(this.scene.rootNode);
-        }
-        this.scene.popMatrix();
-    }
-
-    this.scene.popMatrix();
+    console.log(pickingID);
+    console.log('Selected position (' + x + ', ' + y + ').');
+    console.log('Selected: ' + this.board[y][x].name);
 };

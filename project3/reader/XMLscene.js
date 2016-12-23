@@ -29,6 +29,8 @@ XMLscene.prototype.init = function (application) {
     this.seqNum = 0;
     this.setUpdatePeriod(1 / 60 * 1000);
     this.lastUpdateTime = (new Date()).getTime();
+
+    this.setPickEnabled(true);
 };
 
 /**
@@ -90,6 +92,9 @@ XMLscene.prototype.display = function () {
         this.updateProjectionMatrix();
         this.loadIdentity();
 
+        this.handlePicking();
+        this.clearPickRegistration();
+
         // Apply transformations corresponding to the camera position relative to the origin
         this.applyViewMatrix();
 
@@ -131,18 +136,14 @@ XMLscene.prototype.nextCamera = function () {
     this.interface.setActiveCamera(this.camera);
 };
 
-XMLscene.prototype.cloneRoot = function(){
-    let newRoot = new Component(this, "root");
-    newRoot.materials = this.rootNode.materials;
-    newRoot.inheritMaterial = false;
-    newRoot.inheritTexture = false;
-    newRoot.children = [];
-    newRoot.currentMaterial = this.rootNode.currentMaterial;
-    newRoot.transformation = new Transformation(this);
-    newRoot.animationsRoot ;
-    newRoot.currentAnimation;
-    newRoot.parent = null;
-    newRoot.texture = null;
+/**
+ * Handles the scene picking.
+ */
+XMLscene.prototype.handlePicking = function () {
+    for (let picking of this.pickResults)
+        //if(picking[0])
+            //this.board.picked(picking[1]);
+        console.log(picking);
 
-    return newRoot;
-}
+    this.pickResults.splice(0);
+};
