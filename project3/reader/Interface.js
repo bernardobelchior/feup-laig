@@ -21,7 +21,13 @@ Interface.prototype.init = function(application) {
     CGFinterface.prototype.init.call(this, application);
 
     this.gui = new dat.GUI();
-    this.lightGroup = this.gui.addFolder("Lights");
+
+    /*let menu = {
+        Start: startGame()
+    };*/
+
+
+    //this.gui.add(menu, 'Start');
     return true;
 };
 

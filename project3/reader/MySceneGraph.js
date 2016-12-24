@@ -42,7 +42,26 @@ MySceneGraph.prototype.onXMLReady = function () {
     }
 
     getPrologRequest('board', this, this.setBoard, this.prologRequestError);
+    getPrologRequest('initialConfig', this, function (context, data) {
+       //Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes
+        let response = JSON.parse(data.target.response);
+        let board = response[0];
+        let ships = response[1];
+        let tradeStations = response[2];
+        let colonies = response[3];
+        let homeSystems = response[4];
+        let wormholes = response[5];
+
+        console.log(board);
+        console.log(ships);
+        console.log(tradeStations);
+        console.log(colonies);
+        console.log(homeSystems);
+        console.log(wormholes);
+
+    }, this.prologRequestError);
 };
+
 
 /**
  * Function called when there is an error in a Prolog Request.

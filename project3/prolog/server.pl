@@ -108,6 +108,12 @@ print_header_line(_).
 parse_input(board, Board):-
   initialize(PlBoard, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer),
   matrix_to_json(PlBoard, Board).
+
+parse_input(initialConfig, InitialConfig):-
+  initialize(Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer),
+  json([Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes], InitialConfig).
+  %json([board-Board, ships-Ships, tradeStations-TradeStations, colonies-Colonies, homeSystems-HomeSystems], InitialConfig).
+
 parse_input(quit, goodbye).
 
 /*parse_input(handshake, handshake).

@@ -60,10 +60,8 @@ XMLscene.prototype.onGraphLoaded = function () {
     this.setUpdatePeriod(20);
 
     //GUI for light control
-    for (var i = 0; i < this.lights.length; i++) {
+    for (var i = 0; i < this.lights.length; i++)
         this.lightStatus.push(this.lights[i].enabled);
-        this.interface.addLightControls(i, this.lightIDs[i]);
-    }
 
     this.board = new Board(this, this.graph.board, this.graph.components);
     this.rootNode.updateTextures(this.graph.textures);
@@ -146,3 +144,4 @@ XMLscene.prototype.handlePicking = function () {
 
     this.pickResults.splice(0);
 };
+
