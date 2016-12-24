@@ -141,9 +141,8 @@ XMLscene.prototype.nextCamera = function () {
  */
 XMLscene.prototype.handlePicking = function () {
     for (let picking of this.pickResults)
-        //if(picking[0])
-            //this.board.picked(picking[1]);
-        console.log(picking);
+        if(picking[0])
+            this.board.picked(picking[1]);
 
     this.pickResults.splice(0);
 };

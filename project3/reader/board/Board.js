@@ -17,10 +17,10 @@ function Board(scene, boardElements, components) {
             let tile = new Hex(scene, components[hex].component, visibilityIndex, y);
             tile.name = hex;
 
-            if (hex !== 'null')
+            if (hex !== 'null') {
                 visibilityIndex++;
-            else
-                tile.setPickingID(y * this.columns + x ); // +1 because picking ID must begin at 1
+                tile.setPickingID(y * this.columns + x + 1); // +1 because picking ID must begin at 1
+            }
 
             this.board[y].push(tile);
         }
@@ -31,10 +31,9 @@ Board.prototype = Object.create(Object.prototype);
 Board.prototype.constructor = Board;
 
 Board.prototype.picked = function (pickingID) {
-    let x = pickingID % this.columns;
-    let y = (pickingID / this.columns) | 0;
+    let x = (pickingID-1) % this.columns;
+    let y = ((pickingID-1) / this.columns) | 0;
 
-    console.log(pickingID);
     console.log('Selected position (' + x + ', ' + y + ').');
     console.log('Selected: ' + this.board[y][x].name);
 };
