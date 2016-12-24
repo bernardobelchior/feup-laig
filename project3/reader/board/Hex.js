@@ -8,6 +8,7 @@ function Hex(scene, component, visibilityIndex, y) {
 
     this.scene.rootNode.addChild(this.component);
     this.transform(visibilityIndex, y);
+    //this.component.updateTextures(this.scene.graph.textures);
 }
 
 Hex.prototype = Object.create(Object.prototype);

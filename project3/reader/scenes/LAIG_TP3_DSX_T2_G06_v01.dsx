@@ -303,7 +303,37 @@
             </children>
         </component>
 
-        <component id="nebula">
+        <component id="blueNebula">
+            <transformation></transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="empty_tile"/>
+                <componentref id="nebula_wrapper"/>
+            </children>
+        </component>
+
+        <component id="greenNebula">
+            <transformation></transformation>
+
+            <materials>
+                <material id="default"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="empty_tile"/>
+                <componentref id="nebula_wrapper"/>
+            </children>
+        </component>
+
+        <component id="redNebula">
             <transformation></transformation>
 
             <materials>
