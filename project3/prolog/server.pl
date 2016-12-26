@@ -114,8 +114,14 @@ parse_input(initialConfig, InitialConfig):-
   json([Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes], InitialConfig).
   %json([board-Board, ships-Ships, tradeStations-TradeStations, colonies-Colonies, homeSystems-HomeSystems], InitialConfig).
 
-parse_input(move_ship(Ships, ShipPosition, PlayerNo, ShipNo, Direction, NumTiles, NewShips), NewShips):-
-	move(Ships, ShipPosition, PlayerNo, ShipNo, Direction, NumTiles, NewShips).
+parse_input(move(Ships, PlayerNo, ShipNo, NewShipPosition), NewShips):-
+	move(Ships, PlayerNo, ShipNo, NewShipPosition, NewShips).
+
+parse_input(place_trade_station(PlayerNo, ShipPosition, TradeStations), NewTradeStations):-
+	place_trade_station(PlayerNo, ShipPosition, TradeStations, NewTradeStations).
+
+parse_input(place_colony(PlayerNo, ShipPosition, Colonies), NewColonies):-
+	place_colony(PlayerNo, ShipPosition, Colonies, NewColonies).
 
 parse_input(quit, goodbye).
 

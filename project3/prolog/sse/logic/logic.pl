@@ -61,6 +61,11 @@ move_ship_if_valid(Board, Ships, TradeStations, Colonies, Wormholes, PlayerNo, S
   is_move_valid(Board, Ships, TradeStations, Colonies, Wormholes, ShipPosition, Direction, NumTiles, NumTiles),
   move_ship(Ships, ShipPosition, PlayerNo, ShipNo, Direction, NumTiles, NewShips).
 
+move(Ships, PlayerNo, ShipNo, NewShipPosition, NewShips):-
+  list_get_nth(Ships, PlayerNo, PlayerShips),
+  list_replace_nth(PlayerShips, ShipNo, NewShipPosition, NewPlayerShips),
+  list_replace_nth(Ships, PlayerNo, NewPlayerShips, NewShips).
+
 move_ship(Ships, ShipPosition, PlayerNo, ShipNo, Direction, NumTiles, NewShips):-
   update_position(ShipPosition, Direction, NumTiles, NewShipPosition),
   list_get_nth(Ships, PlayerNo, PlayerShips),
