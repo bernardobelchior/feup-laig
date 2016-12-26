@@ -15,10 +15,19 @@ function getPrologRequest(requestString, context, onSuccess, onError, port) {
         onSuccess(context, data);
     };
 
-    request.onerror = onError;
+    request.onerror = onError || prologRequestError;
 
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
     request.send();
+}
+
+/**
+ * Function called when there is an error in a Prolog Request.
+ * @param data Data received from the request.
+ */
+function prologRequestError(data) {
+    console.log('Prolog request error:');
+    console.log(data);
 }
 
 /**

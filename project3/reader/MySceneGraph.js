@@ -1,5 +1,5 @@
 /**
- * intializes the reader, root id, as well as the dictionaries for the materials, transformations, primitives and textures
+ * Initializes the reader, root id, as well as the dictionaries for the materials, transformations, primitives and textures
  * @constructor
  */
 function MySceneGraph(filename, scene) {
@@ -40,45 +40,7 @@ MySceneGraph.prototype.onXMLReady = function () {
         return;
     }
 
-    //getPrologRequest('board', this, this.setBoard, this.prologRequestError);
-    getPrologRequest('initialConfig', this, this.initializeGame, this.prologRequestError);
-}
-
-/**
- * Initializes game class.
- * @param context MySceneGraph reference
- * @param data Response
- */
-MySceneGraph.prototype.initializeGame = function (context, data) {
-    //Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes
-    let response = JSON.parse(data.target.response);
-    let board = response[0];
-    let ships = response[1];
-    let tradeStations = response[2];
-    let colonies = response[3];
-    let homeSystems = response[4];
-    let wormholes = response[5];
-
-    let game = new Game(context.scene);
-    game.createBoard(board, context.components);
-    game.setShips(ships);
-    game.setTradeStations(tradeStations);
-    game.setColonies(colonies);
-    game.setHomeSystems(homeSystems);
-    game.setWormholes(wormholes);
-
-    context.scene.game = game;
-    context.loadedOk = true;
-    context.scene.onGraphLoaded();
-};
-
-/**
- * Function called when there is an error in a Prolog Request.
- * @param data Data received from the request.
- */
-MySceneGraph.prototype.prologRequestError = function (data) {
-    console.log('Prolog request error:');
-    console.log(data);
+    this.scene.onGraphLoaded();
 }
 
 /**

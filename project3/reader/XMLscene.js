@@ -61,8 +61,34 @@ XMLscene.prototype.onGraphLoaded = function () {
     //GUI for light control
     for (var i = 0; i < this.lights.length; i++)
         this.lightStatus.push(this.lights[i].enabled);
+};
 
-    this.rootNode.updateTextures(this.graph.textures);
+/**
+ * Initializes game class.
+ * @param context MySceneGraph reference
+ * @param data Response
+ */
+XMLscene.prototype.initializeGame = function (context, data) {
+    //Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes
+    let response = JSON.parse(data.target.response);
+    let board = response[0];
+    let ships = response[1];
+    let tradeStations = response[2];
+    let colonies = response[3];
+    let homeSystems = response[4];
+    let wormholes = response[5];
+
+    let game = new Game(context);
+    game.createBoard(board, context.graph.components);
+    game.setShips(ships);
+    game.setTradeStations(tradeStations);
+    game.setColonies(colonies);
+    game.setHomeSystems(homeSystems);
+    game.setWormholes(wormholes);
+
+    context.game = game;
+    context.rootNode.updateTextures(context.graph.textures);
+    context.graph.loadedOk = true;
 };
 
 XMLscene.prototype.update = function (currTime) {
@@ -137,7 +163,7 @@ XMLscene.prototype.nextCamera = function () {
  */
 XMLscene.prototype.handlePicking = function () {
     for (let picking of this.pickResults)
-        if(picking[0])
+        if (picking[0])
             this.game.picked(picking[1]);
 
     this.pickResults.splice(0);
