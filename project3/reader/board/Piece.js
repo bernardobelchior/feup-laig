@@ -1,7 +1,8 @@
-function Piece(scene){
+function Piece(scene, component, hexagon){
     Object.call(this);
-    this.component = null;
-    this.hexagon = null;
+    this.scene = scene;
+    this.component = component;
+    this.hexagon = hexagon;
 }
 
 Piece.prototype = Object.create(Object.prototype);

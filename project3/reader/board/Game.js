@@ -18,6 +18,29 @@ class Game {
     }
 
     /**
+     * Places the ships on the board for the first time setup
+     * @param ships
+     */
+    initializeShips(ships, components){
+
+        for(let player of ships){
+            console.log(player);
+            for(let ship of player){
+                console.log(ship);
+                let x = ship[0];
+                let y = ship[1];
+
+                let selectedTile = this.board.getHex(x, y);
+                let playerShipComponent =
+
+                let playerShip = new Piece(this.scene, )
+            }
+        }
+        this.setShips(ships);
+
+    }
+
+    /**
      * Sets ships.
      * @param ships Ships.
      */

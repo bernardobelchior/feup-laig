@@ -61,7 +61,7 @@ MySceneGraph.prototype.initializeGame = function (context, data) {
 
     let game = new Game(context.scene);
     game.createBoard(board, context.components);
-    game.setShips(ships);
+    game.initializeShips(ships);
     game.setTradeStations(tradeStations);
     game.setColonies(colonies);
     game.setHomeSystems(homeSystems);
@@ -676,8 +676,13 @@ MySceneGraph.prototype.parseComponentChildren = function (components, component,
 
             if(component.getId() !== "root")
             children.push(id);
+
+            // else children.push(id);//TODO remove, only for debugarino, if found, it's Bernardo's fault
+
         } else if(component.getId() !== "root") //primitiveref
             component.addChild(this.primitives[id]);
+
+        // else component.addChild(this.primitives[id]);//TODO, remove, it's only for debugging, Nardo did it :'(
     }
 
     components[component.getId()] = {

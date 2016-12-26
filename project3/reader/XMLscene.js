@@ -32,7 +32,6 @@ XMLscene.prototype.init = function (application) {
 
     this.setPickEnabled(true);
 
-    this.colony = new SSEColony(this);
 };
 
 /**
@@ -110,8 +109,7 @@ XMLscene.prototype.display = function () {
             this.lights[i].update();
         }
 
-        // this.rootNode.display();
-        this.colony.display();
+        this.rootNode.display();
 
         // Draw axis
         this.axis.display();
