@@ -23,7 +23,6 @@ class Game {
      */
     setShips(ships) {
         this.ships = ships;
-        console.log(this.ships);
     }
 
     /**
@@ -87,53 +86,42 @@ class Game {
                 }
                 break;
             case GAMESTATE.SELECTION:
-                this.moveShip(x, y);
+                moveShip(this, this.ships, this.selected.playerNo, this.selected.shipNo, [x,y], this.onShipsChanged);
                 break;
         }
     }
 
-    moveShip(x, y) {
-        let requestString = 'move(' + JSON.stringify(this.ships) + ','
-            + this.selected.playerNo + ','
-            + this.selected.shipNo + ','
-            + JSON.stringify([x, y]) + ')';
-
-        getPrologRequest(requestString, this, this.onShipsChanged);
-    }
-
+    /**
+     * Callback when ships have been moved.
+     * @param context This game
+     * @param data Response
+     */
     onShipsChanged(context, data) {
         context.setShips(JSON.parse(data.target.response));
         context.gameState = GAMESTATE.PLACE_PIECE;
     }
 
-    placeTradeStation() {
-        let shipPosition = this.ships[this.selected.playerNo][this.selected.shipNo];
 
-        let requestString = 'place_trade_station(' + this.selected.playerNo + ','
-            + JSON.stringify(shipPosition) + ','
-            + JSON.stringify(this.tradeStations) + ')';
-
-        getPrologRequest(requestString, this, this.onTradeStationsChanged);
-    }
-
-    placeColony() {
-        let shipPosition = this.ships[this.selected.playerNo][this.selected.shipNo];
-
-        let requestString = 'place_colony(' + this.selected.playerNo + ','
-            + JSON.stringify(shipPosition) + ','
-            + JSON.stringify(this.colonies) + ')';
-
-        getPrologRequest(requestString, this, this.onColoniesChanged);
-    }
-
+    /**
+     * Callback when trade stations have been placed.
+     * @param context This game
+     * @param data Response
+     */
     onTradeStationsChanged(context, data) {
         context.setTradeStations(JSON.parse(data.target.response));
         context.gameState = GAMESTATE.NORMAL;
+        this.selected = null;
     }
 
+    /**
+     * Callback when colonies have been changed.
+     * @param context This game
+     * @param data Response
+     */
     onColoniesChanged(context, data) {
         context.setColonies(JSON.parse(data.target.response));
         context.gameState = GAMESTATE.NORMAL;
+        this.selected = null;
     }
 }
 
