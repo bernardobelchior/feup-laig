@@ -31,6 +31,8 @@ XMLscene.prototype.init = function (application) {
     this.lastUpdateTime = (new Date()).getTime();
 
     this.setPickEnabled(true);
+
+    this.colony = new SSEColony(this);
 };
 
 /**
@@ -110,7 +112,8 @@ XMLscene.prototype.display = function () {
             this.lights[i].update();
         }
 
-        this.rootNode.display();
+        // this.rootNode.display();
+        this.colony.display();
 
         // Draw axis
         this.axis.display();

@@ -20,8 +20,8 @@
 
     <views default="default">
         <perspective id="default" near="0.1" far="500" angle="22.91">
-            <from x="25" y="35" z="45"/>
-            <to x="8" y="0" z="13"/>
+            <from x="5" y="5" z="5"/>
+            <to x="0" y="0" z="0"/>
         </perspective>
         <perspective id="camera1" near="0.1" far="500" angle="22.91">
             <from x="30" y="30" z="30"/>
@@ -268,10 +268,6 @@
             </chessboard>
         </primitive>
 
-        <primitive id="vehicle">
-            <vehicle/>
-        </primitive>
-
         <primitive id="cone">
             <cylinder base="1" top="0" height="1" slices="20" stacks="5"/>
         </primitive>
@@ -283,6 +279,18 @@
         <primitive id="wormhole_primitive">
             <wormhole_decoration/>
         </primitive>
+
+        <!--<primitive id="colony">-->
+           <!--<colony/>-->
+        <!--</primitive>-->
+
+        <!--<primitive id="trade_station">-->
+            <!--<colony/>-->
+        <!--</primitive>-->
+
+        <!--<primitive id="spaceship">-->
+            <!--<vehicle/>-->
+        <!--</primitive>-->
 
     </primitives>
 
