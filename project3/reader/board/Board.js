@@ -37,3 +37,12 @@ Board.prototype.picked = function (pickingID) {
     console.log('Selected position (' + x + ', ' + y + ').');
     console.log('Selected: ' + this.board[y][x].name);
 };
+
+Board.prototype.getTile = function(x, y){
+    if(x >= this.columns || y >= this.rows){
+        console.log("Invalid Position: " + x + ", " + y);
+        return;
+    }
+
+    return this.board[y][x];
+}
