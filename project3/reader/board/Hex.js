@@ -20,6 +20,5 @@ Hex.prototype.transform = function (visibilityIndex, y) {
 };
 
 Hex.prototype.setPickingID = function (pickingID) {
-    console.log('Setting picking ID ' + pickingID);
     this.component.setPickingID(pickingID);
 };

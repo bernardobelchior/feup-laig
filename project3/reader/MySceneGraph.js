@@ -30,7 +30,6 @@ function MySceneGraph(filename, scene) {
  * Callback to be executed after successful reading
  */
 MySceneGraph.prototype.onXMLReady = function () {
-    console.log("XML Loading finished.");
     var rootElement = this.reader.xmlDoc.documentElement;
 
     // Here should go the calls for different functions to parse the various blocks
@@ -41,49 +40,46 @@ MySceneGraph.prototype.onXMLReady = function () {
         return;
     }
 
-    getPrologRequest('board', this, this.setBoard, this.prologRequestError);
-    getPrologRequest('initialConfig', this, function (context, data) {
-       //Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes
-        let response = JSON.parse(data.target.response);
-        let board = response[0];
-        let ships = response[1];
-        let tradeStations = response[2];
-        let colonies = response[3];
-        let homeSystems = response[4];
-        let wormholes = response[5];
+    //getPrologRequest('board', this, this.setBoard, this.prologRequestError);
+    getPrologRequest('initialConfig', this, this.initializeGame, this.prologRequestError);
+}
 
-        console.log(board);
-        console.log(ships);
-        console.log(tradeStations);
-        console.log(colonies);
-        console.log(homeSystems);
-        console.log(wormholes);
+/**
+ * Initializes game class.
+ * @param context MySceneGraph reference
+ * @param data Response
+ */
+MySceneGraph.prototype.initializeGame = function (context, data) {
+    //Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes
+    let response = JSON.parse(data.target.response);
+    let board = response[0];
+    let ships = response[1];
+    let tradeStations = response[2];
+    let colonies = response[3];
+    let homeSystems = response[4];
+    let wormholes = response[5];
 
-    }, this.prologRequestError);
+    let game = new Game(context.scene);
+    game.createBoard(board, context.components);
+    game.setShips(ships);
+    game.setTradeStations(tradeStations);
+    game.setColonies(colonies);
+    game.setHomeSystems(homeSystems);
+    game.setWormholes(wormholes);
+
+    context.scene.game = game;
+    context.loadedOk = true;
+    context.scene.onGraphLoaded();
 };
-
 
 /**
  * Function called when there is an error in a Prolog Request.
  * @param data Data received from the request.
  */
 MySceneGraph.prototype.prologRequestError = function (data) {
-    console.log('Prolog request error: ');
+    console.log('Prolog request error:');
     console.log(data);
 }
-
-/**
- * Function called when the Prolog Request is done correctly.
- * @param context Context given in the request call.
- * @param data Data received from the request.
- */
-MySceneGraph.prototype.setBoard = function (context, data) {
-    context.board = JSON.parse(data.target.response);
-
-    // As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
-    context.loadedOk = true;
-    context.scene.onGraphLoaded();
-};
 
 /**
  * Calls the parsing functions on every block of the dsx, checking for an error in any of them
