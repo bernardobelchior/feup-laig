@@ -6,7 +6,8 @@ function Hex(scene, component, visibilityIndex, y) {
     this.component.texture = 'inherit';
     this.component.addChild(component);
 
-    this.piece = null;
+    this.ship = null;
+    this.building = null;
 
     this.scene.rootNode.addChild(this.component);
     this.transform(visibilityIndex, y);
@@ -22,35 +23,61 @@ Hex.prototype.transform = function (visibilityIndex, y) {
 };
 
 Hex.prototype.setPickingID = function (pickingID) {
-    console.log('Setting picking ID ' + pickingID);
     this.component.setPickingID(pickingID);
 };
 
-Hex.prototype.placePiece = function(piece){
-    if(this.piece !== null){
+Hex.prototype.placeShip = function(piece){
+    if(this.ship !== null){
         console.log("Hex already has a piece!");
         return;
     }
 
-    this.piece = piece;
+    this.ship = piece;
     this.component.addChild(piece);
 };
 
-Hex.prototype.removePiece = function(){
-    if(this.piece === null) {
+Hex.prototype.removeShip = function(){
+    if(this.ship === null) {
         console.log("Hex has no piece!");
         return;
     }
 
-    this.component.removeChild(this.piece);
-    this.piece = null;
+    this.component.removeChild(this.ship);
+    this.ship = null;
 };
 
-Hex.prototype.getPiece = function(){
-    if(this.piece === null) {
+Hex.prototype.getShip = function(){
+    if(this.ship === null) {
         console.log("Hex has no piece!");
+    }
+
+    return this.ship;
+}
+
+Hex.prototype.placeBuilding = function(piece){
+    if(this.building !== null){
+        console.log("Hex already has a building!");
         return;
     }
 
-    return this.piece;
+    this.building = piece;
+    this.component.addChild(piece);
+};
+
+Hex.prototype.removeBuilding = function(){
+    if(this.building === null) {
+        console.log("Hex has no building!");
+        return;
+    }
+
+    this.component.removeChild(this.building);
+    this.building = null;
+};
+
+Hex.prototype.getBuilding = function(){
+    if(this.building === null) {
+        console.log("Hex has no building!");
+    }
+
+    return this.building;
 }

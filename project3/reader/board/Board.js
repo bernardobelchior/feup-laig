@@ -19,7 +19,8 @@ function Board(scene, boardElements, components) {
 
             if (hex !== 'null') {
                 visibilityIndex++;
-                tile.setPickingID(y * this.columns + x + 1); // +1 because picking ID must begin at 1
+                if(hex !== 'space')
+                    tile.setPickingID(y * this.columns + x + 1); // +1 because picking ID must begin at 1
             }
 
             this.board[y].push(tile);

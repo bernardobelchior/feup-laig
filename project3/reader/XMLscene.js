@@ -49,7 +49,6 @@ XMLscene.prototype.setDefaultAppearance = function () {
 // Handler called when the graph is finally loaded.
 // As loading is asynchronous, this may be called already after the application has started the run loop
 XMLscene.prototype.onGraphLoaded = function () {
-
     this.setGlobalAmbientLight(this.graph.ambient[0], this.graph.ambient[1], this.graph.ambient[2], this.graph.ambient[3]);
     this.gl.clearColor(this.graph.bg[0], this.graph.bg[1], this.graph.bg[2], this.graph.bg[3]);
 
@@ -65,7 +64,6 @@ XMLscene.prototype.onGraphLoaded = function () {
     for (var i = 0; i < this.lights.length; i++)
         this.lightStatus.push(this.lights[i].enabled);
 
-    this.board = new Board(this, this.graph.board, this.graph.components);
     this.rootNode.updateTextures(this.graph.textures);
 };
 
@@ -143,7 +141,7 @@ XMLscene.prototype.nextCamera = function () {
 XMLscene.prototype.handlePicking = function () {
     for (let picking of this.pickResults)
         if(picking[0])
-            this.board.picked(picking[1]);
+            this.game.picked(picking[1]);
 
     this.pickResults.splice(0);
 };
