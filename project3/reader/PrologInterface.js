@@ -73,3 +73,14 @@ function placeColony(colonies, playerNo, shipNo, callback) {
 
     getPrologRequest(requestString, callback);
 }
+
+function calculatePoints(board, tradeStations, colonies, homeSystems, playerNo, callback) {
+    let requestString = 'calc_points('
+        + JSON.stringify(board).replace(/"/g, '') + ','
+        + JSON.stringify(tradeStations) + ','
+        + JSON.stringify(colonies) + ','
+        + JSON.stringify(homeSystems) + ','
+        + playerNo + ')';
+
+    getPrologRequest(requestString, callback);
+}
