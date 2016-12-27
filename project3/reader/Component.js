@@ -255,9 +255,8 @@ Component.prototype.setPickingID = function (pickingID) {
 };
 
 Component.prototype.removeChild = function(childComponent){
-    for(let i = 0; i < this.children.length; i++){
-        if(this.children[i] = childComponent){
-            this.children.splice(i,1);
-        }
+    let index = this.children.indexOf(childComponent);
+    if(index > -1){
+        this.children.splice(index, 1);
     }
-}
+};
