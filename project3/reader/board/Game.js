@@ -106,14 +106,11 @@ class Game {
     }
 
     /**
-     * Returns the player score
-     * @param index Player index, 0-based.
-     * @returns {number} Score
+     * Sets up callback to call when the score may have changed.
+     * @param {function} callback Function to call when the score may have changed.
      */
-    getPlayerScore(index) {
-        //TODO: calculate score
-
-        return this.currentPlayer;
+    addOnScoreCanChange(callback) {
+        this.onScoreCanChange = callback;
     }
 
     /**
@@ -195,6 +192,10 @@ class Game {
         //this.gameState = GAMESTATE.PLACE_PIECE;
         this.gameState = GAMESTATE.NORMAL;
         this.currentPlayer = (this.currentPlayer + 1) % 2;
+
+        //TODO: remove
+        if (this.onScoreCanChange)
+            this.onScoreCanChange();
     }
 
 
@@ -207,6 +208,9 @@ class Game {
         this.setTradeStations(JSON.parse(data.target.response));
         this.gameState = GAMESTATE.NORMAL;
         this.selected = null;
+
+        if (this.onScoreCanChange)
+            this.onScoreCanChange();
     }
 
     /**
@@ -218,6 +222,9 @@ class Game {
         this.setColonies(JSON.parse(data.target.response));
         this.gameState = GAMESTATE.NORMAL;
         this.selected = null;
+
+        if (this.onScoreCanChange)
+            this.onScoreCanChange();
     }
 }
 

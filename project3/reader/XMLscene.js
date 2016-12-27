@@ -89,7 +89,16 @@ XMLscene.prototype.newGame = function (data) {
     this.game.setHomeSystems(homeSystems);
     this.game.setWormholes(wormholes);
 
+    this.game.addOnScoreCanChange(this.updateScores.bind(this));
+
     this.rootNode.updateTextures(this.graph.textures);
+
+    document.getElementById('overlay').style.display = 'block';
+    let scores = document.getElementsByClassName('score');
+
+    for (let score of scores)
+        score.innerHTML = '0';
+
     this.graph.loadedOk = true;
 };
 
@@ -144,12 +153,6 @@ XMLscene.prototype.display = function () {
         }
 
         if (this.game.isRunning()) {
-            document.getElementById('overlay').style.display = 'block';
-            let scores = document.getElementsByClassName('score');
-
-            for (let i = 0; i < scores.length; i++)
-                scores[i].innerText = this.game.getPlayerScore(i);
-
             document.getElementById('instruction').innerText =
                 'Player ' + (this.game.getCurrentPlayer() + 1) + ', ' + this.game.getGameStateInstruction();
         }
@@ -159,6 +162,18 @@ XMLscene.prototype.display = function () {
         // Draw axis
         this.axis.display();
     }
+};
+
+XMLscene.prototype.updateScores = function () {
+    calculatePoints(this.game.board.getStringBoard(), this.game.tradeStations,
+        this.game.colonies, this.game.homeSystems, 0, this.updateScoreDisplay.bind(null, 0));
+
+    calculatePoints(this.game.board.getStringBoard(), this.game.tradeStations,
+        this.game.colonies, this.game.homeSystems, 0, this.updateScoreDisplay.bind(null, 1));
+};
+
+XMLscene.prototype.updateScoreDisplay = function (playerNo, response) {
+    document.getElementsByClassName('score')[playerNo].innerHTML = response.target.response;
 };
 
 XMLscene.prototype.switchMaterials = function () {

@@ -122,6 +122,9 @@ parse_input(place_trade_station(PlayerNo, ShipPosition, TradeStations), NewTrade
 parse_input(place_colony(PlayerNo, ShipPosition, Colonies), NewColonies):-
 	place_colony(PlayerNo, ShipPosition, Colonies, NewColonies).
 
+parse_input(calc_points(Board, TradeStations, Colonies, HomeSystems, PlayerNo), NewPlayerPoints):-
+	calculate_points(Board, TradeStations, Colonies, HomeSystems, PlayerNo, NewPlayerPoints).
+
 parse_input(quit, goodbye).
 
 /*parse_input(handshake, handshake).
