@@ -15,6 +15,7 @@ class Game {
         this.scene = scene;
         this.gameState = GAMESTATE.NORMAL;
         this.running = true;
+        this.currentPlayer = 0;
     }
 
     /**
@@ -100,6 +101,25 @@ class Game {
     }
 
     /**
+     * Gets the current player.
+     * @returns {number} Returns the current player, index based on 0.
+     */
+    getCurrentPlayer() {
+        return this.currentPlayer;
+    }
+
+    /**
+     * Returns the player score
+     * @param index Player index, 0-based.
+     * @returns {number} Score
+     */
+    getPlayerScore(index) {
+        //TODO: calculate score
+
+        return this.currentPlayer;
+    }
+
+    /**
      * Function called each time an hex is picked and handles the game.
      * @param pickingID
      */
@@ -159,6 +179,7 @@ class Game {
         this.setShips(JSON.parse(data.target.response));
         //this.gameState = GAMESTATE.PLACE_PIECE;
         this.gameState = GAMESTATE.NORMAL;
+        this.currentPlayer = (this.currentPlayer + 1) % 2;
         console.log(this.ships);
     }
 
