@@ -261,7 +261,7 @@ class Game {
      * @param deltaTime Delta time since last update.
      */
     update(deltaTime) {
-        if (this.getTimeSinceLastPlay() < 0)
+        if (this.getTimeSinceLastPlay() <= 0)
             this.nextPlayer();
     }
 }

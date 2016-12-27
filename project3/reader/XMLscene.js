@@ -170,7 +170,7 @@ XMLscene.prototype.display = function () {
         if (this.game.isRunning()) {
             document.getElementById('instruction').innerText =
                 'Player ' + (this.game.getCurrentPlayer() + 1) + ', ' + this.game.getGameStateInstruction();
-            document.getElementById('time_left').innerText = this.game.getTimeSinceLastPlay();
+            document.getElementById('time_left').innerText = this.game.getTimeSinceLastPlay() + 's';
         }
 
         this.interface.setActiveCamera(this.camera);
