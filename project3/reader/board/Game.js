@@ -3,9 +3,18 @@ class Game {
      * Constructor for the Game class.
      * @param scene Scene.
      */
-    constructor(scene) {
+    constructor() {
+        this.running = false;
+    }
+
+    /**
+     * Sets new game scene and resets game state.
+     * @param scene
+     */
+    newGame(scene) {
         this.scene = scene;
         this.gameState = GAMESTATE.NORMAL;
+        this.running = true;
     }
 
     /**
@@ -83,6 +92,14 @@ class Game {
     }
 
     /**
+     * Returns if the game is running.
+     * @returns {boolean} Whether the game is running or not.
+     */
+    isRunning() {
+        return this.running;
+    }
+
+    /**
      * Function called each time an hex is picked and handles the game.
      * @param pickingID
      */
@@ -120,8 +137,17 @@ class Game {
      * Changes the game back to normal game state.
      */
     cancelMode() {
-        this.gameState = GAMESTATE.NORMAL;
-        this.selected = null;
+        if (this.gameState !== GAMESTATE.PLACE_PIECE) {
+            this.gameState = GAMESTATE.NORMAL;
+            this.selected = null;
+        }
+    }
+
+    /**
+     * Function called to undo last play.
+     */
+    undo() {
+        //TODO
     }
 
     /**
@@ -131,7 +157,9 @@ class Game {
      */
     onShipsChanged(data) {
         this.setShips(JSON.parse(data.target.response));
-        this.gameState = GAMESTATE.PLACE_PIECE;
+        //this.gameState = GAMESTATE.PLACE_PIECE;
+        this.gameState = GAMESTATE.NORMAL;
+        console.log(this.ships);
     }
 
 
