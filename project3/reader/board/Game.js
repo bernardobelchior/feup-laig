@@ -27,6 +27,11 @@ class Game {
         this.board = new Board(this.scene, boardElements, components);
     }
 
+    createAuxBoards(components){
+        for(let i = 0; i < 4; i++){
+
+        }
+    }
     /**
      * Places the ships on the board for the first time setup
      * @param ships
@@ -93,7 +98,7 @@ class Game {
      * Sets the number of colonies the players can still place on the board
      * @param numColonies maximum number of colonies the players can have on the board
      */
-    setRemainingColonies(numColonies){
+    setRemainingColonies(numColonies) {
         this.remainingColonies = [numColonies, numColonies];
     }
 
@@ -101,7 +106,7 @@ class Game {
      * Sets the number of Trade Stations the plaers can still place on the board
      * @param numTradeStations maximum number of trade stations the players can have on the board
      */
-    setRemainingTradeStations(numTradeStations){
+    setRemainingTradeStations(numTradeStations) {
         this.remainingTradeStations = [numTradeStations, numTradeStations];
     }
 
@@ -181,7 +186,8 @@ class Game {
                 break;
 
             case GAMESTATE.PLACE_BUILDING:
-               break;
+                this.gameState = GAMESTATE.NORMAL;
+                break;
         }
     }
 
