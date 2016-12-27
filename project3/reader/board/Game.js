@@ -11,8 +11,9 @@ class Game {
      * Sets new game scene and resets game state.
      * @param scene
      */
-    newGame(scene) {
+    newGame(scene, gameMode) {
         this.scene = scene;
+        this.gameMode = gameMode;
         this.gameState = GAMESTATE.NORMAL;
         this.running = true;
         this.currentPlayer = 0;

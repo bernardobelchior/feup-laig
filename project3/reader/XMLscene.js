@@ -70,7 +70,7 @@ XMLscene.prototype.onGraphLoaded = function () {
  * @param context MySceneGraph reference
  * @param data Response
  */
-XMLscene.prototype.newGame = function (data) {
+XMLscene.prototype.newGame = function (gameMode, data) {
     this.rootNode.children = [];
 
     //Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes
@@ -82,7 +82,7 @@ XMLscene.prototype.newGame = function (data) {
     let homeSystems = response[4];
     let wormholes = response[5];
 
-    this.game.newGame(this);
+    this.game.newGame(this, gameMode);
     this.game.createBoard(board, this.graph.components);
     this.game.initializeShips(ships, this.graph.components);
     this.game.setTradeStations(tradeStations);
