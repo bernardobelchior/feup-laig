@@ -84,9 +84,17 @@ class Game {
                 }
                 break;
             case GAMESTATE.SELECTION:
-                moveShip(this, this.ships, this.selected.playerNo, this.selected.shipNo, [x,y], this.onShipsChanged);
+                moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
                 break;
         }
+    }
+
+    /**
+     * Changes the game back to normal game state.
+     */
+    cancelMode() {
+        this.gameState = GAMESTATE.NORMAL;
+        this.selected = null;
     }
 
     /**
@@ -94,9 +102,9 @@ class Game {
      * @param context This game
      * @param data Response
      */
-    onShipsChanged(context, data) {
-        context.setShips(JSON.parse(data.target.response));
-        context.gameState = GAMESTATE.PLACE_PIECE;
+    onShipsChanged(data) {
+        this.setShips(JSON.parse(data.target.response));
+        this.gameState = GAMESTATE.PLACE_PIECE;
     }
 
 
@@ -105,9 +113,9 @@ class Game {
      * @param context This game
      * @param data Response
      */
-    onTradeStationsChanged(context, data) {
-        context.setTradeStations(JSON.parse(data.target.response));
-        context.gameState = GAMESTATE.NORMAL;
+    onTradeStationsChanged(data) {
+        this.setTradeStations(JSON.parse(data.target.response));
+        this.gameState = GAMESTATE.NORMAL;
         this.selected = null;
     }
 
@@ -116,9 +124,9 @@ class Game {
      * @param context This game
      * @param data Response
      */
-    onColoniesChanged(context, data) {
-        context.setColonies(JSON.parse(data.target.response));
-        context.gameState = GAMESTATE.NORMAL;
+    onColoniesChanged(data) {
+        this.setColonies(JSON.parse(data.target.response));
+        this.gameState = GAMESTATE.NORMAL;
         this.selected = null;
     }
 }

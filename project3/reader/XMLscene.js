@@ -68,7 +68,9 @@ XMLscene.prototype.onGraphLoaded = function () {
  * @param context MySceneGraph reference
  * @param data Response
  */
-XMLscene.prototype.initializeGame = function (context, data) {
+XMLscene.prototype.newGame = function (data) {
+    this.rootNode.children = [];
+
     //Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes
     let response = JSON.parse(data.target.response);
     let board = response[0];
@@ -78,17 +80,24 @@ XMLscene.prototype.initializeGame = function (context, data) {
     let homeSystems = response[4];
     let wormholes = response[5];
 
-    let game = new Game(context);
-    game.createBoard(board, context.graph.components);
+    let game = new Game(this);
+    game.createBoard(board, this.graph.components);
     game.setShips(ships);
     game.setTradeStations(tradeStations);
     game.setColonies(colonies);
     game.setHomeSystems(homeSystems);
     game.setWormholes(wormholes);
 
-    context.game = game;
-    context.rootNode.updateTextures(context.graph.textures);
-    context.graph.loadedOk = true;
+    this.game = game;
+    this.rootNode.updateTextures(this.graph.textures);
+    this.graph.loadedOk = true;
+};
+
+/**
+ * Change game to normal mode.
+ */
+XMLscene.prototype.cancelMode = function () {
+    this.game.cancelMode();
 };
 
 XMLscene.prototype.update = function (currTime) {

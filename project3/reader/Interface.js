@@ -23,13 +23,11 @@ Interface.prototype.init = function (application) {
     this.gui = new dat.GUI();
 
     let menu = {
-        placeColony: null,
-        placeTradeStation: null,
-        start: this.startGame,
-        scene: this.scene,
+        newGame: this.requestNewConfig,
+        scene: this.scene
     };
 
-    this.gui.add(menu, 'start').name('Start Game');
+    this.gui.add(menu, 'newGame').name('New Game');
 
     return true;
 };
@@ -37,8 +35,8 @@ Interface.prototype.init = function (application) {
 /**
  * Gets initial configuration from Prolog.
  */
-Interface.prototype.startGame = function () {
-    getPrologRequest('initialConfig', this.scene, this.scene.initializeGame);
+Interface.prototype.requestNewConfig = function () {
+    getPrologRequest('initialConfig', this.scene.newGame.bind(this.scene));
 };
 
 Interface.prototype.processKeyDown = function (event) {
@@ -56,8 +54,12 @@ Interface.prototype.processKeyUp = function (event) {
         case (86): //'V'
             this.scene.nextCamera();
             break;
+        case (27): //Esc
+            this.scene.cancelMode();
+            break;
     }
-    ;
+
+    console.log('Pressed ' + event.keyCode);
 };
 
 /**
