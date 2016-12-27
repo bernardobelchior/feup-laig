@@ -11,33 +11,30 @@ function Hex(scene, component, visibilityIndex, y) {
 
     this.scene.rootNode.addChild(this.component);
     this.transform(visibilityIndex, y);
-    //this.component.updateTextures(this.scene.graph.textures);
 }
 
 Hex.prototype = Object.create(Object.prototype);
 Hex.prototype.constructor = Hex;
 
 Hex.prototype.transform = function (visibilityIndex, y) {
-    this.component.translate(1.9*visibilityIndex, 0, 1.68*y);
-    this.component.translate(1 * y%2, 0, 0);
+    this.component.translate(1.9 * visibilityIndex, 0, 1.68 * y);
+    this.component.translate(1 * y % 2, 0, 0);
 };
 
 Hex.prototype.setPickingID = function (pickingID) {
     this.component.setPickingID(pickingID);
 };
 
-Hex.prototype.placeShip = function(piece){
-    if(this.ship !== null){
-        console.log("Hex already has a piece!");
+Hex.prototype.placeShip = function (piece) {
+    if (this.ship !== null)
         return;
-    }
 
     this.ship = piece;
     this.component.addChild(piece.component);
 };
 
-Hex.prototype.removeShip = function(){
-    if(this.ship === null) {
+Hex.prototype.removeShip = function () {
+    if (this.ship === null) {
         console.log("Hex has no piece!");
         return;
     }
@@ -46,38 +43,26 @@ Hex.prototype.removeShip = function(){
     this.ship = null;
 };
 
-Hex.prototype.getShip = function(){
-    if(this.ship === null) {
-        console.log("Hex has no piece!");
-    }
-
+Hex.prototype.getShip = function () {
     return this.ship;
-}
+};
 
-Hex.prototype.placeBuilding = function(piece){
-    if(this.building !== null){
-        console.log("Hex already has a building!");
+Hex.prototype.placeBuilding = function (piece) {
+    if (this.building !== null)
         return;
-    }
 
     this.building = piece;
     this.component.addChild(piece.component);
 };
 
-Hex.prototype.removeBuilding = function(){
-    if(this.building === null) {
-        console.log("Hex has no building!");
+Hex.prototype.removeBuilding = function () {
+    if (this.building === null)
         return;
-    }
 
     this.component.removeChild(this.building.component);
     this.building = null;
 };
 
-Hex.prototype.getBuilding = function(){
-    if(this.building === null) {
-        console.log("Hex has no building!");
-    }
-
+Hex.prototype.getBuilding = function () {
     return this.building;
-}
+};
