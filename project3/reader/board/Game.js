@@ -148,6 +148,9 @@ class Game {
                 }
                 break;
             case GAMESTATE.SELECTION:
+                this.selected.shipPiece.getHex().removeShip();
+                this.selected.shipPiece.setHex(selectedHex);
+                selectedHex.placeShip(this.selected.shipPiece);
                 moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
                 break;
         }
