@@ -168,7 +168,6 @@ class Game {
         //this.gameState = GAMESTATE.PLACE_PIECE;
         this.gameState = GAMESTATE.NORMAL;
         this.currentPlayer = (this.currentPlayer + 1) % 2;
-        console.log(this.ships);
     }
 
 
