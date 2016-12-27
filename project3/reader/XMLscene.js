@@ -31,6 +31,7 @@ XMLscene.prototype.init = function (application) {
     this.lastUpdateTime = (new Date()).getTime();
 
     this.setPickEnabled(true);
+    this.game = new Game();
 };
 
 /**
@@ -59,7 +60,7 @@ XMLscene.prototype.onGraphLoaded = function () {
     this.setUpdatePeriod(20);
 
     //GUI for light control
-    for (var i = 0; i < this.lights.length; i++)
+    for (let i = 0; i < this.lights.length; i++)
         this.lightStatus.push(this.lights[i].enabled);
 };
 
@@ -80,15 +81,14 @@ XMLscene.prototype.newGame = function (data) {
     let homeSystems = response[4];
     let wormholes = response[5];
 
-    let game = new Game(this);
-    game.createBoard(board, this.graph.components);
-    game.setShips(ships);
-    game.setTradeStations(tradeStations);
-    game.setColonies(colonies);
-    game.setHomeSystems(homeSystems);
-    game.setWormholes(wormholes);
+    this.game.newGame(this);
+    this.game.createBoard(board, this.graph.components);
+    this.game.setShips(ships);
+    this.game.setTradeStations(tradeStations);
+    this.game.setColonies(colonies);
+    this.game.setHomeSystems(homeSystems);
+    this.game.setWormholes(wormholes);
 
-    this.game = game;
     this.rootNode.updateTextures(this.graph.textures);
     this.graph.loadedOk = true;
 };
@@ -141,6 +141,12 @@ XMLscene.prototype.display = function () {
                 this.lights[i].disable();
 
             this.lights[i].update();
+        }
+
+        if (this.game.isRunning()) {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('playerNo').innerText = this.game.getCurrentPlayer();
+            document.getElementById('score').innerText = this.game.getCurrentPlayerScore();
         }
 
         this.rootNode.display();

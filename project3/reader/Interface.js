@@ -24,10 +24,12 @@ Interface.prototype.init = function (application) {
 
     let menu = {
         newGame: this.requestNewConfig,
+        undo: this.scene.game.undo.bind(this.scene.game),
         scene: this.scene
     };
 
     this.gui.add(menu, 'newGame').name('New Game');
+    this.gui.add(menu, 'undo').name('Undo');
 
     return true;
 };
@@ -58,8 +60,6 @@ Interface.prototype.processKeyUp = function (event) {
             this.scene.cancelMode();
             break;
     }
-
-    console.log('Pressed ' + event.keyCode);
 };
 
 /**
