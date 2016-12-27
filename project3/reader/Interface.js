@@ -53,9 +53,6 @@ Interface.prototype.processKeyUp = function (event) {
         case (77): // 'M'
             this.scene.switchMaterials();
             break;
-        case (86): //'V'
-            this.scene.nextCamera();
-            break;
         case (27): //Esc
             this.scene.cancelMode();
             break;
@@ -64,8 +61,8 @@ Interface.prototype.processKeyUp = function (event) {
 
 /**
  * adds the light on/off checkbox to the gui
- * @param the position of the current light in the scene lights array
- * @param id the id of the curretnt light
+ * @param i the position of the current light in the scene lights array
+ * @param id the id of the current light
  */
 Interface.prototype.addLightControls = function (i, id) {
     this.lightGroup.add(this.scene.lightStatus, i, this.scene.lightStatus[i]).name(id);

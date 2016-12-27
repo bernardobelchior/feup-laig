@@ -210,7 +210,6 @@ class Game {
         this.nextPlayer();
 
         //TODO: remove
-        this.lastMoveTime = Date.now();
         if (this.onScoreCanChange)
             this.onScoreCanChange();
     }
@@ -225,8 +224,8 @@ class Game {
         this.setTradeStations(JSON.parse(data.target.response));
         this.gameState = GAMESTATE.NORMAL;
         this.selected = null;
+        this.nextPlayer();
 
-        this.lastMoveTime = Date.now();
         if (this.onScoreCanChange)
             this.onScoreCanChange();
     }
@@ -240,8 +239,8 @@ class Game {
         this.setColonies(JSON.parse(data.target.response));
         this.gameState = GAMESTATE.NORMAL;
         this.selected = null;
+        this.nextPlayer();
 
-        this.lastMoveTime = Date.now();
         if (this.onScoreCanChange)
             this.onScoreCanChange();
     }
@@ -251,6 +250,7 @@ class Game {
      */
     nextPlayer() {
         this.currentPlayer = (this.currentPlayer + 1) % 2;
+        this.lastMoveTime = Date.now();
 
         if (this.onPlayerChanged)
             this.onPlayerChanged();
