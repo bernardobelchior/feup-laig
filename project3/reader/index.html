@@ -19,9 +19,21 @@
 
         #overlay {
             position: absolute;
-            background: transparent;
-            left: 25px;
             top: 25px;
+            left: 25px;
+
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+        }
+
+        #overlay span {
+            color: white;
+            font-size: 125%;
+            font-family: Sans-Serif;
         }
     </style>
 </head>
@@ -31,10 +43,6 @@
 
 <div id="overlay" hidden="hidden">
     <div>
-        <span id="playerNoLabel">Player: </span>
-        <span id="playerNo"></span>
-    </div>
-    <div>
         <span class="scoreLabel">Player 1 Score:</span>
         <span class="score"></span>
     </div>
@@ -42,6 +50,8 @@
         <span class="scoreLabel">Player 2 Score:</span>
         <span class="score"></span>
     </div>
+
+    <span id="instruction"></span>
 </div>
 </body>
 </html>
