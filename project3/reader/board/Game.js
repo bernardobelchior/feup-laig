@@ -120,6 +120,21 @@ class Game {
     }
 
     /**
+     *  Returns instruction based on the current game state.
+     * @returns {string} Instruction
+     */
+    getGameStateInstruction() {
+        switch (this.gameState) {
+            case GAMESTATE.NORMAL:
+                return 'select a ship to move.';
+            case GAMESTATE.SELECTION:
+                return 'select a tile to move the ship to.';
+            case GAMESTATE.PLACE_PIECE:
+                return 'select which piece to place.';
+        }
+    }
+
+    /**
      * Function called each time an hex is picked and handles the game.
      * @param pickingID
      */
@@ -183,7 +198,6 @@ class Game {
         //this.gameState = GAMESTATE.PLACE_PIECE;
         this.gameState = GAMESTATE.NORMAL;
         this.currentPlayer = (this.currentPlayer + 1) % 2;
-        console.log(this.ships);
     }
 
 

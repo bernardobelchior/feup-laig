@@ -112,7 +112,6 @@ parse_input(board, Board):-
 parse_input(initialConfig, InitialConfig):-
   initialize(Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer),
   json([Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes], InitialConfig).
-  %json([board-Board, ships-Ships, tradeStations-TradeStations, colonies-Colonies, homeSystems-HomeSystems], InitialConfig).
 
 parse_input(move(Ships, PlayerNo, ShipNo, NewShipPosition), NewShips):-
 	move(Ships, PlayerNo, ShipNo, NewShipPosition, NewShips).

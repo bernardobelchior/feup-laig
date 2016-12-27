@@ -145,11 +145,13 @@ XMLscene.prototype.display = function () {
 
         if (this.game.isRunning()) {
             document.getElementById('overlay').style.display = 'block';
-            document.getElementById('playerNo').innerText = this.game.getCurrentPlayer();
             let scores = document.getElementsByClassName('score');
 
             for (let i = 0; i < scores.length; i++)
                 scores[i].innerText = this.game.getPlayerScore(i);
+
+            document.getElementById('instruction').innerText =
+                'Player ' + (this.game.getCurrentPlayer() + 1) + ', ' + this.game.getGameStateInstruction();
         }
 
         this.rootNode.display();
