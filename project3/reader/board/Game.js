@@ -90,6 +90,22 @@ class Game {
     }
 
     /**
+     * Sets the number of colonies the players can still place on the board
+     * @param numColonies maximum number of colonies the players can have on the board
+     */
+    setRemainingColonies(numColonies){
+        this.remainingColonies = [numColonies, numColonies];
+    }
+
+    /**
+     * Sets the number of Trade Stations the plaers can still place on the board
+     * @param numTradeStations maximum number of trade stations the players can have on the board
+     */
+    setRemainingTradeStations(numTradeStations){
+        this.remainingTradeStations = [numTradeStations, numTradeStations];
+    }
+
+    /**
      * Returns if the game is running.
      * @returns {boolean} Whether the game is running or not.
      */
@@ -124,9 +140,9 @@ class Game {
         switch (this.gameState) {
             case GAMESTATE.NORMAL:
                 return 'select a ship to move.';
-            case GAMESTATE.SELECTION:
+            case GAMESTATE.PLACE_SHIP:
                 return 'select a tile to move the ship to.';
-            case GAMESTATE.PLACE_PIECE:
+            case GAMESTATE.PLACE_BUILDING:
                 return 'select which piece to place.';
         }
     }
@@ -154,17 +170,21 @@ class Game {
                                 shipPiece: selectedHex.getShip()
                             };
 
-                            this.gameState = GAMESTATE.SELECTION;
+                            this.gameState = GAMESTATE.PLACE_SHIP;
                         }
                     }
                 }
                 break;
-            case GAMESTATE.SELECTION:
+            case GAMESTATE.PLACE_SHIP:
                 this.selected.shipPiece.getHex().removeShip();
                 this.selected.shipPiece.setHex(selectedHex);
                 selectedHex.placeShip(this.selected.shipPiece);
                 moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
+                this.gameState = GAMESTATE.PLACE_BUILDING;
                 break;
+
+            case GAMESTATE.PLACE_BUILDING:
+               break;
         }
     }
 
@@ -172,7 +192,7 @@ class Game {
      * Changes the game back to normal game state.
      */
     cancelMode() {
-        if (this.gameState !== GAMESTATE.PLACE_PIECE) {
+        if (this.gameState !== GAMESTATE.PLACE_BUILDING) {
             this.gameState = GAMESTATE.NORMAL;
             this.selected = null;
         }
@@ -192,7 +212,7 @@ class Game {
      */
     onShipsChanged(data) {
         this.setShips(JSON.parse(data.target.response));
-        //this.gameState = GAMESTATE.PLACE_PIECE;
+        //this.gameState = GAMESTATE.PLACE_BUILDING;
         this.gameState = GAMESTATE.NORMAL;
         this.currentPlayer = (this.currentPlayer + 1) % 2;
     }
@@ -223,6 +243,6 @@ class Game {
 
 GAMESTATE = {
     NORMAL: 0,
-    SELECTION: 1,
-    PLACE_PIECE: 2
+    PLACE_SHIP: 1,
+    PLACE_BUILDING: 2
 };

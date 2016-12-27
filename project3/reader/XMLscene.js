@@ -75,11 +75,11 @@ XMLscene.prototype.newGame = function (data) {
     //Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes
     let response = JSON.parse(data.target.response);
     let board = response[0];
-    let ships = response[1];
-    let tradeStations = response[2];
-    let colonies = response[3];
+    let ships = response[1];                //Array with the players' ships, represented by their position in the board
+    let tradeStations = response[2];        //Array with the players' trade stations, same as with the ships
+    let colonies = response[3];             //Array with the players' colonies, same as trade stations and ships
     let homeSystems = response[4];
-    let wormholes = response[5];
+    let wormholes = response[5];            //Array with the position of the wormholes on the board
 
     this.game.newGame(this);
     this.game.createBoard(board, this.graph.components);
@@ -88,6 +88,8 @@ XMLscene.prototype.newGame = function (data) {
     this.game.setColonies(colonies);
     this.game.setHomeSystems(homeSystems);
     this.game.setWormholes(wormholes);
+    this.game.setRemainingColonies(16);
+    this.game.setRemainingTradeStations(4);
 
     this.rootNode.updateTextures(this.graph.textures);
     this.graph.loadedOk = true;
