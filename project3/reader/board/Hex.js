@@ -33,7 +33,7 @@ Hex.prototype.placeShip = function(piece){
     }
 
     this.ship = piece;
-    this.component.addChild(piece);
+    this.component.addChild(piece.component);
 };
 
 Hex.prototype.removeShip = function(){
@@ -42,7 +42,7 @@ Hex.prototype.removeShip = function(){
         return;
     }
 
-    this.component.removeChild(this.ship);
+    this.component.removeChild(this.ship.component);
     this.ship = null;
 };
 
@@ -61,7 +61,7 @@ Hex.prototype.placeBuilding = function(piece){
     }
 
     this.building = piece;
-    this.component.addChild(piece);
+    this.component.addChild(piece.component);
 };
 
 Hex.prototype.removeBuilding = function(){
@@ -70,7 +70,7 @@ Hex.prototype.removeBuilding = function(){
         return;
     }
 
-    this.component.removeChild(this.building);
+    this.component.removeChild(this.building.component);
     this.building = null;
 };
 

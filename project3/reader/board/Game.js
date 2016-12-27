@@ -30,10 +30,12 @@ class Game {
                 let x = ship[0];
                 let y = ship[1];
 
-                let selectedTile = this.board.getHex(x, y);
-                let playerShipComponent =
+                let selectedHex = this.board.getHex(x, y);
+                let playerShipComponent = components['ship'].component;
 
-                let playerShip = new Piece(this.scene, )
+                let playerShip = new Piece(this.scene, playerShipComponent, selectedHex);
+                selectedHex.placeShip(playerShip);
+                console.log(selectedHex);
             }
         }
         this.setShips(ships);
@@ -88,7 +90,7 @@ class Game {
         let x = (pickingID - 1) % this.board.columns;
         let y = ((pickingID - 1) / this.board.columns) | 0;
         console.log('Selected position (' + x + ', ' + y + ').');
-        let selectedHex = this.board.getTile(x,y);
+        let selectedHex = this.board.getHex(x,y);
 
         switch (this.gameState) {
             case GAMESTATE.NORMAL:

@@ -61,7 +61,7 @@ MySceneGraph.prototype.initializeGame = function (context, data) {
 
     let game = new Game(context.scene);
     game.createBoard(board, context.components);
-    game.initializeShips(ships);
+    game.initializeShips(ships, context.components);
     game.setTradeStations(tradeStations);
     game.setColonies(colonies);
     game.setHomeSystems(homeSystems);

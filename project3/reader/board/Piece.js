@@ -8,12 +8,10 @@ function Piece(scene, component, hexagon){
 Piece.prototype = Object.create(Object.prototype);
 Piece.prototype.constructor = Piece;
 
-Piece.prototype.setHex = function(boardHex){
-    this.hexagon = boardHex;
-    boardHex.placePiece(this);
+Piece.prototype.getHex = function(){
+    return this.hexagon;
 }
 
-Piece.prototype.move = function (newHex) {
-   this.hexagon.removePiece(this);
-   this.setHex(newHex);
+Piece.prototype.setHex = function (hexagon) {
+    this.hexagon = hexagon;
 }
