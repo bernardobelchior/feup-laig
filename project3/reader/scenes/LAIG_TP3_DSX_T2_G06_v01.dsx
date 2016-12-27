@@ -149,7 +149,7 @@
             <shininess value="0"/>
         </material>
 
-        <material id="nebula">
+        <material id="red_nebula">
             <ambient r="1.0" g="0.0" b="0.0" a="1.0"/>
             <specular r="1.0" g="0.0" b="0.0" a="1.0"/>
             <diffuse r="1.0" g="0.0" b="0.0" a="1.0"/>
@@ -157,6 +157,21 @@
             <shininess value="1000"/>
         </material>
 
+        <material id="green_nebula">
+            <ambient r="0.0" g="1.0" b="0.0" a="1.0"/>
+            <specular r="0.0" g="1.0" b="0.0" a="1.0"/>
+            <diffuse r="0.0" g="1.0" b="0.0" a="1.0"/>
+            <emission r="0.0" g="1.0" b="0.0" a="1.0"/>
+            <shininess value="1000"/>
+        </material>
+
+        <material id="blue_nebula">
+            <ambient r="0.0" g="0.0" b="1.0" a="1.0"/>
+            <specular r="0.0" g="0.0" b="1.0" a="1.0"/>
+            <diffuse r="0.0" g="0.0" b="1.0" a="1.0"/>
+            <emission r="0.0" g="0.0" b="1.0" a="1.0"/>
+            <shininess value="1000"/>
+        </material>
     </materials>
 
     <transformations>
@@ -164,6 +179,9 @@
             <translate x="1" y="0" z="0"/>
             <rotate axis="y" angle="1.5"/>
             <scale x="2" y="2" z="1"/>
+        </transformation>
+        <transformation id="tile_decoration">
+            <translate x="0" y="-0.2" z="0"></translate>
         </transformation>
     </transformations>
 
@@ -281,11 +299,11 @@
         </primitive>
 
         <!--<primitive id="colony">-->
-           <!--<colony/>-->
+        <!--<colony/>-->
         <!--</primitive>-->
 
         <!--<primitive id="trade_station">-->
-            <!--<colony/>-->
+        <!--<colony/>-->
         <!--</primitive>-->
 
         <primitive id="spaceship">
@@ -312,10 +330,11 @@
         </component>
 
         <component id="blueNebula">
-            <transformation></transformation>
+            <transformation>
+            </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="blue_nebula"/>
             </materials>
 
             <texture id="inherit"/>
@@ -327,10 +346,11 @@
         </component>
 
         <component id="greenNebula">
-            <transformation></transformation>
+            <transformation>
+            </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="green_nebula"/>
             </materials>
 
             <texture id="inherit"/>
@@ -342,10 +362,11 @@
         </component>
 
         <component id="redNebula">
-            <transformation></transformation>
+            <transformation>
+            </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="red_nebula"/>
             </materials>
 
             <texture id="inherit"/>
@@ -357,10 +378,12 @@
         </component>
 
         <component id="nebula_wrapper">
-            <transformation></transformation>
+            <transformation>
+                <transformationref id="tile_decoration"></transformationref>
+            </transformation>
 
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
             <animation>
@@ -383,7 +406,7 @@
 
 
             <materials>
-                <material id="nebula"/>
+                <material id="inherit"/>
             </materials>
 
             <texture id="nebula"/>
@@ -395,7 +418,8 @@
 
         <component id="blackHole">
 
-            <transformation></transformation>
+            <transformation>
+            </transformation>
             <materials>
                 <material id="inherit"/>
             </materials>
@@ -409,6 +433,21 @@
         </component>
 
         <component id="black_hole">
+            <transformation>
+                <transformationref id="tile_decoration"></transformationref>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="black_hole_wrapper"/>
+            </children>
+        </component>
+
+        <component id="black_hole_wrapper">
             <transformation>
                 <translate x="0" y="-0.2" z="0"/>
                 <scale x="1.5" y="1.5" z="1.5"/>
@@ -467,7 +506,8 @@
 
 
         <component id="wormhole">
-            <transformation></transformation>
+            <transformation>
+            </transformation>
 
             <materials>
                 <material id="inherit"/>
@@ -482,8 +522,9 @@
         </component>
 
         <component id="wormhole_decoration">
-
-            <transformation></transformation>
+            <transformation>
+                <transformationref id="tile_decoration"></transformationref>
+            </transformation>
 
             <materials>
                 <material id="inherit"/>
@@ -501,8 +542,8 @@
         </component>
 
         <component id="system3">
-
-            <transformation></transformation>
+            <transformation>
+            </transformation>
 
             <materials>
                 <material id="inherit"/>
@@ -512,6 +553,22 @@
 
             <children>
                 <componentref id="empty_tile"/>
+                <componentref id="system3_wrapper"/>
+            </children>
+        </component>
+
+        <component id="system3_wrapper">
+            <transformation>
+                <transformationref id="tile_decoration"></transformationref>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
                 <componentref id="sun"/>
                 <componentref id="small_orbit"/>
                 <componentref id="small_orbit_indicator"/>
@@ -524,7 +581,8 @@
 
         <component id="system2">
 
-            <transformation></transformation>
+            <transformation>
+            </transformation>
 
             <materials>
                 <material id="inherit"/>
@@ -534,6 +592,22 @@
 
             <children>
                 <componentref id="empty_tile"/>
+                <componentref id="system2_wrapper"/>
+            </children>
+        </component>
+        <component id="system2_wrapper">
+
+            <transformation>
+                <transformationref id="tile_decoration"></transformationref>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
                 <componentref id="sun"/>
                 <componentref id="small_orbit"/>
                 <componentref id="small_orbit_indicator"/>
@@ -543,8 +617,8 @@
         </component>
 
         <component id="system1">
-
-            <transformation></transformation>
+            <transformation>
+            </transformation>
 
             <materials>
                 <material id="inherit"/>
@@ -554,6 +628,22 @@
 
             <children>
                 <componentref id="empty_tile"/>
+                <componentref id="system1_wrapper"/>
+            </children>
+        </component>
+
+        <component id="system1_wrapper">
+            <transformation>
+                <transformationref id="tile_decoration"></transformationref>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
                 <componentref id="sun"/>
                 <componentref id="small_orbit"/>
                 <componentref id="small_orbit_indicator"/>
@@ -561,7 +651,8 @@
         </component>
 
         <component id="system0">
-            <transformation></transformation>
+            <transformation>
+            </transformation>
             <materials>
                 <material id="inherit"/>
             </materials>
@@ -570,6 +661,21 @@
 
             <children>
                 <componentref id="empty_tile"/>
+                <componentref id="system0_wrapper"/>
+            </children>
+        </component>
+
+        <component id="system0_wrapper">
+            <transformation>
+                <transformationref id="tile_decoration"></transformationref>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
                 <componentref id="sun"/>
             </children>
         </component>
@@ -753,7 +859,7 @@
         <component id="SSEColony">
             <transformation>
                 <translate x="1" y="2" z="-1"/>
-                <rotate axis="y" angle ="-45"/>
+                <rotate axis="y" angle="-45"/>
             </transformation>
 
             <materials>
@@ -1671,7 +1777,7 @@
 
         <component id="ship">
             <transformation>
-                <translate x="0" y="1.5" z="0"/>
+                <translate x="0" y="1" z="0"/>
                 <scale x="0.2" y="0.2" z="0.2"/>
                 <rotate axis="x" angle="-90"/>
             </transformation>
