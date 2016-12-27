@@ -16,6 +16,7 @@ class Game {
         this.gameState = GAMESTATE.NORMAL;
         this.running = true;
         this.currentPlayer = 0;
+        this.lastMoveTime = Date.now();
     }
 
     /**
@@ -106,11 +107,27 @@ class Game {
     }
 
     /**
+     * Returns the time since last move, in seconds.
+     * @returns {number}
+     */
+    getTimeSinceLastPlay() {
+        return 120 - (Date.now() - this.lastMoveTime) / 1000 | 0;
+    }
+
+    /**
      * Sets up callback to call when the score may have changed.
      * @param {function} callback Function to call when the score may have changed.
      */
     addOnScoreCanChange(callback) {
         this.onScoreCanChange = callback;
+    }
+
+    /**
+     * Sets up callback to call when the current player has changed.
+     * @param callback Function to call when the player changes.
+     */
+    addOnPlayerChanged(callback) {
+        this.onPlayerChanged = callback;
     }
 
     /**
@@ -140,19 +157,18 @@ class Game {
 
         switch (this.gameState) {
             case GAMESTATE.NORMAL:
-                for (let player = 0; player < this.ships.length; player++) {
-                    for (let ship = 0; ship < this.ships[player].length; ship++) {
-                        if (this.ships[player][ship][0] === x && this.ships[player][ship][1] === y) {
-                            console.log('Selected ship no. ' + ship + ' of player ' + player);
+                let playerShips = this.ships[this.currentPlayer];
+                for (let ship = 0; ship < playerShips.length; ship++) {
+                    if (playerShips[ship][0] === x && playerShips[ship][1] === y) {
+                        console.log('Selected ship no. ' + ship + ' of player ' + this.currentPlayer);
 
-                            this.selected = {
-                                playerNo: player,
-                                shipNo: ship,
-                                shipPiece: selectedHex.getShip()
-                            };
+                        this.selected = {
+                            playerNo: this.currentPlayer,
+                            shipNo: ship,
+                            shipPiece: selectedHex.getShip()
+                        };
 
-                            this.gameState = GAMESTATE.SELECTION;
-                        }
+                        this.gameState = GAMESTATE.SELECTION;
                     }
                 }
                 break;
@@ -191,9 +207,10 @@ class Game {
         this.setShips(JSON.parse(data.target.response));
         //this.gameState = GAMESTATE.PLACE_PIECE;
         this.gameState = GAMESTATE.NORMAL;
-        this.currentPlayer = (this.currentPlayer + 1) % 2;
+        this.nextPlayer();
 
         //TODO: remove
+        this.lastMoveTime = Date.now();
         if (this.onScoreCanChange)
             this.onScoreCanChange();
     }
@@ -209,6 +226,7 @@ class Game {
         this.gameState = GAMESTATE.NORMAL;
         this.selected = null;
 
+        this.lastMoveTime = Date.now();
         if (this.onScoreCanChange)
             this.onScoreCanChange();
     }
@@ -223,8 +241,28 @@ class Game {
         this.gameState = GAMESTATE.NORMAL;
         this.selected = null;
 
+        this.lastMoveTime = Date.now();
         if (this.onScoreCanChange)
             this.onScoreCanChange();
+    }
+
+    /**
+     * Selects next player and calls the respective event handler.
+     */
+    nextPlayer() {
+        this.currentPlayer = (this.currentPlayer + 1) % 2;
+
+        if (this.onPlayerChanged)
+            this.onPlayerChanged();
+    }
+
+    /**
+     * Updates the game state.
+     * @param deltaTime Delta time since last update.
+     */
+    update(deltaTime) {
+        if (this.getTimeSinceLastPlay() < 0)
+            this.nextPlayer();
     }
 }
 

@@ -90,6 +90,7 @@ XMLscene.prototype.newGame = function (data) {
     this.game.setWormholes(wormholes);
 
     this.game.addOnScoreCanChange(this.updateScores.bind(this));
+    this.game.addOnPlayerChanged(this.onPlayerChanged.bind(this));
 
     this.rootNode.updateTextures(this.graph.textures);
 
@@ -100,6 +101,14 @@ XMLscene.prototype.newGame = function (data) {
         score.innerHTML = '0';
 
     this.graph.loadedOk = true;
+};
+
+/**
+ * Callback to call when the player has changed.
+ */
+XMLscene.prototype.onPlayerChanged = function () {
+    //TODO: Change camera.
+    console.log('Next player!!');
 };
 
 /**
@@ -115,6 +124,7 @@ XMLscene.prototype.update = function (currTime) {
 
 
     this.rootNode.update(currTime - this.lastUpdateTime, this.seqNum);
+    this.game.update(currTime - this.lastUpdateTime);
     this.seqNum = (this.seqNum + 1) % 2;
     this.lastUpdateTime = currTime;
 };
@@ -155,6 +165,7 @@ XMLscene.prototype.display = function () {
         if (this.game.isRunning()) {
             document.getElementById('instruction').innerText =
                 'Player ' + (this.game.getCurrentPlayer() + 1) + ', ' + this.game.getGameStateInstruction();
+            document.getElementById('time_left').innerText = this.game.getTimeSinceLastPlay();
         }
 
         this.rootNode.display();
