@@ -28,6 +28,31 @@ class Game {
     }
 
     /**
+     * Places the ships on the board for the first time setup
+     * @param ships
+     */
+    initializeShips(ships, components){
+
+        for(let player of ships){
+            console.log(player);
+            for(let ship of player){
+                console.log(ship);
+                let x = ship[0];
+                let y = ship[1];
+
+                let selectedHex = this.board.getHex(x, y);
+                let playerShipComponent = components['ship'].component;
+
+                let playerShip = new Piece(this.scene, playerShipComponent, selectedHex);
+                selectedHex.placeShip(playerShip);
+                console.log(selectedHex);
+            }
+        }
+        this.setShips(ships);
+
+    }
+
+    /**
      * Sets ships.
      * @param ships Ships.
      */
@@ -117,6 +142,7 @@ class Game {
         let x = (pickingID - 1) % this.board.columns;
         let y = ((pickingID - 1) / this.board.columns) | 0;
         console.log('Selected position (' + x + ', ' + y + ').');
+        let selectedHex = this.board.getHex(x,y);
 
         switch (this.gameState) {
             case GAMESTATE.NORMAL:
@@ -127,7 +153,8 @@ class Game {
 
                             this.selected = {
                                 playerNo: player,
-                                shipNo: ship
+                                shipNo: ship,
+                                shipPiece: selectedHex.getShip()
                             };
 
                             this.gameState = GAMESTATE.SELECTION;
@@ -136,6 +163,9 @@ class Game {
                 }
                 break;
             case GAMESTATE.SELECTION:
+                this.selected.shipPiece.getHex().removeShip();
+                this.selected.shipPiece.setHex(selectedHex);
+                selectedHex.placeShip(this.selected.shipPiece);
                 moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
                 break;
         }

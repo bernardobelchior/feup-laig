@@ -638,8 +638,13 @@ MySceneGraph.prototype.parseComponentChildren = function (components, component,
 
             if(component.getId() !== "root")
             children.push(id);
+
+            // else children.push(id);//TODO remove, only for debugarino, if found, it's Bernardo's fault
+
         } else if(component.getId() !== "root") //primitiveref
             component.addChild(this.primitives[id]);
+
+        // else component.addChild(this.primitives[id]);//TODO, remove, it's only for debugging, Nardo did it :'(
     }
 
     components[component.getId()] = {

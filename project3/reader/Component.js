@@ -253,3 +253,10 @@ Component.prototype.update = function (deltaTime, seqNum) {
 Component.prototype.setPickingID = function (pickingID) {
     this.pickingID = pickingID;
 };
+
+Component.prototype.removeChild = function(childComponent){
+    let index = this.children.indexOf(childComponent);
+    if(index > -1){
+        this.children.splice(index, 1);
+    }
+};

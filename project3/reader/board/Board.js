@@ -30,3 +30,20 @@ function Board(scene, boardElements, components) {
 
 Board.prototype = Object.create(Object.prototype);
 Board.prototype.constructor = Board;
+
+Board.prototype.picked = function (pickingID) {
+    let x = (pickingID-1) % this.columns;
+    let y = ((pickingID-1) / this.columns) | 0;
+
+    console.log('Selected position (' + x + ', ' + y + ').');
+    console.log('Selected: ' + this.board[y][x].name);
+};
+
+Board.prototype.getHex = function(x, y){
+    if(x >= this.columns || y >= this.rows){
+        console.log("Invalid Position: " + x + ", " + y);
+        return;
+    }
+
+    return this.board[y][x];
+}
