@@ -83,7 +83,7 @@ XMLscene.prototype.newGame = function (data) {
 
     this.game.newGame(this);
     this.game.createBoard(board, this.graph.components);
-    this.game.setShips(ships);
+    this.game.initializeShips(ships, this.graph.components);
     this.game.setTradeStations(tradeStations);
     this.game.setColonies(colonies);
     this.game.setHomeSystems(homeSystems);
