@@ -62,8 +62,43 @@ XMLscene.prototype.onGraphLoaded = function () {
     //GUI for light control
     for (var i = 0; i < this.lights.length; i++)
         this.lightStatus.push(this.lights[i].enabled);
+};
 
+/**
+ * Initializes game class.
+ * @param context MySceneGraph reference
+ * @param data Response
+ */
+XMLscene.prototype.newGame = function (data) {
+    this.rootNode.children = [];
+
+    //Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes
+    let response = JSON.parse(data.target.response);
+    let board = response[0];
+    let ships = response[1];
+    let tradeStations = response[2];
+    let colonies = response[3];
+    let homeSystems = response[4];
+    let wormholes = response[5];
+
+    let game = new Game(this);
+    game.createBoard(board, this.graph.components);
+    game.setShips(ships);
+    game.setTradeStations(tradeStations);
+    game.setColonies(colonies);
+    game.setHomeSystems(homeSystems);
+    game.setWormholes(wormholes);
+
+    this.game = game;
     this.rootNode.updateTextures(this.graph.textures);
+    this.graph.loadedOk = true;
+};
+
+/**
+ * Change game to normal mode.
+ */
+XMLscene.prototype.cancelMode = function () {
+    this.game.cancelMode();
 };
 
 XMLscene.prototype.update = function (currTime) {
@@ -138,7 +173,7 @@ XMLscene.prototype.nextCamera = function () {
  */
 XMLscene.prototype.handlePicking = function () {
     for (let picking of this.pickResults)
-        if(picking[0])
+        if (picking[0])
             this.game.picked(picking[1]);
 
     this.pickResults.splice(0);

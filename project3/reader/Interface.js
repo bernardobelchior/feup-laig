@@ -16,26 +16,34 @@ Interface.prototype.constructor = Interface;
  * init
  * @param {CGFapplication} application
  */
-Interface.prototype.init = function(application) {
+Interface.prototype.init = function (application) {
     // call CGFinterface init
     CGFinterface.prototype.init.call(this, application);
 
     this.gui = new dat.GUI();
 
-    /*let menu = {
-        Start: startGame()
-    };*/
+    let menu = {
+        newGame: this.requestNewConfig,
+        scene: this.scene
+    };
 
+    this.gui.add(menu, 'newGame').name('New Game');
 
-    //this.gui.add(menu, 'Start');
     return true;
 };
 
-Interface.prototype.processKeyDown = function(event) {
+/**
+ * Gets initial configuration from Prolog.
+ */
+Interface.prototype.requestNewConfig = function () {
+    getPrologRequest('initialConfig', this.scene.newGame.bind(this.scene));
+};
+
+Interface.prototype.processKeyDown = function (event) {
     CGFinterface.prototype.processKeyDown.call(this, event);
 };
 
-Interface.prototype.processKeyUp = function(event) {
+Interface.prototype.processKeyUp = function (event) {
     // call CGFinterface default code (omit if you want to override)
     CGFinterface.prototype.processKeyUp.call(this, event);
 
@@ -46,7 +54,12 @@ Interface.prototype.processKeyUp = function(event) {
         case (86): //'V'
             this.scene.nextCamera();
             break;
-    };
+        case (27): //Esc
+            this.scene.cancelMode();
+            break;
+    }
+
+    console.log('Pressed ' + event.keyCode);
 };
 
 /**
@@ -54,8 +67,6 @@ Interface.prototype.processKeyUp = function(event) {
  * @param the position of the current light in the scene lights array
  * @param id the id of the curretnt light
  */
-Interface.prototype.addLightControls = function(i, id) {
-    //console.log(this.scene.lightIDs[i]);
-    //console.log(this.scene.lightStatus[i]);
+Interface.prototype.addLightControls = function (i, id) {
     this.lightGroup.add(this.scene.lightStatus, i, this.scene.lightStatus[i]).name(id);
 }
