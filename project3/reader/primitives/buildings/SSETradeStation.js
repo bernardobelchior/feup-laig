@@ -14,20 +14,33 @@ SSETradeStation.prototype.constructor = SSETradeStation;
 
 SSETradeStation.prototype.display = function(){
 
-    /*******************Lower Base*************************/
-    this.scene.pushMatrix();
-        this.scene.scale(0.1, 1.0, 0.1);
-        this.displayBase();
-    this.scene.popMatrix();
-    /*****************Middle Base*****************/
+    // Lower Base
     this.scene.pushMatrix();
         this.displayBase();
     this.scene.popMatrix();
 
-    /****************Upper Base*******************/
+    // Middle Base
     this.scene.pushMatrix();
+        this.scene.translate(0.0,0.08,0.0);
+        this.scene.scale(0.8, 1.0, 0.8);
         this.displayBase();
     this.scene.popMatrix();
+
+    // Upper Base
+    this.scene.pushMatrix();
+        this.scene.translate(0.0,0.13,0.0);
+        this.scene.scale(0.5, 1.0, 0.5);
+        this.displayBase();
+    this.scene.popMatrix();
+
+    // Building
+    this.scene.pushMatrix();
+        this.scene.translate(-0.1, 0.2, 0.1);
+        this.scene.scale(0.1, 1.0, 0.1);
+        this.scene.rotate(-Math.PI/2, 1, 0, 0);
+        this.cylinder.display();
+    this.scene.popMatrix();
+
 };
 
 SSETradeStation.prototype.displayBase = function(){
@@ -54,6 +67,7 @@ SSETradeStation.prototype.displayBase = function(){
             this.scene.scale(1.0, 0.2, 1.0);
             this.cube.display();
         this.scene.popMatrix();
+
     this.scene.popMatrix();
 
     // Side 2
