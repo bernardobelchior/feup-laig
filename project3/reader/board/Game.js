@@ -28,9 +28,15 @@ class Game {
     }
 
     createAuxBoards(components){
-        for(let i = 0; i < 4; i++){
+        this.colonyBoards = [
+            new AuxBoard(this.scene, 1, components, "colony"),
+            new AuxBoard(this.scene, 1, components, "colony"),
+        ];
 
-        }
+        this.tradeStationBoards = [
+            new AuxBoard(this.scene, 1, components, "trade_station"),
+            new AuxBoard(this.scene, 1, components, "trade_station"),
+        ]
     }
     /**
      * Places the ships on the board for the first time setup

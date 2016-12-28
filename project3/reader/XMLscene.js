@@ -12,6 +12,8 @@ XMLscene.prototype.constructor = XMLscene;
 XMLscene.prototype.init = function (application) {
     CGFscene.prototype.init.call(this, application);
 
+    this.colony = new SSETradeStation(this);
+
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
     this.gl.clearDepth(100.0);
@@ -83,6 +85,7 @@ XMLscene.prototype.newGame = function (data) {
 
     this.game.newGame(this);
     this.game.createBoard(board, this.graph.components);
+    this.game.createAuxBoards(this.graph.components);
     this.game.initializeShips(ships, this.graph.components);
     this.game.setTradeStations(tradeStations);
     this.game.setColonies(colonies);
@@ -159,8 +162,8 @@ XMLscene.prototype.display = function () {
                 'Player ' + (this.game.getCurrentPlayer() + 1) + ', ' + this.game.getGameStateInstruction();
         }
 
-        this.rootNode.display();
-
+        // this.rootNode.display();
+        this.colony.display();
         // Draw axis
         this.axis.display();
     }

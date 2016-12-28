@@ -52,9 +52,9 @@ Triangle.prototype.initBuffers = function() {
     ];
 
     this.normals = [
-        0, 0, 1,
-        0, 0, 1,
-        0, 0, 1
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0
     ];
 
     let a = Math.sqrt((this.point3[0] - this.point2[0]) * (this.point3[0] - this.point2[0]) +

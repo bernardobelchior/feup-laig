@@ -854,12 +854,12 @@
             </children>
         </component>
 
-        <!-- Colony -->
+        <!-- SSEColony -->
 
-        <component id="SSEColony">
+        <component id="colony">
             <transformation>
                 <translate x="1" y="2" z="-1"/>
-                <rotate axis="y" angle="-45"/>
+                <rotate axis="x" angle="-90"/>
             </transformation>
 
             <materials>
@@ -1087,7 +1087,7 @@
             </transformation>
 
             <materials>
-                <material id="ground"/>
+                <material id="default"/>
             </materials>
 
             <texture id="none"/>
@@ -1098,14 +1098,14 @@
 
         </component>
 
-        <!-- Colony Done -->
+        <!-- SSEColony Done -->
 
         <!-- Trade Station -->
 
-        <component id="SSETradeStation">
+        <component id="trade_station">
             <transformation>
                 <translate x="3 " y="3" z="3"/>
-                <rotate axis="y" angle="-25"/>
+                <rotate axis="x" angle="-90"/>
             </transformation>
 
             <materials>
@@ -1541,7 +1541,7 @@
             </children>
         </component>
 
-        <!-- End Colony Building -->
+        <!-- End SSEColony Building -->
 
         <!-- Unit Cube -->
 
