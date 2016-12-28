@@ -15,8 +15,6 @@ function AuxBoard(scene, numPieces, components, type){
         buildingType = "trade_station";
     else buildingType = "error";
 
-    console.log(buildingType);
-
     this.scene = scene;
     this.numPieces = numPieces;
     this.pieces = [];
@@ -40,6 +38,7 @@ AuxBoard.prototype.getPiece = function(){
         let piece =  this.pieces.pop();
         this.component.removeChild(piece.component);
         return piece;
+
     }
 
     return null;
@@ -59,11 +58,14 @@ AuxBoard.prototype.getRemainingNo = function(){
  * @param type "colony" or "trade_station"
  */
 AuxBoard.prototype.initializePieces = function(components, type){
-    console.log();
     for(let i = 0; i < this.numPieces; i++){
         let newPiece = new Piece(this.scene, components[type].component, null);
-        newPiece.component.translate((Math.floor(i/4) % 4) * 1.1, 0.0, (i % 4) * -1.1);
-        this.component.addChild(newPiece.component);
+        let newPieceWrapper = new Component(this.scene, "pieceWrapper");
+        newPieceWrapper.inheritMaterial = true;
+        newPieceWrapper.texture = 'inherit';
+        newPieceWrapper.addChild(newPiece.component);
+        newPieceWrapper.translate((Math.floor(i/4) % 4) * 1.1, 0.0, (i % 4) * -1.1);
+        this.component.addChild(newPieceWrapper);
         this.pieces.push(newPiece);
     }
 };
@@ -73,5 +75,5 @@ AuxBoard.prototype.initializePieces = function(components, type){
  */
 AuxBoard.prototype.setPickingID = function(pickingID){
     this.component.setPickingID(pickingID);
-}
+};
 
