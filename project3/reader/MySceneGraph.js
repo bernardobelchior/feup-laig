@@ -763,6 +763,14 @@ MySceneGraph.prototype.parsePrimitives = function (primitives) {
                 object = new Wormhole(this.scene);
                 break;
 
+            case "SSEtradeStation":
+                object = new SSETradeStation(this.scene);
+                break;
+
+            case "SSEcolony":
+                object = new SSEColony(this.scene);
+                break;
+
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');
         }

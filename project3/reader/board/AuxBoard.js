@@ -7,13 +7,23 @@
  * @constructor
  */
 function AuxBoard(scene, numPieces, components, type){
+
+    let buildingType;
+    if(type === 1){
+        buildingType = "colony";
+    } else if(type === 2)
+        buildingType = "trade_station";
+    else buildingType = "error";
+
+    console.log(buildingType);
+
     this.scene = scene;
     this.numPieces = numPieces;
     this.pieces = [];
     this.component = new Component(scene, "auxBoardWrapper");
     this.component.inheritMaterial = true;
     this.component.texture = 'inherit';
-    this.initializePieces(components, type);
+    this.initializePieces(components, buildingType);
     this.scene.rootNode.addChild(this.component);
 }
 
@@ -47,8 +57,10 @@ AuxBoard.prototype.getRemainingNo = function(){
  * @param type "colony" or "trade_station"
  */
 AuxBoard.prototype.initializePieces = function(components, type){
+    console.log();
     for(let i = 0; i < this.numPieces; i++){
         let newPiece = new Piece(this.scene, components[type].component, null);
+        newPiece.component.translate((Math.floor(i/4) % 4) * 1.1, 0.0, (i % 4) * -1.1);
         this.component.addChild(newPiece.component);
         this.pieces.push(newPiece);
     }

@@ -28,15 +28,26 @@ class Game {
     }
 
     createAuxBoards(components){
-        this.colonyBoards = [
-            new AuxBoard(this.scene, 1, components, "colony"),
-            new AuxBoard(this.scene, 1, components, "colony"),
-        ];
+        let player1colonies = new AuxBoard(this.scene, 16, components, 1);
+        let player2colonies = new AuxBoard(this.scene, 16, components, 1);
 
-        this.tradeStationBoards = [
-            new AuxBoard(this.scene, 1, components, "trade_station"),
-            new AuxBoard(this.scene, 1, components, "trade_station"),
-        ]
+        let player1tradeStations = new AuxBoard(this.scene, 4, components, 2);
+        let player2tradeStations = new AuxBoard(this.scene, 4, components, 2);
+
+        this.colonyBoards = [player1colonies, player2colonies];
+
+        this.tradeStationBoards = [player1tradeStations, player2tradeStations];
+
+        this.colonyBoards[0].setPickingID(AUXBOARD_ID.P1_COLONIES);
+        this.colonyBoards[1].setPickingID(AUXBOARD_ID.P2_COLONIES);
+
+        this.tradeStationBoards[0].setPickingID(AUXBOARD_ID.P1_STATIONS);
+        this.tradeStationBoards[1].setPickingID(AUXBOARD_ID.P2_STATIONS);
+
+        this.tradeStationBoards[0].component.translate((this.board.columns/2 + 1), 0.0, 0.0);
+        this.colonyBoards[1].component.translate((this.board.columns/2 ) * 1.9, 0.0, (this.board.rows + 2) * 1.68);
+        this.tradeStationBoards[1].component.translate((this.board.columns/2 + 2) , 0.0, (this.board.rows + 2) * 1.68);
+
     }
     /**
      * Places the ships on the board for the first time setup
@@ -264,4 +275,11 @@ GAMESTATE = {
     NORMAL: 0,
     PLACE_SHIP: 1,
     PLACE_BUILDING: 2
+};
+
+AUXBOARD_ID = {
+    P1_COLONIES: 101,
+    P1_STATIONS: 102,
+    P2_COLONIES: 201,
+    P2_STATIONS: 202
 };

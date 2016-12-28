@@ -162,8 +162,8 @@ XMLscene.prototype.display = function () {
                 'Player ' + (this.game.getCurrentPlayer() + 1) + ', ' + this.game.getGameStateInstruction();
         }
 
-        // this.rootNode.display();
-        this.colony.display();
+        this.rootNode.display();
+
         // Draw axis
         this.axis.display();
     }
