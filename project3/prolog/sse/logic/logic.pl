@@ -146,9 +146,7 @@ move_through_wormhole(Board, Ships, TradeStations, Colonies, Wormholes, _NumPlay
     display_wormhole_exits(Wormholes, NumWormholes, InWormhole),
     select_wormhole_exit(NumWormholes, InWormhole, SelectedOutWormhole),
     number_to_wormhole(Wormholes,SelectedOutWormhole, OutWormhole),
-    %trace,
     move_ship(Ships, OutWormhole, CurrentPlayer, ShipNo, west, 0, TmpShips),
-    %notrace,
     display_ship_direction_info(ShipNo),
     select_ship_direction(TmpDirection),
     move_ship_if_valid(Board, TmpShips, TradeStations, Colonies, Wormholes, CurrentPlayer, ShipNo, OutWormhole, TmpDirection, 1, NewShips).
