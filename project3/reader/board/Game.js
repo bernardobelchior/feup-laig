@@ -190,9 +190,9 @@ class Game {
      * @param pickingID
      */
     picked(pickingID) {
-        let x = (pickingID - this.board.PICKING_OFFSET) % this.board.columns;
-        let y = ((pickingID - this.board.PICKING_OFFSET) / this.board.columns) | 0;
-        let selectedHex = this.board.getHex(x, y);
+            let x = (pickingID - this.board.PICKING_OFFSET) % this.board.columns;
+            let y = ((pickingID - this.board.PICKING_OFFSET) / this.board.columns) | 0;
+            let selectedHex = this.board.getHex(x, y);
 
         switch (this.gameState) {
             case GAMESTATE.NORMAL:
@@ -223,6 +223,35 @@ class Game {
                 break;
 
             case GAMESTATE.PLACE_BUILDING:
+                if(this.currentPlayer === 0){
+                    if(pickingID !== AUXBOARD_ID.P1_COLONIES && pickingID !== AUXBOARD_ID.P1_STATIONS)
+                        break;
+                    if(pickingID === AUXBOARD_ID.P1_COLONIES){
+                        let colony = this.colonyBoards[this.currentPlayer].getPiece();
+                        this.selected.shipPiece.getHex().placeBuilding(colony);
+                        placeColony(this.colonies, this.selected.playerNo, this.selected.shipNo, [x,y],this.onColoniesChanged.bind(this))
+                    }
+                    else{
+                        let tradeStation = this.tradeStationBoards[this.currentPlayer].getPiece();
+                        this.selected.shipPiece.getHex().placeBuilding(tradeStation);
+                        placeTradeStation(this.tradeStations, this.selected.playerNo, this.selected.shipNo, [x,y], this.onTradeStationsChanged.bind(this))
+                    }
+                }
+                else {
+                    if(pickingID !== AUXBOARD_ID.P2_COLONIES && pickingID !== AUXBOARD_ID.P2_STATIONS)
+                        break;
+                    if(pickingID === AUXBOARD_ID.P2_COLONIES){
+                        let colony = this.colonyBoards[this.currentPlayer].getPiece();
+                        this.selected.shipPiece.getHex().placeBuilding(colony);
+                        placeColony(this.colonies, this.selected.playerNo, this.selected.shipNo, [x,y], this.onColoniesChanged.bind(this))
+                    }
+                    else{
+                        let tradeStation = this.tradeStationBoards[this.currentPlayer].getPiece();
+                        this.selected.shipPiece.getHex().placeBuilding(tradeStation);
+                        placeTradeStation(this.tradeStations, this.selected.playerNo, this.selected.shipNo, [x,y], this.onTradeStationsChanged.bind(this))
+                    }
+
+                }
                 this.gameState = GAMESTATE.NORMAL;
                 break;
         }
@@ -270,9 +299,9 @@ class Game {
      */
     onShipsChanged(data) {
         this.setShips(JSON.parse(data.target.response));
-        //this.gameState = GAMESTATE.PLACE_BUILDING;
-        this.gameState = GAMESTATE.NORMAL;
-        this.nextPlayer();
+        this.gameState = GAMESTATE.PLACE_BUILDING;
+        // this.gameState = GAMESTATE.NORMAL;
+        // this.nextPlayer();
 
         //TODO: remove when user can place buildings
         if (this.onScoreCanChange)

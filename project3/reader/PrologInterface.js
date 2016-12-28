@@ -49,8 +49,7 @@ function moveShip(ships, playerNo, shipNo, newPosition, callback) {
 /**
  * Places the trade station in the last selected ship position.
  */
-function placeTradeStation(tradeStations, playerNo, shipNo, callback) {
-    let shipPosition = this.ships[this.selected.playerNo][this.selected.shipNo];
+function placeTradeStation(tradeStations, playerNo, shipNo, shipPosition, callback) {
 
     let requestString = 'place_trade_station('
         + playerNo + ','
@@ -63,8 +62,7 @@ function placeTradeStation(tradeStations, playerNo, shipNo, callback) {
 /**
  * Places the colony in the last selected ship position.
  */
-function placeColony(colonies, playerNo, shipNo, callback) {
-    let shipPosition = this.ships[this.selected.playerNo][this.selected.shipNo];
+function placeColony(colonies, playerNo, shipNo, shipPosition, callback) {
 
     let requestString = 'place_colony('
         + playerNo + ','
