@@ -191,7 +191,7 @@ XMLscene.prototype.updateScores = function () {
         this.game.colonies, this.game.homeSystems, 0, this.updateScoreDisplay.bind(null, 0));
 
     calculatePoints(this.game.board.getStringBoard(), this.game.tradeStations,
-        this.game.colonies, this.game.homeSystems, 0, this.updateScoreDisplay.bind(null, 1));
+        this.game.colonies, this.game.homeSystems, 1, this.updateScoreDisplay.bind(null, 1));
 };
 
 XMLscene.prototype.updateScoreDisplay = function (playerNo, response) {
