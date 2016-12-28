@@ -1,5 +1,6 @@
 function XMLscene() {
     CGFscene.call(this);
+    this.CAMERA_ANIMATION_TIME = 1.5;
 }
 
 XMLscene.prototype = Object.create(CGFscene.prototype);
@@ -71,7 +72,7 @@ XMLscene.prototype.onGraphLoaded = function () {
  * @param context MySceneGraph reference
  * @param data Response
  */
-XMLscene.prototype.newGame = function (data) {
+XMLscene.prototype.newGame = function (gameMode, data) {
     this.rootNode.children = [];
 
     //Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes
@@ -83,7 +84,7 @@ XMLscene.prototype.newGame = function (data) {
     let homeSystems = response[4];
     let wormholes = response[5];            //Array with the position of the wormholes on the board
 
-    this.game.newGame(this);
+    this.game.newGame(this, gameMode);
     this.game.createBoard(board, this.graph.components);
     this.game.createAuxBoards(this.graph.components);
     this.game.initializeShips(ships, this.graph.components);
@@ -95,6 +96,10 @@ XMLscene.prototype.newGame = function (data) {
     this.game.setRemainingTradeStations(4);
 
     this.game.addOnScoreCanChange(this.updateScores.bind(this));
+    this.game.addOnPlayerChanged(this.onPlayerChanged.bind(this));
+
+    this.camera = this.cameras[0];
+    this.reverseCamera = true;
 
     this.rootNode.updateTextures(this.graph.textures);
 
@@ -105,6 +110,13 @@ XMLscene.prototype.newGame = function (data) {
         score.innerHTML = '0';
 
     this.graph.loadedOk = true;
+};
+
+/**
+ * Callback to call when the player has changed.
+ */
+XMLscene.prototype.onPlayerChanged = function () {
+    this.nextCamera();
 };
 
 /**
@@ -119,7 +131,10 @@ XMLscene.prototype.update = function (currTime) {
         return;
 
 
-    this.rootNode.update(currTime - this.lastUpdateTime, this.seqNum);
+    let deltaTime = currTime - this.lastUpdateTime;
+    this.rootNode.update(deltaTime, this.seqNum);
+    this.game.update(deltaTime);
+    this.animateCamera(deltaTime);
     this.seqNum = (this.seqNum + 1) % 2;
     this.lastUpdateTime = currTime;
 };
@@ -160,8 +175,10 @@ XMLscene.prototype.display = function () {
         if (this.game.isRunning()) {
             document.getElementById('instruction').innerText =
                 'Player ' + (this.game.getCurrentPlayer() + 1) + ', ' + this.game.getGameStateInstruction();
+            document.getElementById('time_left').innerText = this.game.getTimeSinceLastPlay() + 's';
         }
 
+        this.interface.setActiveCamera(this.camera);
         this.rootNode.display();
 
         // Draw axis
@@ -189,13 +206,58 @@ XMLscene.prototype.switchMaterials = function () {
  * Switches camera to the next one on the scene cameras array
  */
 XMLscene.prototype.nextCamera = function () {
-    if (this.currentCamera === this.cameras.length - 1)
-        this.currentCamera = 0;
-    else
-        this.currentCamera++;
+    this.currentCamera = (this.currentCamera + 1) % this.cameras.length;
 
-    this.camera = this.cameras[this.currentCamera];
-    this.interface.setActiveCamera(this.camera);
+    this.changingCamera = true;
+    this.timeElapsed = 0;
+};
+
+/**
+ * Animates the camera transition
+ * @param deltaTime Delta time
+ */
+XMLscene.prototype.animateCamera = function (deltaTime) {
+    if (!this.changingCamera)
+        return;
+
+    // *0.98 is to avoid flickering when the animation surpasses the expected camera position
+    if (this.timeElapsed > this.CAMERA_ANIMATION_TIME * 0.98) {
+        this.reverseCamera = !this.reverseCamera;
+        this.changingCamera = false;
+        this.camera = this.cameras[this.currentCamera];
+        return;
+    }
+
+    let prevCamera = this.cameras[(this.cameras.length + this.currentCamera - 1) % this.cameras.length];
+    let currCamera = this.cameras[this.currentCamera];
+
+    let targetCenter = midPoint(prevCamera.target, currCamera.target);
+    let positionCenter = midPoint(prevCamera.position, currCamera.position);
+
+    let targetRadius = distance(targetCenter, currCamera.target);
+    let positionRadius = distance(positionCenter, currCamera.position);
+
+    this.timeElapsed += deltaTime / 1000;
+    let cameraAngle = Math.PI * this.timeElapsed / this.CAMERA_ANIMATION_TIME;
+    let multiplier = this.reverseCamera ? -1 : 1;
+
+
+    let targetPosition = [
+        targetCenter[0] + multiplier * targetRadius * Math.sin(cameraAngle),
+        targetCenter[1],
+        targetCenter[2] + multiplier * targetRadius * Math.cos(cameraAngle),
+        1
+    ];
+
+    let positionPosition = [
+        positionCenter[0] + multiplier * positionRadius * Math.sin(cameraAngle),
+        positionCenter[1],
+        positionCenter[2] + multiplier * positionRadius * Math.cos(cameraAngle),
+        1
+    ];
+
+    this.camera = new CGFcamera(currCamera.fov, currCamera.near, currCamera.far,
+        positionPosition, targetPosition);
 };
 
 /**

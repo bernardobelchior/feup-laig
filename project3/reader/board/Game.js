@@ -11,11 +11,14 @@ class Game {
      * Sets new game scene and resets game state.
      * @param scene
      */
-    newGame(scene) {
+    newGame(scene, gameMode) {
         this.scene = scene;
+        this.gameMode = gameMode;
         this.gameState = GAMESTATE.NORMAL;
         this.running = true;
         this.currentPlayer = 0;
+        this.lastMoveTime = Date.now();
+        this.lastMoves = [];
     }
 
     /**
@@ -144,11 +147,27 @@ class Game {
     }
 
     /**
+     * Returns the time since last move, in seconds.
+     * @returns {number}
+     */
+    getTimeSinceLastPlay() {
+        return 10 - (Date.now() - this.lastMoveTime) / 1000 | 0;
+    }
+
+    /**
      * Sets up callback to call when the score may have changed.
      * @param {function} callback Function to call when the score may have changed.
      */
     addOnScoreCanChange(callback) {
         this.onScoreCanChange = callback;
+    }
+
+    /**
+     * Sets up callback to call when the current player has changed.
+     * @param callback Function to call when the player changes.
+     */
+    addOnPlayerChanged(callback) {
+        this.onPlayerChanged = callback;
     }
 
     /**
@@ -171,33 +190,34 @@ class Game {
      * @param pickingID
      */
     picked(pickingID) {
-        let x = (pickingID - 1) % this.board.columns;
-        let y = ((pickingID - 1) / this.board.columns) | 0;
-        console.log('Selected position (' + x + ', ' + y + ').');
+        let x = (pickingID - this.board.PICKING_OFFSET) % this.board.columns;
+        let y = ((pickingID - this.board.PICKING_OFFSET) / this.board.columns) | 0;
         let selectedHex = this.board.getHex(x, y);
 
         switch (this.gameState) {
             case GAMESTATE.NORMAL:
-                for (let player = 0; player < this.ships.length; player++) {
-                    for (let ship = 0; ship < this.ships[player].length; ship++) {
-                        if (this.ships[player][ship][0] === x && this.ships[player][ship][1] === y) {
-                            console.log('Selected ship no. ' + ship + ' of player ' + player);
+                let playerShips = this.ships[this.currentPlayer];
+                for (let ship = 0; ship < playerShips.length; ship++) {
+                    if (playerShips[ship][0] === x && playerShips[ship][1] === y) {
+                        this.selected = {
+                            playerNo: this.currentPlayer,
+                            shipNo: ship,
+                            shipPiece: selectedHex.getShip()
+                        };
 
-                            this.selected = {
-                                playerNo: player,
-                                shipNo: ship,
-                                shipPiece: selectedHex.getShip()
-                            };
-
-                            this.gameState = GAMESTATE.PLACE_SHIP;
-                        }
+                        this.gameState = GAMESTATE.PLACE_SHIP;
                     }
                 }
                 break;
             case GAMESTATE.PLACE_SHIP:
+                let position = this.ships[this.currentPlayer][this.selected.shipNo];
+                let play = new Play();
+                play.setShipMovement(this.currentPlayer, this.selected.shipNo, [position[0], position[1]]);
+                this.lastMoves.push(play);
                 this.selected.shipPiece.getHex().removeShip();
                 this.selected.shipPiece.setHex(selectedHex);
                 selectedHex.placeShip(this.selected.shipPiece);
+
                 moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
                 this.gameState = GAMESTATE.PLACE_BUILDING;
                 break;
@@ -222,7 +242,25 @@ class Game {
      * Function called to undo last play.
      */
     undo() {
-        //TODO
+        if (!this.running || !this.lastMoves.length)
+            return;
+
+        let lastMove = this.lastMoves.pop();
+
+        if (lastMove.wasPlayed()) {
+            let currentShipPosition = this.ships[lastMove.playerNo][lastMove.shipNo];
+            let currentHex = this.board.getHex(currentShipPosition[0], currentShipPosition[1]);
+
+            this.ships[lastMove.playerNo][lastMove.shipNo][0] = lastMove.oldShipPosition[0];
+            this.ships[lastMove.playerNo][lastMove.shipNo][1] = lastMove.oldShipPosition[1];
+
+            let previousHex = this.board.getHex(lastMove.oldShipPosition[0], lastMove.oldShipPosition[1]);
+
+            previousHex.placeShip(currentHex.getShip());
+            currentHex.removeShip();
+        }
+
+        this.previousPlayer();
     }
 
     /**
@@ -234,9 +272,9 @@ class Game {
         this.setShips(JSON.parse(data.target.response));
         //this.gameState = GAMESTATE.PLACE_BUILDING;
         this.gameState = GAMESTATE.NORMAL;
-        this.currentPlayer = (this.currentPlayer + 1) % 2;
+        this.nextPlayer();
 
-        //TODO: remove
+        //TODO: remove when user can place buildings
         if (this.onScoreCanChange)
             this.onScoreCanChange();
     }
@@ -251,6 +289,7 @@ class Game {
         this.setTradeStations(JSON.parse(data.target.response));
         this.gameState = GAMESTATE.NORMAL;
         this.selected = null;
+        this.nextPlayer();
 
         if (this.onScoreCanChange)
             this.onScoreCanChange();
@@ -265,9 +304,43 @@ class Game {
         this.setColonies(JSON.parse(data.target.response));
         this.gameState = GAMESTATE.NORMAL;
         this.selected = null;
+        this.nextPlayer();
 
         if (this.onScoreCanChange)
             this.onScoreCanChange();
+    }
+
+    /**
+     * Selects previous player and calls the respective event handler.
+     */
+    previousPlayer() {
+        this.currentPlayer = (this.currentPlayer - 1) % 2;
+        this.lastMoveTime = Date.now();
+
+        if (this.onPlayerChanged)
+            this.onPlayerChanged();
+    }
+
+    /**
+     * Selects next player and calls the respective event handler.
+     */
+    nextPlayer() {
+        this.currentPlayer = (this.currentPlayer + 1) % 2;
+        this.lastMoveTime = Date.now();
+
+        if (this.onPlayerChanged)
+            this.onPlayerChanged();
+    }
+
+    /**
+     * Updates the game state.
+     * @param deltaTime Delta time since last update.
+     */
+    update(deltaTime) {
+        if (this.getTimeSinceLastPlay() <= 0) {
+            this.lastMoves.push(new Play());
+            this.nextPlayer();
+        }
     }
 }
 
