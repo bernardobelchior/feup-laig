@@ -7,9 +7,7 @@ easy_cpu_select_ship_movement(Board, Ships, TradeStations, Colonies, Wormholes, 
   easy_cpu_select_ship_direction(ReadDirection),
   number_to_direction(ReadDirection,Direction),
   get_piece_position(Ships, CurrentPlayer, ShipNo, ShipPosition),
-  easy_cpu_do_appropriate_move(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, ShipNo, ShipPosition, Direction, NewShips),
-  PrintShip is ShipNo + 1,
-  nl, write('CPU moved ship '), write(PrintShip),nl.
+  easy_cpu_do_appropriate_move(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, ShipNo, ShipPosition, Direction, NewShips).
 
  easy_cpu_select_ship_movement(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, NewShips, _ShipNo) :-
   easy_cpu_select_ship_movement(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, NewShips, _SelectedShipNo).
@@ -38,9 +36,7 @@ easy_cpu_select_ship_action(Ships, PlayerNo, ShipNo,TradeStations, Colonies,  Ne
   easy_cpu_select_action(ReadAction),
   convert_number_to_action(ReadAction,Action),
   valid_action(Action, PlayerNo, TradeStations, Colonies),!,
-  perform_action(Ships, PlayerNo, ShipNo, Action, TradeStations, Colonies, NewTradeStations, NewColonies),
-  write('A '), print_changes(TradeStations, NewTradeStations, Colonies, NewColonies), write(' was placed.'), nl,
-  write('Enter something to continue'),read(Buffer).
+  perform_action(Ships, PlayerNo, ShipNo, Action, TradeStations, Colonies, NewTradeStations, NewColonies).
 
 easy_cpu_select_ship_action(Ships, PlayerNo, ShipNo, TradeStations, Colonies,  NewTradeStations, NewColonies) :-
   easy_cpu_select_ship_action(Ships, PlayerNo, ShipNo, TradeStations, Colonies,  NewTradeStations, NewColonies).

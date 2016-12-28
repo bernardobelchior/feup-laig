@@ -116,6 +116,14 @@ parse_input(initialConfig, InitialConfig):-
 parse_input(move(Ships, PlayerNo, ShipNo, NewShipPosition), NewShips):-
 	move(Ships, PlayerNo, ShipNo, NewShipPosition, NewShips).
 
+parse_input(is_game_over(Board, Ships, TradeStations, Colonies, Wormholes), result):-
+	is_game_over(Board, Ships, TradeStations, Colonies, Wormholes),
+	result = 1.
+parse_input(is_game_over(Board, Ships, TradeStations, Colonies, Wormholes), 0).
+
+parse_input(easy_cpu_move(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, ShipNo), NewShips):-
+	easy_cpu_select_ship_movement(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, NewShips, ShipNo).
+
 parse_input(place_trade_station(PlayerNo, ShipPosition, TradeStations), NewTradeStations):-
 	place_trade_station(PlayerNo, ShipPosition, TradeStations, NewTradeStations).
 
