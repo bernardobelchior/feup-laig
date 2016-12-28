@@ -15,3 +15,8 @@ Piece.prototype.getHex = function(){
 Piece.prototype.setHex = function (hexagon) {
     this.hexagon = hexagon;
 };
+
+PIECE_TYPE = {
+    TRADE_STATION: 0,
+    COLONY : 1
+};

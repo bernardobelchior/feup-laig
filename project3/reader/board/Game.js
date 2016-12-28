@@ -174,7 +174,7 @@ class Game {
             case GAMESTATE.SELECTION:
                 let position = this.ships[this.currentPlayer][this.selected.shipNo];
                 let play = new Play();
-                play.setPlay(this.currentPlayer, this.selected.shipNo, [position[0], position[1]]);
+                play.setShipMovement(this.currentPlayer, this.selected.shipNo, [position[0], position[1]]);
                 this.lastMoves.push(play);
 
                 this.selected.shipPiece.getHex().removeShip();
