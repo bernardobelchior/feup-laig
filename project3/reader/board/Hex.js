@@ -26,6 +26,7 @@ Hex.prototype.setPickingID = function (pickingID) {
 };
 
 Hex.prototype.placeShip = function (piece) {
+    //console.log(this.ship);
     if (this.ship !== null)
         return;
 

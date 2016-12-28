@@ -18,6 +18,7 @@ class Game {
         this.running = true;
         this.currentPlayer = 0;
         this.lastMoveTime = Date.now();
+        this.lastMoves = [];
     }
 
     /**
@@ -112,7 +113,7 @@ class Game {
      * @returns {number}
      */
     getTimeSinceLastPlay() {
-        return 120 - (Date.now() - this.lastMoveTime) / 1000 | 0;
+        return 10 - (Date.now() - this.lastMoveTime) / 1000 | 0;
     }
 
     /**
@@ -153,7 +154,6 @@ class Game {
     picked(pickingID) {
         let x = (pickingID - 1) % this.board.columns;
         let y = ((pickingID - 1) / this.board.columns) | 0;
-        console.log('Selected position (' + x + ', ' + y + ').');
         let selectedHex = this.board.getHex(x, y);
 
         switch (this.gameState) {
@@ -161,8 +161,6 @@ class Game {
                 let playerShips = this.ships[this.currentPlayer];
                 for (let ship = 0; ship < playerShips.length; ship++) {
                     if (playerShips[ship][0] === x && playerShips[ship][1] === y) {
-                        console.log('Selected ship no. ' + ship + ' of player ' + this.currentPlayer);
-
                         this.selected = {
                             playerNo: this.currentPlayer,
                             shipNo: ship,
@@ -174,9 +172,15 @@ class Game {
                 }
                 break;
             case GAMESTATE.SELECTION:
+                let position = this.ships[this.currentPlayer][this.selected.shipNo];
+                let play = new Play();
+                play.setPlay(this.currentPlayer, this.selected.shipNo, [position[0], position[1]]);
+                this.lastMoves.push(play);
+
                 this.selected.shipPiece.getHex().removeShip();
                 this.selected.shipPiece.setHex(selectedHex);
                 selectedHex.placeShip(this.selected.shipPiece);
+
                 moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
                 break;
         }
@@ -196,7 +200,25 @@ class Game {
      * Function called to undo last play.
      */
     undo() {
-        //TODO
+        if (!this.running || !this.lastMoves.length)
+            return;
+
+        let lastMove = this.lastMoves.pop();
+
+        if (lastMove.wasPlayed()) {
+            let currentShipPosition = this.ships[lastMove.playerNo][lastMove.shipNo];
+            let currentHex = this.board.getHex(currentShipPosition[0], currentShipPosition[1]);
+
+            this.ships[lastMove.playerNo][lastMove.shipNo][0] = lastMove.oldShipPosition[0];
+            this.ships[lastMove.playerNo][lastMove.shipNo][1] = lastMove.oldShipPosition[1];
+
+            let previousHex = this.board.getHex(lastMove.oldShipPosition[0], lastMove.oldShipPosition[1]);
+
+            previousHex.placeShip(currentHex.getShip());
+            currentHex.removeShip();
+        }
+
+        this.previousPlayer();
     }
 
     /**
@@ -210,7 +232,7 @@ class Game {
         this.gameState = GAMESTATE.NORMAL;
         this.nextPlayer();
 
-        //TODO: remove
+        //TODO: remove when user can place buildings
         if (this.onScoreCanChange)
             this.onScoreCanChange();
     }
@@ -247,6 +269,17 @@ class Game {
     }
 
     /**
+     * Selects previous player and calls the respective event handler.
+     */
+    previousPlayer() {
+        this.currentPlayer = (this.currentPlayer - 1) % 2;
+        this.lastMoveTime = Date.now();
+
+        if (this.onPlayerChanged)
+            this.onPlayerChanged();
+    }
+
+    /**
      * Selects next player and calls the respective event handler.
      */
     nextPlayer() {
@@ -262,8 +295,10 @@ class Game {
      * @param deltaTime Delta time since last update.
      */
     update(deltaTime) {
-        if (this.getTimeSinceLastPlay() <= 0)
+        if (this.getTimeSinceLastPlay() <= 0) {
+            this.lastMoves.push(new Play());
             this.nextPlayer();
+        }
     }
 }
 
