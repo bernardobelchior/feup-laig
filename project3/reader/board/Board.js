@@ -5,6 +5,8 @@ function Board(scene, boardElements, components) {
     this.rows = boardElements.length;
     this.columns = boardElements[0].length;
 
+    this.PICKING_OFFSET = 5;
+
     for (let y = 0; y < this.rows; y++) {
         this.board.push([]);
 
@@ -21,7 +23,7 @@ function Board(scene, boardElements, components) {
             if (hex !== 'null') {
                 visibilityIndex++;
                 if (hex !== 'space')
-                    tile.setPickingID(y * this.columns + x + 1); // +1 because picking ID must begin at 1
+                    tile.setPickingID(y * this.columns + x + this.PICKING_OFFSET); // +1 because picking ID must begin at 1
 
             }
 
@@ -34,8 +36,8 @@ Board.prototype = Object.create(Object.prototype);
 Board.prototype.constructor = Board;
 
 Board.prototype.picked = function (pickingID) {
-    let x = (pickingID - 1) % this.columns;
-    let y = ((pickingID - 1) / this.columns) | 0;
+    let x = (pickingID - this.PICKING_OFFSET) % this.columns;
+    let y = ((pickingID - this.PICKING_OFFSET) / this.columns) | 0;
 
     console.log('Selected position (' + x + ', ' + y + ').');
     console.log('Selected: ' + this.board[y][x].name);
