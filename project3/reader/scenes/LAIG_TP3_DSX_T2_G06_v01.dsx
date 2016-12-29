@@ -20,11 +20,11 @@
 
     <views default="default">
         <perspective id="default" near="0.1" far="500" angle="22.91">
-            <from x="6.5" y="30" z="-12.5"/>
-            <to x="6.5" y="0" z="7.5"/>
+            <from x="6.5" y="30" z="-27.5"/>
+            <to x="6.5" y="0" z="5"/>
         </perspective>
         <perspective id="camera1" near="0.1" far="500" angle="22.91">
-            <from x="6.5" y="30" z="30"/>
+            <from x="6.5" y="30" z="50"/>
             <to x="6.5" y="0" z="10"/>
         </perspective>
     </views>
@@ -77,12 +77,20 @@
             <shininess value="200"/>
         </material>
 
-        <material id="highlight">
-            <ambient r="0.4" g="0.4" b="0.4" a="1"/>
-            <diffuse r="0.7" g="0.7" b="0.7" a="1"/>
-            <specular r="0.7" g="0.7" b="0.7" a="1"/>
+        <material id="default_tile">
+            <ambient r="0.2" g="0.2" b="0.2" a="1"/>
+            <diffuse r="0.2" g="0.2" b="0.2" a="1"/>
+            <specular r="0.2" g="0.2" b="0.2" a="1"/>
             <emission r="0" g="0" b="0" a="1"/>
-            <shininess value="400"/>
+            <shininess value="100"/>
+        </material>
+
+        <material id="highlighted_tile">
+            <ambient r="1" g="1" b="1" a="1"/>
+            <diffuse r="1" g="1" b="1" a="1"/>
+            <specular r="1" g="1" b="1" a="1"/>
+            <emission r="0" g="0" b="0" a="1"/>
+            <shininess value="2000"/>
         </material>
 
         <material id="red_metal">

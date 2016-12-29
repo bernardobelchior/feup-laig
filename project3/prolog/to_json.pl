@@ -1,6 +1,6 @@
-json([K-V | Rest], Output):-
+/*json([K-V | Rest], Output):-
     key_value_to_json_obj([K-V | Rest], ObjectContent),
-    surround(ObjectContent, '{', '}', Output).
+    surround(ObjectContent, '{', '}', Output).*/
     %atom_concat('{', ObjectContent, ObjectLeft),
     %atom_concat('}', ObjectLeft, Output).*/
 

@@ -165,7 +165,7 @@ Component.prototype.display = function (parent) {
     }
 
     //if (this.pickingID)
-        //this.scene.registerForPick(undefined, undefined);
+    //this.scene.registerForPick(undefined, undefined);
     //this.scene.clearPickRegistration();
 
     this.scene.popMatrix();
@@ -254,9 +254,9 @@ Component.prototype.setPickingID = function (pickingID) {
     this.pickingID = pickingID;
 };
 
-Component.prototype.removeChild = function(childComponent){
+Component.prototype.removeChild = function (childComponent) {
     let index = this.children.indexOf(childComponent);
-    if(index > -1){
+    if (index > -1) {
         this.children.splice(index, 1);
     }
 };

@@ -4,7 +4,8 @@ function Hex(scene, component, visibilityIndex, y) {
     this.x = 1.9 * visibilityIndex + 1 * y % 2;
     this.z = 1.68 * y;
 
-    this.component.inheritMaterial = true;
+    this.component.materials.push(this.scene.graph.materials['default_tile']);
+    this.component.materials.push(this.scene.graph.materials['highlighted_tile']);
     this.component.texture = 'inherit';
     this.component.addChild(component);
 
@@ -75,10 +76,9 @@ Hex.prototype.getBuilding = function () {
 };
 
 Hex.prototype.highlight = function () {
-    this.component.material = this.scene.graph.materials['highlight'];
-
+    this.component.currentMaterial = 1;
 };
 
 Hex.prototype.resetHighlighting = function () {
-    this.component.material = this.scene.graph.materials['default'];
+    this.component.currentMaterial = 0;
 };

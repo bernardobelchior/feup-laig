@@ -3,25 +3,31 @@
  * @param scene CGFScene
  * @param numPieces Maximum number of pieces the player can have
  * @param components Scene components
- * @param type String, "colony" or "trade_station", depending on the desired type
+ * @param type Piece type
  * @constructor
  */
-function AuxBoard(scene, numPieces, components, type){
-
+function AuxBoard(scene, numPieces, components, type) {
     let buildingType;
-    if(type === 1){
-        buildingType = "colony";
-    } else if(type === 2)
-        buildingType = "trade_station";
-    else buildingType = "error";
+    switch (type) {
+        case PIECE_TYPE.TRADE_STATION:
+            buildingType = 'trade_station';
+            break;
+        case PIECE_TYPE.COLONY:
+            buildingType = 'colony';
+            break;
+        default:
+            buildingType = 'null';
+            break;
+    }
 
     this.scene = scene;
+    this.baseComponent = components[buildingType].component;
     this.numPieces = numPieces;
     this.pieces = [];
     this.component = new Component(scene, "auxBoardWrapper");
     this.component.inheritMaterial = true;
     this.component.texture = 'inherit';
-    this.initializePieces(components, buildingType);
+    this.initializePieces();
     this.scene.rootNode.addChild(this.component);
 }
 
@@ -32,9 +38,8 @@ AuxBoard.prototype.constructor = AuxBoard;
  * Get a piece, if there are any remaining
  * @returns a piece to be placed on the board
  */
-AuxBoard.prototype.getPiece = function(){
-    if(this.numPieces > 0){
-        this.numPieces--;
+AuxBoard.prototype.getPiece = function () {
+    if (this.pieces.length > 0) {
         let piece = this.pieces.pop();
         this.component.children.pop();
         return piece;
@@ -47,32 +52,42 @@ AuxBoard.prototype.getPiece = function(){
  * Get the number of pieces still on the auxiliary board
  * @returns number of pieces on the auxiliary board
  */
-AuxBoard.prototype.getRemainingNo = function(){
-    return this.numPieces;
+AuxBoard.prototype.getRemainingNo = function () {
+    return this.pieces.length;
 };
 
 /**
  * Fills the auxiliary board with the pieces that can still be used by the player
- * @param components scene components
- * @param type "colony" or "trade_station"
  */
-AuxBoard.prototype.initializePieces = function(components, type){
-    for(let i = 0; i < this.numPieces; i++){
-        let newPiece = new Piece(this.scene, components[type].component, null);
-        let newPieceWrapper = new Component(this.scene, "pieceWrapper");
-        newPieceWrapper.inheritMaterial = true;
-        newPieceWrapper.texture = 'inherit';
-        newPieceWrapper.addChild(newPiece.component);
-        newPieceWrapper.translate((Math.floor(i/4) % 4) * 1.1, 0.0, (i % 4) * -1.1);
-        this.component.addChild(newPieceWrapper);
-        this.pieces.push(newPiece);
-    }
+AuxBoard.prototype.initializePieces = function () {
+    for (let i = 0; i < this.numPieces; i++)
+        this.putPiece();
 };
 
 /**
- * @param pickingID
+ * Puts piece in auxiliary board.
  */
-AuxBoard.prototype.setPickingID = function(pickingID){
+AuxBoard.prototype.putPiece = function () {
+    if (this.pieces.length >= this.numPieces)
+        return;
+
+    let pieceNo = this.pieces.length;
+    let newPiece = new Piece(this.scene, this.baseComponent, null);
+    let newPieceWrapper = new Component(this.scene, "pieceWrapper");
+    newPieceWrapper.inheritMaterial = true;
+    newPieceWrapper.inheritTexture = true;
+    newPieceWrapper.texture = 'inherit';
+    newPieceWrapper.addChild(newPiece.component);
+    newPieceWrapper.translate((Math.floor(pieceNo / 4) % 4) * 1.1, 0.0, (pieceNo % 4) * -1.1);
+    this.component.addChild(newPieceWrapper);
+    this.pieces.push(newPiece);
+};
+
+/**
+ * Sets the aux board picking id.
+ * @param pickingID Picking ID.
+ */
+AuxBoard.prototype.setPickingID = function (pickingID) {
     this.component.setPickingID(pickingID);
 };
 
