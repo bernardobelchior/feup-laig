@@ -204,9 +204,8 @@ class Game {
 
         for (let direction of validDirections) {
             let position = initialPosition.slice();
-            while ((position = moveInDirection(this.board.rows, this.board.columns, direction, position[0], position[1]))) {
+            while ((position = moveInDirection(this.board.rows, this.board.columns, direction, position[0], position[1])))
                 this.board.highlight(position);
-            }
         }
     }
 
@@ -248,7 +247,6 @@ class Game {
                 this.gameState = GAMESTATE.PLACE_BUILDING;
                 break;
             case GAMESTATE.PLACE_BUILDING:
-                this.board.resetHighlighting();
                 let shipPosition = this.ships[this.selected.playerNo][this.selected.shipNo];
 
                 if (this.currentPlayer === 0) {
@@ -293,6 +291,7 @@ class Game {
     cancelMode() {
         if (this.gameState !== GAMESTATE.PLACE_BUILDING) {
             this.gameState = GAMESTATE.NORMAL;
+            this.board.resetHighlighting();
             this.selected = null;
         }
     }
@@ -330,6 +329,7 @@ class Game {
     onShipsChanged(data) {
         this.setShips(JSON.parse(data.target.response));
         this.gameState = GAMESTATE.PLACE_BUILDING;
+        this.board.resetHighlighting();
     }
 
 
