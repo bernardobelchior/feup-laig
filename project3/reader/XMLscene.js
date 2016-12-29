@@ -69,7 +69,7 @@ XMLscene.prototype.onGraphLoaded = function () {
 
 /**
  * Initializes game class.
- * @param context MySceneGraph reference
+ * @param gameMode Game mode.
  * @param data Response
  */
 XMLscene.prototype.newGame = function (gameMode, data) {
@@ -100,6 +100,8 @@ XMLscene.prototype.newGame = function (gameMode, data) {
 
     this.camera = this.cameras[0];
     this.reverseCamera = true;
+    this.changingCamera = false;
+    this.currentCamera = 0;
 
     this.rootNode.updateTextures(this.graph.textures);
 
@@ -109,6 +111,7 @@ XMLscene.prototype.newGame = function (gameMode, data) {
     for (let score of scores)
         score.innerHTML = '0';
 
+    this.game.startGame();
     this.graph.loadedOk = true;
 };
 

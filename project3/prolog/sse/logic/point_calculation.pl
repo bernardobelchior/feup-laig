@@ -1,3 +1,4 @@
+%calculates the points made by a player on game over
 calculate_points(Board, TradeStations, Colonies, HomeSystems, PlayerNo, NewPlayerPoints):-
   list_get_nth(TradeStations, PlayerNo, PlayerTradeStations),
   list_get_nth(Colonies, PlayerNo, PlayerColonies),
@@ -15,6 +16,7 @@ calculate_points(Board, TradeStations, Colonies, HomeSystems, PlayerNo, NewPlaye
   get_points_from_nebulas(Board, RedNebulasControlled, RedNebulaPoints),
   NewPlayerPoints is TradeStationsControlPoints + ColoniesControlPoints + AdjacencyPoints + GreenNebulaPoints + BlueNebulaPoints + RedNebulaPoints.
 
+%calculates the points won by adjacency of all of the player trade stations
 calculate_adjacency_points([], _OtherTradeStations, _OtherColonies, _OtherHomeSystems, 0).
 
 calculate_adjacency_points([TradeStation | Rest], OtherTradeStations, OtherColonies, OtherHomeSystems, AdjacencyPoints):-
@@ -33,6 +35,7 @@ calculate_adjacency_points_for_station(TradeStation, Direction, OtherTradeStatio
   DirectionPoints = 1.
 calculate_adjacency_points_for_station(_TradeStation, _Direction, _OtherTradeStations, _OtherColonies, _OtherHomeSystems, 0).
 
+%Calculates the points won by controlling systems and nebulas
 calculate_control_points(_Board, [], 0, 0, 0, 0).
 calculate_control_points(Board, [[X, Y] | OtherPieces], ControlPoints, GreenNebulasControlled, BlueNebulasControlled, RedNebulasControlled):-
   list_get_xy(Board, X, Y, Tile),

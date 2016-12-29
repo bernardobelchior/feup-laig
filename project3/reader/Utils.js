@@ -265,3 +265,44 @@ function getKnotsVector(degree) {
 function midPoint(point1, point2) {
     return [(point1[0] + point2[0]) / 2, (point1[1] + point2[1]) / 2, (point1[2] + point2[2]) / 2, (point1[3] + point2[3]) / 2];
 }
+
+/**
+ * Moves in the direction specified.
+ * @param rows Rows in the board
+ * @param columns Columns in the board.
+ * @param direction Direction string
+ * @param x X coordinate
+ * @param y Y coordinate
+ * @returns {*} array of position or null.
+ */
+function moveInDirection(rows, columns, direction, x, y) {
+    let position;
+
+    switch (direction) {
+        case 'northwest':
+            position = [x, y - 1];
+            break;
+        case 'northeast':
+            position = [x + 1, y - 1];
+            break;
+        case 'east':
+            position = [x + 1, y];
+            break;
+        case 'southeast':
+            position = [x, y + 1];
+            break;
+        case 'southwest':
+            position = [x - 1, y + 1];
+            break;
+        case 'west':
+            position = [x - 1, y];
+            break;
+        default:
+            return false;
+    }
+
+    if (position[0] < 0 || position[1] < 0 || position[0] >= columns || position[1] >= rows)
+        return false;
+    else
+        return position;
+}

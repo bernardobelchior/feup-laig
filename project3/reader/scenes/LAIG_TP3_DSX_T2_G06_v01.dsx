@@ -77,6 +77,14 @@
             <shininess value="200"/>
         </material>
 
+        <material id="highlight">
+            <ambient r="0.4" g="0.4" b="0.4" a="1"/>
+            <diffuse r="0.7" g="0.7" b="0.7" a="1"/>
+            <specular r="0.7" g="0.7" b="0.7" a="1"/>
+            <emission r="0" g="0" b="0" a="1"/>
+            <shininess value="400"/>
+        </material>
+
         <material id="red_metal">
             <ambient r="0.8" g="0.2" b="0.2" a="1"/>
             <diffuse r="0.8" g="0.1" b="0.1" a="1"/>
@@ -326,18 +334,65 @@
             </transformation>
 
             <materials>
-                <material id="blue_nebula"/>
+                <material id="inherit"/>
             </materials>
 
             <texture id="inherit"/>
 
             <children>
                 <componentref id="empty_tile"/>
-                <componentref id="nebula_wrapper"/>
+                <componentref id="blue_nebula_wrapper"/>
             </children>
         </component>
 
         <component id="greenNebula">
+            <transformation>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="empty_tile"/>
+                <componentref id="green_nebula_wrapper"/>
+            </children>
+        </component>
+
+        <component id="redNebula">
+            <transformation>
+            </transformation>
+
+            <materials>
+                <material id="inherit"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="empty_tile"/>
+                <componentref id="red_nebula_wrapper"/>
+            </children>
+        </component>
+
+        <component id="blue_nebula_wrapper">
+            <transformation>
+            </transformation>
+
+            <materials>
+                <material id="blue_nebula"/>
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <componentref id="nebula_wrapper"/>
+            </children>
+        </component>
+
+        <component id="green_nebula_wrapper">
             <transformation>
             </transformation>
 
@@ -348,12 +403,11 @@
             <texture id="inherit"/>
 
             <children>
-                <componentref id="empty_tile"/>
                 <componentref id="nebula_wrapper"/>
             </children>
         </component>
 
-        <component id="redNebula">
+        <component id="red_nebula_wrapper">
             <transformation>
             </transformation>
 
@@ -364,7 +418,6 @@
             <texture id="inherit"/>
 
             <children>
-                <componentref id="empty_tile"/>
                 <componentref id="nebula_wrapper"/>
             </children>
         </component>

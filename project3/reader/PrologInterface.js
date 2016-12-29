@@ -82,3 +82,15 @@ function calculatePoints(board, tradeStations, colonies, homeSystems, playerNo, 
 
     getPrologRequest(requestString, callback);
 }
+
+function getValidMoves(board, ships, tradeStations, colonies, wormholes, position, callback) {
+    let requestString = 'get_valid_moves('
+        + JSON.stringify(board).replace(/"/g, '') + ','
+        + JSON.stringify(ships) + ','
+        + JSON.stringify(tradeStations) + ','
+        + JSON.stringify(colonies) + ','
+        + JSON.stringify(wormholes) + ','
+        + JSON.stringify(position) + ')';
+
+    getPrologRequest(requestString, callback);
+}

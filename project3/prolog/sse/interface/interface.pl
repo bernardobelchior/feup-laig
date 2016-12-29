@@ -1,9 +1,51 @@
+start_game(HumanPlayers, CPUDifficulty):-
+  initialize(Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer),
+  next_play(HumanPlayers, -1, Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, CPUDifficulty).
+
+human_play(Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, HumanPlayers, CPUDifficulty):-
+  display_board(Board, Ships, TradeStations, Colonies),
+  select_ship_movement(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, NewShips, ShipNo),
+  display_board(Board, NewShips, TradeStations, Colonies),
+  select_ship_action(NewShips, CurrentPlayer, ShipNo, TradeStations, Colonies, NewTradeStations, NewColonies),
+  check_game_state(Board, NewShips, NewTradeStations, NewColonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, HumanPlayers, CPUDifficulty).
+
+cpu_play(Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, HumanPlayers, easy):-
+  easy_cpu_select_ship_movement(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, NewShips, ShipNo),
+  easy_cpu_select_ship_action(NewShips, CurrentPlayer, ShipNo, TradeStations, Colonies, NewTradeStations, NewColonies), 
+  display_board(Board, NewShips, NewTradeStations, NewColonies),
+  check_game_state(Board, NewShips, NewTradeStations, NewColonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, HumanPlayers, easy).
+
+cpu_play(Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, HumanPlayers, hard):-
+  easy_cpu_select_ship_movement(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, NewShips, ShipNo),
+  easy_cpu_select_ship_action(NewShips, CurrentPlayer, ShipNo, TradeStations, Colonies, NewTradeStations, NewColonies),
+  display_board(Board, NewShips, NewTradeStations, NewColonies),
+  check_game_state(Board, NewShips, NewTradeStations, NewColonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, HumanPlayers, hard).
+
+check_game_state(Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, HumanPlayers, CPUDifficulty):-
+  is_game_over(Board, Ships, TradeStations, Colonies, Wormholes),
+  game_over(Board, TradeStations, Colonies, HomeSystems, NumPlayers);
+  next_play(HumanPlayers, CurrentPlayer, Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, CPUDifficulty).
+
+next_play(0, CurrentPlayer, Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, CPUDifficulty):-
+  NextPlayer is mod(CurrentPlayer+1, NumPlayers),
+  cpu_play(Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, NextPlayer, 0, CPUDifficulty).
+next_play(NumPlayers, CurrentPlayer, Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, CPUDifficulty):-
+  NextPlayer is mod(CurrentPlayer+1, NumPlayers),
+  human_play(Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, NextPlayer, NumPlayers, CPUDifficulty).
+next_play(HumanPlayers, CurrentPlayer, Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, CPUDifficulty):-
+  NextPlayer is mod(CurrentPlayer+1, NumPlayers),
+  NextPlayer < NumPlayers - 1,
+  human_play(Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, NextPlayer, HumanPlayers, CPUDifficulty);
+  cpu_play(Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes, NumPlayers, NumShipsPerPlayer, NextPlayer, HumanPlayers, CPUDifficulty).
+
+
 select_ship_movement(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, NewShips, ShipNo):-
   display_player_info(CurrentPlayer, NumShipsPerPlayer),
   display_ship_selection_menu(NumShipsPerPlayer),
   select_ship(NumShipsPerPlayer, ShipNo),
-  display_ship_direction_info(ShipNo),
-  select_ship_direction(Direction),
+  list_valid_moves(Board, Ships, TradeStations, Colonies, Wormholes, CurrentPlayer, ShipNo, ValidDirections),
+  display_ship_direction_info(ShipNo, ValidDirections),
+  select_ship_direction(Direction, ValidDirections),
   get_piece_position(Ships, CurrentPlayer, ShipNo, ShipPosition),
   do_appropriate_move(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, ShipNo, ShipPosition, Direction, NewShips).
 
@@ -21,7 +63,6 @@ do_appropriate_move(Board, Ships, TradeStations, Colonies, Wormholes, _NumPlayer
   select_ship_num_tiles(NumTiles),
   move_ship_if_valid(Board, Ships, TradeStations, Colonies, Wormholes, CurrentPlayer, ShipNo, ShipPosition, Direction, NumTiles, NewShips).
 
-
 display_ship_num_tiles_info:-
   write('How many tiles would you like to move in the chosen direction?'), nl.
 
@@ -31,24 +72,27 @@ select_ship_num_tiles(NumTiles):-
   ReadNumTiles > 0,
   NumTiles = ReadNumTiles. %check if valid
 
-display_ship_direction_info(ShipNo):-
+display_ship_direction_info(ShipNo, ValidDirections):-
   NewShipNo is ShipNo + 1,
   write('Ship '), write(NewShipNo),
   write(' can move in the following directions:'), nl,
-  write('1 - Northwest'), nl,
-  write('2 - Northeast'), nl,
-  write('3 - East'), nl,
-  write('4 - Southeast'), nl,
-  write('5 - Southwest'), nl,
-  write('6 - West'), nl,
+  print_possible_directions(ValidDirections),
   write('Please choose one: ').
 
-select_ship_direction(Direction):-
+print_possible_directions([]).
+print_possible_directions([Direction | Others]):-
+  print_possible_directions(Others),
+  number_to_direction(Number, Direction),
+  direction_to_string(Direction, String),
+  write(Number) , write(' - '), write(String), nl.
+
+select_ship_direction(Direction, ValidDirections):-
   read(ReadDirection),
   integer(ReadDirection),
   ReadDirection =< 6,
   ReadDirection > 0,
-  number_to_direction(ReadDirection, Direction).
+  number_to_direction(ReadDirection, Direction),
+  list_find(ValidDirections, Direction, 0, _Found).
 
 display_player_info(PlayerNo, NumShipsPerPlayer):-
   write('It is Player '),
@@ -96,8 +140,7 @@ convert_number_to_action(1, tradeStation).
 convert_number_to_action(2, colony).
 
 display_action_info:-
-  write('Choose action: '),nl,write('1 - Place a trade station.'), nl,write('2 - Place a colony'),nl.
-
+  write('Choose action: '), nl, write('1 - Place a trade station.'), nl, write('2 - Place a colony'), nl.
 
 display_wormhole_exits(Wormholes, NumWormholes, _InWormhole) :-
     write('Choose an exit Wormhole: '),nl,
@@ -124,11 +167,3 @@ select_wormhole_exit(NumWormholes, InWormhole, SelectedOutWormhole):-
 select_wormhole_exit(_NumWormholes, _InWormhole, _SelectedOutWormhole):-
     write('Invalid movement. Try again.'),
     nl, fail.
-
-
-number_to_direction(1, northwest).
-number_to_direction(2, northeast).
-number_to_direction(3, east).
-number_to_direction(4, southeast).
-number_to_direction(5, southwest).
-number_to_direction(6, west).

@@ -55,3 +55,15 @@ Board.prototype.getHex = function (x, y) {
 Board.prototype.getStringBoard = function () {
     return this.boardElements;
 };
+
+Board.prototype.highlight = function (position) {
+    this.board[position[1]][position[0]].highlight();
+};
+
+Board.prototype.resetHighlighting = function () {
+    for (let row of this.board) {
+        for (let hex of row) {
+            hex.resetHighlighting();
+        }
+    }
+};
