@@ -186,6 +186,16 @@ print_element_second_line(_Element, Position, Ships, TradeStations, Colonies, Wo
   write(NewTradeStationNo),
   write(' ');
   get_player_piece_in_position(Colonies, Position, PlayerNo, ColonyNo),
+  ColonyNo >= 9,
+  NewPlayerNo is PlayerNo + 1,
+  NewColonyNo is ColonyNo + 1,
+  write('| P'),
+  write(NewPlayerNo),
+  write(' C'),
+  write(NewColonyNo),
+  write('');
+  write('|       ');
+  get_player_piece_in_position(Colonies, Position, PlayerNo, ColonyNo),
   NewPlayerNo is PlayerNo + 1,
   NewColonyNo is ColonyNo + 1,
   write('| P'),
@@ -200,5 +210,5 @@ print_changes(TradeStations, NewTradeStations, Colonies, NewColonies) :-
     Colonies \= NewColonies,
     write('Colony').
 
-print_changes(TradeStations, NewTradeStations, Colonies, NewColonies) :-
+print_changes(_TradeStations, _NewTradeStations, _Colonies, _NewColonies) :-
     write('Trade Station').

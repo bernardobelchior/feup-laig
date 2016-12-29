@@ -8,17 +8,30 @@ class Game {
     }
 
     /**
-     * Sets new game scene and resets game state.
+     * Sets new game scene and resets game state. Should be called after initialization of all variables.
      * @param scene
      */
     newGame(scene, gameMode) {
         this.scene = scene;
         this.gameMode = gameMode;
         this.gameState = GAMESTATE.NORMAL;
-        this.running = true;
         this.currentPlayer = 0;
-        this.lastMoveTime = Date.now();
         this.lastMoves = [];
+    }
+
+    /**
+     * Sets the game state and runs the game.
+     */
+    startGame() {
+        // Deep clone structures the change during the game.
+        // May be used later in replay
+        this.initialShips = JSON.parse(JSON.stringify(this.ships));
+        this.initialTradeStations = JSON.parse(JSON.stringify(this.tradeStations));
+        this.initialColonies = JSON.parse(JSON.stringify(this.colonies));
+
+
+        this.running = true;
+        this.lastMoveTime = Date.now();
     }
 
     /**
@@ -72,7 +85,6 @@ class Game {
             }
         }
         this.setShips(ships);
-
     }
 
     /**
@@ -124,7 +136,7 @@ class Game {
     }
 
     /**
-     * Sets the number of Trade Stations the plaers can still place on the board
+     * Sets the number of Trade Stations the players can still place on the board
      * @param numTradeStations maximum number of trade stations the players can have on the board
      */
     setRemainingTradeStations(numTradeStations) {
@@ -186,6 +198,18 @@ class Game {
         }
     }
 
+    displayValidMoves(data) {
+        let validDirections = JSON.parse(data.target.response);
+        let initialPosition = this.ships[this.selected.playerNo][this.selected.shipNo];
+
+        for (let direction of validDirections) {
+            let position = initialPosition.slice();
+            while ((position = moveInDirection(this.board.rows, this.board.columns, direction, position[0], position[1]))) {
+                this.board.highlight(position);
+            }
+        }
+    }
+
     /**
      * Function called each time an hex is picked and handles the game.
      * @param pickingID
@@ -209,6 +233,7 @@ class Game {
                         };
 
                         this.gameState = GAMESTATE.PLACE_SHIP;
+                        getValidMoves(this.board.getStringBoard(), this.ships, this.tradeStations, this.colonies, this.wormholes, [x, y], this.displayValidMoves.bind(this));
                     }
                 }
                 break;
@@ -224,8 +249,8 @@ class Game {
                 moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
                 this.gameState = GAMESTATE.PLACE_BUILDING;
                 break;
-
             case GAMESTATE.PLACE_BUILDING:
+                this.board.resetHighlighting();
                 let shipPosition = this.ships[this.selected.playerNo][this.selected.shipNo];
 
                 if (this.currentPlayer === 0) {
@@ -251,7 +276,6 @@ class Game {
                         let colony = this.colonyBoards[this.currentPlayer].getPiece();
                         this.selected.shipPiece.getHex().placeBuilding(colony);
                         placeColony(this.colonies, this.selected.playerNo, this.selected.shipNo, [shipPosition[0], shipPosition[1]], this.onColoniesChanged.bind(this))
-                        console.log(x + ',' + y);
                     }
                     else {
                         let tradeStation = this.tradeStationBoards[this.currentPlayer].getPiece();
@@ -308,12 +332,6 @@ class Game {
     onShipsChanged(data) {
         this.setShips(JSON.parse(data.target.response));
         this.gameState = GAMESTATE.PLACE_BUILDING;
-        // this.gameState = GAMESTATE.NORMAL;
-        // this.nextPlayer();
-
-        //TODO: remove when user can place buildings
-        if (this.onScoreCanChange)
-            this.onScoreCanChange();
     }
 
 
@@ -376,6 +394,7 @@ class Game {
     update(deltaTime) {
         if (this.getTimeSinceLastPlay() <= 0) {
             this.lastMoves.push(new Play());
+            this.board.resetHighlighting();
             this.nextPlayer();
         }
     }

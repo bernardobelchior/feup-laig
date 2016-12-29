@@ -121,6 +121,10 @@ parse_input(is_game_over(Board, Ships, TradeStations, Colonies, Wormholes), resu
 	result = 1.
 parse_input(is_game_over(Board, Ships, TradeStations, Colonies, Wormholes), 0).
 
+parse_input(get_valid_moves(Board, Ships, TradeStations, Colonies, Wormholes, Position), ValidMovesJSON):-
+	list_valid_moves(Board, Ships, TradeStations, Colonies, Wormholes, Position, ValidMoves),
+	json(ValidMoves, ValidMovesJSON).
+
 parse_input(easy_cpu_move(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, ShipNo), NewShips):-
 	easy_cpu_select_ship_movement(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, NewShips, ShipNo).
 

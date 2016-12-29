@@ -59,7 +59,7 @@ Hex.prototype.placeBuilding = function (piece) {
 
     this.building = piece;
     this.piecesWrapper.addChild(piece.component);
-    this.piecesWrapper.translate(0.0,0.5,0.0);
+    this.piecesWrapper.translate(0.0, 0.5, 0.0);
 };
 
 Hex.prototype.removeBuilding = function () {
@@ -72,4 +72,13 @@ Hex.prototype.removeBuilding = function () {
 
 Hex.prototype.getBuilding = function () {
     return this.building;
+};
+
+Hex.prototype.highlight = function () {
+    this.component.material = this.scene.graph.materials['highlight'];
+
+};
+
+Hex.prototype.resetHighlighting = function () {
+    this.component.material = this.scene.graph.materials['default'];
 };
