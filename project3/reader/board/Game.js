@@ -47,6 +47,7 @@ class Game {
      */
     createBoard(boardElements, components) {
         this.board = new Board(this.scene, boardElements, components);
+        this.components = components;
     }
 
     createAuxBoards(components) {
@@ -231,7 +232,7 @@ class Game {
                 let position = this.ships[this.currentPlayer][this.selected.shipNo];
 
                 let play = new Play();
-                play.setShipMovement(this.currentPlayer, this.selected.shipNo, [position[0], position[1]]);
+                play.setShipMovement(this.currentPlayer, this.selected.shipNo, [position[0], position[1]], [x, y]);
                 this.lastMoves.push(play);
 
                 moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
@@ -452,7 +453,7 @@ class Game {
         let newPosition = newShips[this.currentPlayer][shipMoved];
 
         let destinationHex = this.board.getHex(newPosition[0], newPosition[1]);
-        this.lastMoves[this.lastMoves.length - 1].setShipMovement(this.currentPlayer, shipMoved, oldPosition);
+        this.lastMoves[this.lastMoves.length - 1].setShipMovement(this.currentPlayer, shipMoved, oldPosition, newPosition);
         this.board.getHex(oldPosition[0], oldPosition[1]).getShip().move(destinationHex);
 
         this.ships = newShips;
@@ -489,7 +490,7 @@ class Game {
         this.colonies = newColonies;
 
 
-        window.setTimeout(this.botFinishedPlay.bind(this), 1000);
+        window.setTimeout(this.botFinishedPlay.bind(this), 1500);
     }
 
     /**
@@ -507,24 +508,62 @@ class Game {
      * Function called to replay the game.
      */
     startReplay() {
-        this.tmpShips = this.ships;
-        this.tmpTradeStations = this.tradeStations;
-        this.tmpColonies = this.colonies;
-        this.ships = JSON.parse(JSON.stringify(this.initialShips));
-        this.tradeStations = [[], []];
-        this.colonies = [[], []];
+        if (!this.running || !this.lastMoves.length)
+            return;
+
+        this.replayShips = JSON.parse(JSON.stringify(this.ships));
+        this.replayTradeStations = [[], []];
+        this.replayColonies = [[], []];
+        this.replayTradeStationBoards = [
+            new AuxBoard(this.scene, 4, this.components, PIECE_TYPE.TRADE_STATION),
+            new AuxBoard(this.scene, 4, this.components, PIECE_TYPE.TRADE_STATION)
+        ];
+
+        this.replayColonyBoards = [
+            new AuxBoard(this.scene, 16, this.components, PIECE_TYPE.COLONY),
+            new AuxBoard(this.scene, 16, this.components, PIECE_TYPE.COLONY)
+        ];
+
+        this.gameState = GAMESTATE.REPLAY;
         this.replayMove(0);
     }
 
+    /**
+     * Replays the move with the given index
+     * @param index Play index
+     */
     replayMove(index) {
-        if (!this.lastMoves[index]) {
+        let move = this.lastMoves[index];
+
+        if (!move) {
             this.updateGameState();
             return;
         }
 
+        this.replayShips[move.playerNo][move.shipNo] = move.newShipPosition;
+        let selectedHex = this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]);
+        this.board.getHex(move.oldShipPosition[0], move.oldShipPosition[1]).getShip().move(selectedHex);
 
-        //this.current
-        this.replayMove(index + 1);
+        window.setTimeout(this.replayBuildingPlacement, 1000, index);
+    }
+
+    /**
+     * Replays the building placement with the given index.
+     * @param index Play index
+     */
+    replayBuildingPlacement(index) {
+        let move = this.lastMoves[index];
+
+        let piece;
+        if (move.pieceType === PIECE_TYPE.TRADE_STATION)
+            piece = this.replayTradeStationBoards[move.playerNo].getPiece();
+        else
+            piece = this.replayColonyBoards[move.playerNo].getPiece();
+
+        this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]).placeBuilding(piece);
+
+        //TodO animation
+        window.setTimeout(this.replayMove, 1000, index + 1);
     }
 }
 

@@ -24,6 +24,7 @@ Interface.prototype.init = function (application) {
 
     let menu = {
         undo: this.scene.game.undo.bind(this.scene.game),
+        replay: this.scene.game.startReplay.bind(this.scene.game),
         scene: this.scene
     };
 
@@ -34,6 +35,7 @@ Interface.prototype.init = function (application) {
     };
 
     this.gui.add(menu, 'undo').name('Undo');
+    this.gui.add(menu, 'replay').name('Replay');
     let configFolder = this.gui.addFolder('Configuration');
     configFolder.add(config, 'gameMode', {
         'Human vs Human': 0,

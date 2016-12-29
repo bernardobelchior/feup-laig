@@ -11,11 +11,13 @@ class Play {
      * @param playerNo Player no.
      * @param shipNo Ship no.
      * @param oldShipPosition Old ship position
+     * @param newShipPosition New ship position
      */
-    setShipMovement(playerNo, shipNo, oldShipPosition) {
+    setShipMovement(playerNo, shipNo, oldShipPosition, newShipPosition) {
         this.playerNo = playerNo;
         this.shipNo = shipNo;
         this.oldShipPosition = oldShipPosition;
+        this.newShipPosition = newShipPosition;
     }
 
     /**
