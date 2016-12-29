@@ -222,10 +222,9 @@ class Game {
         switch (this.gameState) {
             case GAMESTATE.NORMAL:
                 console.log("Ship positon");
-                this.animationInitialX = 1.9 * x;
-                this.animationInitialY = 1.68 * x;
-                console.log(1.9 * x);
-                console.log(1.68 * y);
+                this.animationInitialX = selectedHex.x;
+                this.animationInitialY = selectedHex.z;
+                console.log(this.animationInitialX, this.animationInitialY);
                 let playerShips = this.ships[this.currentPlayer];
                 for (let ship = 0; ship < playerShips.length; ship++) {
                     if (playerShips[ship][0] === x && playerShips[ship][1] === y) {
@@ -245,9 +244,18 @@ class Game {
                 let play = new Play();
                 play.setShipMovement(this.currentPlayer, this.selected.shipNo, [position[0], position[1]]);
                 this.lastMoves.push(play);
-                this.selected.shipPiece.getHex().removeShip();
-                this.selected.shipPiece.setHex(selectedHex);
-                selectedHex.placeShip(this.selected.shipPiece);
+
+                this.animationFinalX = selectedHex.x;
+                this.animationFinalY = selectedHex.z;
+                console.log(this.animationFinalX, this.animationFinalY);
+
+                let animationRoot = new ListNode([0,0,0]);
+                let nextNode = new ListNode([this.animationFinalX - this.animationInitialX, 0.0, this.animationFinalY - this.animationInitialY]);
+                animationRoot.next = nextNode;
+                nextNode.next = animationRoot;
+                let shipAnimation = new LinearPieceAnimation(this.scene, "shipAnimation", 1.0, animationRoot, this.selected.shipPiece);
+
+                this.selected.shipPiece.setAnimation(shipAnimation, selectedHex);
 
                 moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
                 this.gameState = GAMESTATE.PLACE_BUILDING;

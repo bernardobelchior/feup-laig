@@ -20,14 +20,20 @@ Piece.prototype.setHex = function (hexagon) {
     this.hexagon = hexagon;
 };
 
-Piece.prototype.setAnimation = function(animation){
+Piece.prototype.setAnimation = function(animation, nextHex){
     this.component.addAnimation(animation);
     this.animation = animation;
+    this.nextHex = nextHex;
 };
 
-Piece.prototype.removeAnimation = function(){
-    
+Piece.prototype.onAnimationDone = function () {
+    this.hexagon.removeShip();
+    this.component.removeAnimation();
+    this.animation = null;
+    this.setHex(this.nextHex);
+    this.nextHex.placeShip(this);
 };
+
 
 PIECE_TYPE = {
     TRADE_STATION: 0,
