@@ -235,7 +235,7 @@ Component.prototype.addAnimation = function (animation) {
  * belongs to a component with more than one parent.
  */
 Component.prototype.update = function (deltaTime, seqNum) {
-    if (this.animationsRoot) {
+    if (!!this.animationsRoot) {
         this.currentAnimation.value.update(deltaTime, seqNum);
 
         if (this.currentAnimation.value.isDone()) {
@@ -261,18 +261,9 @@ Component.prototype.removeChild = function (childComponent) {
     }
 };
 
-Component.prototype.removeAnimationbyID = function (animationID) {
-    if (!currentAnimation)
+Component.prototype.removeAnimation = function () {
+    if (!this.animationsRoot)
         return;
 
-    let iterator = currentAnimation;
-    do {
-        if (iterator.id == animationID) {
-            iterator.before.next = iterator.next;
-            iterator.next.before = iterator.before;
-            return;
-        }
-        iterator = iterator.next;
-    } while (iterator != currentAnimation);
-
+    this.animationsRoot = null;
 };

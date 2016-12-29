@@ -92,8 +92,6 @@ XMLscene.prototype.newGame = function (gameMode, data) {
     this.game.setColonies(colonies);
     this.game.setHomeSystems(homeSystems);
     this.game.setWormholes(wormholes);
-    this.game.setRemainingColonies(16);
-    this.game.setRemainingTradeStations(4);
 
     this.game.addOnScoreCanChange(this.updateScores.bind(this));
     this.game.addOnPlayerChanged(this.onPlayerChanged.bind(this));
@@ -176,9 +174,13 @@ XMLscene.prototype.display = function () {
         }
 
         if (this.game.isRunning()) {
-            document.getElementById('instruction').innerText =
-                'Player ' + (this.game.getCurrentPlayer() + 1) + ', ' + this.game.getGameStateInstruction();
             document.getElementById('time_left').innerText = this.game.getTimeSinceLastPlay() + 's';
+
+            if (this.game.gameState === GAMESTATE.BOT_PLAY)
+                document.getElementById('instruction').innerText = 'A bot is playing, please wait.';
+            else
+                document.getElementById('instruction').innerText =
+                    'Player ' + (this.game.getCurrentPlayer() + 1) + ', ' + this.game.getGameStateInstruction();
         }
 
         this.interface.setActiveCamera(this.camera);

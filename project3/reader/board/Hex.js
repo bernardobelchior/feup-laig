@@ -1,6 +1,8 @@
 function Hex(scene, component, visibilityIndex, y) {
     this.scene = scene;
     this.component = new Component(this.scene, 'wrapper');
+    this.x = 1.9 * visibilityIndex + 1 * y % 2;
+    this.z = 1.68 * y;
 
     this.component.materials.push(this.scene.graph.materials['default_tile']);
     this.component.materials.push(this.scene.graph.materials['highlighted_tile']);
@@ -16,15 +18,14 @@ function Hex(scene, component, visibilityIndex, y) {
     this.building = null;
 
     this.scene.rootNode.addChild(this.component);
-    this.transform(visibilityIndex, y);
+    this.transform();
 }
 
 Hex.prototype = Object.create(Object.prototype);
 Hex.prototype.constructor = Hex;
 
-Hex.prototype.transform = function (visibilityIndex, y) {
-    this.component.translate(1.9 * visibilityIndex, 0, 1.68 * y);
-    this.component.translate(1 * y % 2, 0, 0);
+Hex.prototype.transform = function () {
+    this.component.translate(this.x, 0, this.z);
 };
 
 Hex.prototype.setPickingID = function (pickingID) {
@@ -36,7 +37,7 @@ Hex.prototype.placeShip = function (piece) {
         return;
 
     this.ship = piece;
-    this.piecesWrapper.addChild(piece.component);
+    this.piecesWrapper.addChild(this.ship.component);
 };
 
 Hex.prototype.removeShip = function () {

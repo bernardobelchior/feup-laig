@@ -10,12 +10,14 @@ class Game {
     /**
      * Sets new game scene and resets game state. Should be called after initialization of all variables.
      * @param scene
+     * @param gameMode
      */
     newGame(scene, gameMode) {
+        this.running = false;
         this.scene = scene;
         this.gameMode = gameMode;
-        this.gameState = GAMESTATE.NORMAL;
         this.currentPlayer = 0;
+        this.botIsPlaying = false;
         this.lastMoves = [];
     }
 
@@ -29,6 +31,10 @@ class Game {
         this.initialTradeStations = JSON.parse(JSON.stringify(this.tradeStations));
         this.initialColonies = JSON.parse(JSON.stringify(this.colonies));
 
+        if (this.gameMode == GAMEMODE.CPU_VS_CPU)
+            this.gameState = GAMESTATE.BOT_PLAY;
+        else
+            this.gameState = GAMESTATE.NORMAL;
 
         this.running = true;
         this.lastMoveTime = Date.now();
@@ -127,22 +133,6 @@ class Game {
     }
 
     /**
-     * Sets the number of colonies the players can still place on the board
-     * @param numColonies maximum number of colonies the players can have on the board
-     */
-    setRemainingColonies(numColonies) {
-        this.remainingColonies = [numColonies, numColonies];
-    }
-
-    /**
-     * Sets the number of Trade Stations the players can still place on the board
-     * @param numTradeStations maximum number of trade stations the players can have on the board
-     */
-    setRemainingTradeStations(numTradeStations) {
-        this.remainingTradeStations = [numTradeStations, numTradeStations];
-    }
-
-    /**
      * Returns if the game is running.
      * @returns {boolean} Whether the game is running or not.
      */
@@ -197,6 +187,10 @@ class Game {
         }
     }
 
+    /**
+     * Displays valid moves.
+     * @param data response.
+     */
     displayValidMoves(data) {
         let validDirections = JSON.parse(data.target.response);
         let initialPosition = this.ships[this.selected.playerNo][this.selected.shipNo];
@@ -219,8 +213,8 @@ class Game {
 
         switch (this.gameState) {
             case GAMESTATE.NORMAL:
-                this.animationInitialX = x;
-                this.animationInitialY = y;
+                this.animationInitialX = selectedHex.x;
+                this.animationInitialY = selectedHex.z;
                 let playerShips = this.ships[this.currentPlayer];
                 for (let ship = 0; ship < playerShips.length; ship++) {
                     if (playerShips[ship][0] === x && playerShips[ship][1] === y) {
@@ -240,9 +234,17 @@ class Game {
                 let play = new Play();
                 play.setShipMovement(this.currentPlayer, this.selected.shipNo, [position[0], position[1]]);
                 this.lastMoves.push(play);
-                this.selected.shipPiece.getHex().removeShip();
-                this.selected.shipPiece.setHex(selectedHex);
-                selectedHex.placeShip(this.selected.shipPiece);
+
+                this.animationFinalX = selectedHex.x;
+                this.animationFinalY = selectedHex.z;
+
+                let animationRoot = new ListNode([0, 0, 0]);
+                let nextNode = new ListNode([this.animationFinalX - this.animationInitialX, 0.0, this.animationFinalY - this.animationInitialY]);
+                animationRoot.next = nextNode;
+                nextNode.next = animationRoot;
+                let shipAnimation = new LinearPieceAnimation(this.scene, "shipAnimation", 1.0, animationRoot, this.selected.shipPiece);
+
+                this.selected.shipPiece.setAnimation(shipAnimation, selectedHex);
 
                 moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
                 this.gameState = GAMESTATE.PLACE_BUILDING;
@@ -290,7 +292,7 @@ class Game {
      * Changes the game back to normal game state.
      */
     cancelMode() {
-        if (this.gameState !== GAMESTATE.PLACE_BUILDING) {
+        if (this.gameState === GAMESTATE.PLACE_SHIP) {
             this.gameState = GAMESTATE.NORMAL;
             this.board.resetHighlighting();
             this.selected = null;
@@ -353,12 +355,10 @@ class Game {
      */
     onTradeStationsChanged(data) {
         this.setTradeStations(JSON.parse(data.target.response));
-        this.gameState = GAMESTATE.NORMAL;
         this.selected = null;
         this.nextPlayer();
 
-        let buildingPosition = this.tradeStations[this.currentPlayer][this.tradeStations.length - 1];
-        this.lastMoves[this.lastMoves.length - 1].setBuildingPlacement(PIECE_TYPE.TRADE_STATION, this.tradeStations.length - 1, buildingPosition);
+        this.lastMoves[this.lastMoves.length - 1].setBuildingPlacement(PIECE_TYPE.TRADE_STATION, this.tradeStations.length - 1);
 
         if (this.onScoreCanChange)
             this.onScoreCanChange();
@@ -370,12 +370,10 @@ class Game {
      */
     onColoniesChanged(data) {
         this.setColonies(JSON.parse(data.target.response));
-        this.gameState = GAMESTATE.NORMAL;
         this.selected = null;
         this.nextPlayer();
 
-        let buildingPosition = this.colonies[this.currentPlayer][this.colonies.length - 1];
-        this.lastMoves[this.lastMoves.length - 1].setBuildingPlacement(PIECE_TYPE.COLONY, this.colonies.length - 1, buildingPosition);
+        this.lastMoves[this.lastMoves.length - 1].setBuildingPlacement(PIECE_TYPE.COLONY, this.colonies.length - 1);
 
         if (this.onScoreCanChange)
             this.onScoreCanChange();
@@ -386,6 +384,7 @@ class Game {
      */
     previousPlayer() {
         this.currentPlayer = (this.currentPlayer - 1) % 2;
+        this.updateGameState();
         this.lastMoveTime = Date.now();
 
         if (this.onPlayerChanged)
@@ -393,10 +392,31 @@ class Game {
     }
 
     /**
+     * Updates the game state based on the game mode.
+     */
+    updateGameState() {
+        switch (this.gameMode) {
+            case GAMEMODE.HUMAN_VS_HUMAN:
+                this.gameState = GAMESTATE.NORMAL;
+                break;
+            case GAMEMODE.HUMAN_VS_CPU:
+                if (this.currentPlayer === 1)
+                    this.gameState = GAMESTATE.BOT_PLAY;
+                else
+                    this.gameState = GAMESTATE.NORMAL;
+                break;
+            case GAMEMODE.CPU_VS_CPU:
+                this.gameState = GAMESTATE.BOT_PLAY;
+                break;
+        }
+    }
+
+    /**
      * Selects next player and calls the respective event handler.
      */
     nextPlayer() {
         this.currentPlayer = (this.currentPlayer + 1) % 2;
+        this.updateGameState();
         this.lastMoveTime = Date.now();
 
         if (this.onPlayerChanged)
@@ -413,13 +433,107 @@ class Game {
             this.board.resetHighlighting();
             this.nextPlayer();
         }
+
+        if (this.gameState === GAMESTATE.BOT_PLAY && !this.botIsPlaying) {
+            this.botIsPlaying = true;
+            window.setTimeout(this.botPlay.bind(this), 2000);
+        }
+    }
+
+    /**
+     * Function that executes the request to make the bot play.
+     */
+    botPlay() {
+        this.lastMoves.push(new Play());
+        easyCPUMove(this.board.getStringBoard(), this.ships, this.tradeStations, this.colonies, this.wormholes, this.currentPlayer, this.botMoved.bind(this));
+    }
+
+    /**
+     * Function called when the bot has moved its ships.
+     * @param data Ship movement request response.
+     */
+    botMoved(data) {
+        let response = JSON.parse(data.target.response);
+
+        let newShips = response[0];
+        let shipMoved = response[1];
+
+        this.lastMoves[this.lastMoves.length - 1].setShipMovement(this.currentPlayer, shipMoved, this.ships[this.currentPlayer][shipMoved]);
+
+        this.ships = newShips;
+
+        easyCPUPlaceBuilding(this.ships, this.currentPlayer, shipMoved, this.tradeStations, this.colonies, this.botPlacedBuilding.bind(this));
+    }
+
+    /**
+     * Function called when the bot has moved its ship and needs to select an action.
+     * @param data Action choice request response.
+     */
+    botPlacedBuilding(data) {
+        let response = JSON.parse(data.target.response);
+
+        let newTradeStations = response[0];
+        let newColonies = response[1];
+
+        let lastMove = this.lastMoves[this.lastMoves.length - 1];
+
+        if (newTradeStations[this.currentPlayer].length !== this.tradeStations[this.currentPlayer].length)
+            lastMove.setBuildingPlacement(PIECE_TYPE.TRADE_STATION, this.tradeStations[this.currentPlayer].length);
+        else
+            lastMove.setBuildingPlacement(PIECE_TYPE.COLONY, this.colonies[this.currentPlayer].length);
+
+        this.tradeStations = newTradeStations;
+        this.colonies = newColonies;
+
+        window.setTimeout(this.botFinishedPlay.bind(this), 1000);
+    }
+
+    /**
+     * Function called when the bot has finished its play.
+     */
+    botFinishedPlay() {
+        this.botIsPlaying = false;
+        this.nextPlayer();
+    }
+
+    /**
+     * Function called to replay the game.
+     */
+    startReplay() {
+        this.tmpShips = this.ships;
+        this.tmpTradeStations = this.tradeStations;
+        this.tmpColonies = this.colonies;
+        this.ships = JSON.parse(JSON.stringify(this.initialShips));
+        this.tradeStations = [[], []];
+        this.colonies = [[], []];
+        this.replayMove(0);
+    }
+
+    replayMove(index) {
+        if(!this.lastMoves[index]) {
+            this.updateGameState();
+            return;
+        }
+
+
+        this.current
+        this.replayMove(index++);
     }
 }
 
 GAMESTATE = {
     NORMAL: 0,
     PLACE_SHIP: 1,
-    PLACE_BUILDING: 2
+    PLACE_BUILDING: 2,
+    GAME_OVER: 3,
+    BOT_PLAY: 4,
+    REPLAY: 5
+};
+
+GAMEMODE = {
+    HUMAN_VS_HUMAN: 0,
+    HUMAN_VS_CPU: 1,
+    CPU_VS_CPU: 2
 };
 
 AUXBOARD_ID = {
