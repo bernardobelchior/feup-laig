@@ -213,8 +213,6 @@ class Game {
 
         switch (this.gameState) {
             case GAMESTATE.NORMAL:
-                this.animationInitialX = selectedHex.x;
-                this.animationInitialY = selectedHex.z;
                 let playerShips = this.ships[this.currentPlayer];
                 for (let ship = 0; ship < playerShips.length; ship++) {
                     if (playerShips[ship][0] === x && playerShips[ship][1] === y) {
@@ -231,25 +229,17 @@ class Game {
                 break;
             case GAMESTATE.PLACE_SHIP:
                 let position = this.ships[this.currentPlayer][this.selected.shipNo];
+
                 let play = new Play();
                 play.setShipMovement(this.currentPlayer, this.selected.shipNo, [position[0], position[1]]);
                 this.lastMoves.push(play);
 
-                this.animationFinalX = selectedHex.x;
-                this.animationFinalY = selectedHex.z;
-
-                let animationRoot = new ListNode([0, 0, 0]);
-                let nextNode = new ListNode([this.animationFinalX - this.animationInitialX, 0.0, this.animationFinalY - this.animationInitialY]);
-                animationRoot.next = nextNode;
-                nextNode.next = animationRoot;
-                let shipAnimation = new LinearPieceAnimation(this.scene, "shipAnimation", 1.0, animationRoot, this.selected.shipPiece);
-
-                this.selected.shipPiece.setAnimation(shipAnimation, selectedHex);
-
                 moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
-                this.gameState = GAMESTATE.PLACE_BUILDING;
+                this.selected.shipPiece.move(selectedHex);
                 break;
             case GAMESTATE.PLACE_BUILDING:
+                if (this.selected.shipPiece.animation)
+                    return;
                 let shipPosition = this.ships[this.selected.playerNo][this.selected.shipNo];
 
                 if (this.currentPlayer === 0) {
@@ -510,7 +500,7 @@ class Game {
     }
 
     replayMove(index) {
-        if(!this.lastMoves[index]) {
+        if (!this.lastMoves[index]) {
             this.updateGameState();
             return;
         }

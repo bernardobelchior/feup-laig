@@ -1,4 +1,4 @@
-function Piece(scene, component, hexagon){
+function Piece(scene, component, hexagon) {
     Object.call(this);
     this.scene = scene;
     this.component = new Component(scene, "pieceWrapper");
@@ -12,7 +12,7 @@ function Piece(scene, component, hexagon){
 Piece.prototype = Object.create(Object.prototype);
 Piece.prototype.constructor = Piece;
 
-Piece.prototype.getHex = function(){
+Piece.prototype.getHex = function () {
     return this.hexagon;
 };
 
@@ -20,10 +20,9 @@ Piece.prototype.setHex = function (hexagon) {
     this.hexagon = hexagon;
 };
 
-Piece.prototype.setAnimation = function(animation, nextHex){
+Piece.prototype.setAnimation = function (animation) {
     this.component.addAnimation(animation);
     this.animation = animation;
-    this.nextHex = nextHex;
 };
 
 Piece.prototype.onAnimationDone = function () {
@@ -34,8 +33,23 @@ Piece.prototype.onAnimationDone = function () {
     this.nextHex.placeShip(this);
 };
 
+Piece.prototype.move = function (selectedHex) {
+    this.nextHex = selectedHex;
+    let xi = this.hexagon.x;
+    let zi = this.hexagon.z;
+    let xf = selectedHex.x;
+    let zf = selectedHex.z;
+
+    let animationRoot = new ListNode([0, 0, 0]);
+    let nextNode = new ListNode([xf - xi, 0.0, zf - zi]);
+    animationRoot.next = nextNode;
+    nextNode.next = animationRoot;
+
+    this.setAnimation(new LinearPieceAnimation(this.scene, "shipAnimation", 1.0,
+        animationRoot, this));
+};
 
 PIECE_TYPE = {
     TRADE_STATION: 0,
-    COLONY : 1
+    COLONY: 1
 };
