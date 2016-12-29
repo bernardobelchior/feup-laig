@@ -221,10 +221,8 @@ class Game {
 
         switch (this.gameState) {
             case GAMESTATE.NORMAL:
-                console.log("Ship positon");
                 this.animationInitialX = selectedHex.x;
                 this.animationInitialY = selectedHex.z;
-                console.log(this.animationInitialX, this.animationInitialY);
                 let playerShips = this.ships[this.currentPlayer];
                 for (let ship = 0; ship < playerShips.length; ship++) {
                     if (playerShips[ship][0] === x && playerShips[ship][1] === y) {
@@ -247,7 +245,6 @@ class Game {
 
                 this.animationFinalX = selectedHex.x;
                 this.animationFinalY = selectedHex.z;
-                console.log(this.animationFinalX, this.animationFinalY);
 
                 let animationRoot = new ListNode([0,0,0]);
                 let nextNode = new ListNode([this.animationFinalX - this.animationInitialX, 0.0, this.animationFinalY - this.animationInitialY]);

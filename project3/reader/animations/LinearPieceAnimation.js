@@ -23,7 +23,7 @@ class LinearPieceAnimation extends LinearAnimation{
 
     /**
      * Creates a new Linear Animation from the current parameters.
-     * @return {LinearAnimation} A Linear Animation that is a clone of this one.
+     * @return {LinearPieceAnimation} A LinearPieceAnimation that is a clone of this one.
      */
     clone() {
         return new LinearPieceAnimation(this.scene, this.id, this.time, this.listRoot, this.piece);
