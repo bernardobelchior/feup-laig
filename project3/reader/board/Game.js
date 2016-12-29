@@ -221,8 +221,11 @@ class Game {
 
         switch (this.gameState) {
             case GAMESTATE.NORMAL:
-                this.animationInitialX = x;
-                this.animationInitialY = y;
+                console.log("Ship positon");
+                this.animationInitialX = 1.9 * x;
+                this.animationInitialY = 1.68 * x;
+                console.log(1.9 * x);
+                console.log(1.68 * y);
                 let playerShips = this.ships[this.currentPlayer];
                 for (let ship = 0; ship < playerShips.length; ship++) {
                     if (playerShips[ship][0] === x && playerShips[ship][1] === y) {
