@@ -448,32 +448,46 @@ class Game {
         let newShips = response[0];
         let shipMoved = response[1];
 
-        this.lastMoves[this.lastMoves.length - 1].setShipMovement(this.currentPlayer, shipMoved, this.ships[this.currentPlayer][shipMoved]);
+        let oldPosition = this.ships[this.currentPlayer][shipMoved];
+        let newPosition = newShips[this.currentPlayer][shipMoved];
+
+        let destinationHex = this.board.getHex(newPosition[0], newPosition[1]);
+        this.lastMoves[this.lastMoves.length - 1].setShipMovement(this.currentPlayer, shipMoved, oldPosition);
+        this.board.getHex(oldPosition[0], oldPosition[1]).getShip().move(destinationHex);
 
         this.ships = newShips;
 
-        easyCPUPlaceBuilding(this.ships, this.currentPlayer, shipMoved, this.tradeStations, this.colonies, this.botPlacedBuilding.bind(this));
+        easyCPUPlaceBuilding(this.ships, this.currentPlayer, shipMoved, this.tradeStations, this.colonies, this.botPlacedBuilding.bind(this, newPosition));
     }
 
     /**
      * Function called when the bot has moved its ship and needs to select an action.
      * @param data Action choice request response.
      */
-    botPlacedBuilding(data) {
+    botPlacedBuilding(shipPosition, data) {
         let response = JSON.parse(data.target.response);
 
         let newTradeStations = response[0];
         let newColonies = response[1];
 
         let lastMove = this.lastMoves[this.lastMoves.length - 1];
+        let building;
 
-        if (newTradeStations[this.currentPlayer].length !== this.tradeStations[this.currentPlayer].length)
+        if (newTradeStations[this.currentPlayer].length !== this.tradeStations[this.currentPlayer].length) {
             lastMove.setBuildingPlacement(PIECE_TYPE.TRADE_STATION, this.tradeStations[this.currentPlayer].length);
-        else
+            building = this.tradeStationBoards[this.currentPlayer].getPiece();
+        }
+        else {
             lastMove.setBuildingPlacement(PIECE_TYPE.COLONY, this.colonies[this.currentPlayer].length);
+            building = this.colonyBoards[this.currentPlayer].getPiece();
+        }
+
+        if (building)
+            this.board.getHex(shipPosition[0], shipPosition[1]).placeBuilding(building);
 
         this.tradeStations = newTradeStations;
         this.colonies = newColonies;
+
 
         window.setTimeout(this.botFinishedPlay.bind(this), 1000);
     }
@@ -484,6 +498,9 @@ class Game {
     botFinishedPlay() {
         this.botIsPlaying = false;
         this.nextPlayer();
+
+        if (this.onScoreCanChange)
+            this.onScoreCanChange();
     }
 
     /**
@@ -506,8 +523,8 @@ class Game {
         }
 
 
-        this.current
-        this.replayMove(index++);
+        //this.current
+        this.replayMove(index + 1);
     }
 }
 
