@@ -24,8 +24,8 @@
             <to x="6.5" y="0" z="5"/>
         </perspective>
         <perspective id="camera1" near="0.1" far="500" angle="22.91">
-            <from x="6.5" y="30" z="45"/>
-            <to x="6.5" y="0" z="7.5"/>
+            <from x="6.5" y="30" z="50"/>
+            <to x="6.5" y="0" z="10"/>
         </perspective>
     </views>
 
