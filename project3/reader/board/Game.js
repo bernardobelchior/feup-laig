@@ -44,15 +44,15 @@ class Game {
     }
 
     createAuxBoards(components) {
-        let player1colonies = new AuxBoard(this.scene, 16, components, 1);
-        let player2colonies = new AuxBoard(this.scene, 16, components, 1);
+        this.colonyBoards = [
+            new AuxBoard(this.scene, 16, components, PIECE_TYPE.COLONY),
+            new AuxBoard(this.scene, 16, components, PIECE_TYPE.COLONY)
+        ];
 
-        let player1tradeStations = new AuxBoard(this.scene, 4, components, 2);
-        let player2tradeStations = new AuxBoard(this.scene, 4, components, 2);
-
-        this.colonyBoards = [player1colonies, player2colonies];
-
-        this.tradeStationBoards = [player1tradeStations, player2tradeStations];
+        this.tradeStationBoards = [
+            new AuxBoard(this.scene, 4, components, PIECE_TYPE.TRADE_STATION),
+            new AuxBoard(this.scene, 4, components, PIECE_TYPE.TRADE_STATION)
+        ];
 
         this.colonyBoards[0].setPickingID(AUXBOARD_ID.P1_COLONIES);
         this.colonyBoards[1].setPickingID(AUXBOARD_ID.P2_COLONIES);
@@ -63,7 +63,6 @@ class Game {
         this.tradeStationBoards[0].component.translate((this.board.columns / 2 + 1), 0.0, 0.0);
         this.colonyBoards[1].component.translate((this.board.columns / 2 ) * 1.9, 0.0, (this.board.rows + 2) * 1.68);
         this.tradeStationBoards[1].component.translate((this.board.columns / 2 + 2), 0.0, (this.board.rows + 2) * 1.68);
-
     }
 
     /**
@@ -316,8 +315,22 @@ class Game {
 
             let previousHex = this.board.getHex(lastMove.oldShipPosition[0], lastMove.oldShipPosition[1]);
 
+            switch (lastMove.pieceType) {
+                case PIECE_TYPE.TRADE_STATION:
+                    this.tradeStationBoards[lastMove.playerNo].putPiece();
+                    this.tradeStations[lastMove.playerNo].pop();
+                    break;
+                case PIECE_TYPE.COLONY:
+                    this.colonyBoards[lastMove.playerNo].putPiece();
+                    this.colonies[lastMove.playerNo].pop();
+                    break;
+                default:
+                    break;
+            }
+
             previousHex.placeShip(currentHex.getShip());
             currentHex.removeShip();
+            currentHex.removeBuilding();
         }
 
         this.previousPlayer();
@@ -325,7 +338,6 @@ class Game {
 
     /**
      * Callback when ships have been moved.
-     * @param context This game
      * @param data Response
      */
     onShipsChanged(data) {
@@ -337,7 +349,6 @@ class Game {
 
     /**
      * Callback when trade stations have been placed.
-     * @param context This game
      * @param data Response
      */
     onTradeStationsChanged(data) {
@@ -346,13 +357,15 @@ class Game {
         this.selected = null;
         this.nextPlayer();
 
+        let buildingPosition = this.tradeStations[this.currentPlayer][this.tradeStations.length - 1];
+        this.lastMoves[this.lastMoves.length - 1].setBuildingPlacement(PIECE_TYPE.TRADE_STATION, this.tradeStations.length - 1, buildingPosition);
+
         if (this.onScoreCanChange)
             this.onScoreCanChange();
     }
 
     /**
      * Callback when colonies have been changed.
-     * @param context This game
      * @param data Response
      */
     onColoniesChanged(data) {
@@ -360,6 +373,9 @@ class Game {
         this.gameState = GAMESTATE.NORMAL;
         this.selected = null;
         this.nextPlayer();
+
+        let buildingPosition = this.colonies[this.currentPlayer][this.colonies.length - 1];
+        this.lastMoves[this.lastMoves.length - 1].setBuildingPlacement(PIECE_TYPE.COLONY, this.colonies.length - 1, buildingPosition);
 
         if (this.onScoreCanChange)
             this.onScoreCanChange();

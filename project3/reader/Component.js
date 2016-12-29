@@ -165,7 +165,7 @@ Component.prototype.display = function (parent) {
     }
 
     //if (this.pickingID)
-        //this.scene.registerForPick(undefined, undefined);
+    //this.scene.registerForPick(undefined, undefined);
     //this.scene.clearPickRegistration();
 
     this.scene.popMatrix();
@@ -254,25 +254,25 @@ Component.prototype.setPickingID = function (pickingID) {
     this.pickingID = pickingID;
 };
 
-Component.prototype.removeChild = function(childComponent){
+Component.prototype.removeChild = function (childComponent) {
     let index = this.children.indexOf(childComponent);
-    if(index > -1){
+    if (index > -1) {
         this.children.splice(index, 1);
     }
 };
 
-Component.prototype.removeAnimationbyID = function(animationID){
-    if(!currentAnimation)
+Component.prototype.removeAnimationbyID = function (animationID) {
+    if (!currentAnimation)
         return;
 
     let iterator = currentAnimation;
-    do{
-        if(iterator.id == animationID){
+    do {
+        if (iterator.id == animationID) {
             iterator.before.next = iterator.next;
             iterator.next.before = iterator.before;
             return;
         }
-       iterator = iterator.next;
-    }while(iterator != currentAnimation);
+        iterator = iterator.next;
+    } while (iterator != currentAnimation);
 
 };

@@ -7,10 +7,6 @@ class Play {
         this.playerNo = playerNo;
         this.shipNo = shipNo;
         this.oldShipPosition = oldShipPosition;
-
-
-        //TODO remove when buildings are placed.
-        this.ranOutOfTime = false;
     }
 
     setBuildingPlacement(pieceType, pieceNo, oldPiecePosition) {
