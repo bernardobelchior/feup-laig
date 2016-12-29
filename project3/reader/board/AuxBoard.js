@@ -35,10 +35,9 @@ AuxBoard.prototype.constructor = AuxBoard;
 AuxBoard.prototype.getPiece = function(){
     if(this.numPieces > 0){
         this.numPieces--;
-        let piece =  this.pieces.pop();
-        this.component.removeChild(piece.component);
+        let piece = this.pieces.pop();
+        this.component.children.pop();
         return piece;
-
     }
 
     return null;

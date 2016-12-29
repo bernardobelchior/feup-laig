@@ -260,3 +260,19 @@ Component.prototype.removeChild = function(childComponent){
         this.children.splice(index, 1);
     }
 };
+
+Component.prototype.removeAnimationbyID = function(animationID){
+    if(!currentAnimation)
+        return;
+
+    let iterator = currentAnimation;
+    do{
+        if(iterator.id == animationID){
+            iterator.before.next = iterator.next;
+            iterator.next.before = iterator.before;
+            return;
+        }
+       iterator = iterator.next;
+    }while(iterator != currentAnimation);
+
+};

@@ -197,6 +197,8 @@ class Game {
 
         switch (this.gameState) {
             case GAMESTATE.NORMAL:
+                this.animationInitialX = x;
+                this.animationInitialY = y;
                 let playerShips = this.ships[this.currentPlayer];
                 for (let ship = 0; ship < playerShips.length; ship++) {
                     if (playerShips[ship][0] === x && playerShips[ship][1] === y) {
