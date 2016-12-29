@@ -25,6 +25,10 @@ Piece.prototype.setAnimation = function(animation){
     this.animation = animation;
 };
 
+Piece.prototype.removeAnimation = function(){
+    
+};
+
 PIECE_TYPE = {
     TRADE_STATION: 0,
     COLONY : 1
