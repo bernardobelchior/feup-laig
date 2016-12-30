@@ -29,19 +29,10 @@ class Game {
     startGame() {
         this.initialShips = JSON.parse(JSON.stringify(this.ships));
 
-        /* Needed in order to use === afterwards.
-         * For some reason, the value from the interface has not the correct type
-         * (Even though it is initialized with the GAMEMODE object/enum) */
-        if (this.gameMode == GAMEMODE.CPU_VS_CPU) {
-            this.gameMode = GAMEMODE.CPU_VS_CPU;
+        if (this.gameMode == GAMEMODE.CPU_VS_CPU)
             this.gameState = GAMESTATE.BOT_PLAY;
-        } else {
-            if (this.gameMode == GAMEMODE.HUMAN_VS_CPU)
-                this.gameMode = GAMEMODE.HUMAN_VS_CPU;
-            else
-                this.gameMode = GAMEMODE.CPU_VS_CPU;
+        else
             this.gameState = GAMESTATE.NORMAL;
-        }
 
         this.running = true;
         this.timeSinceLastPlay = 0;
@@ -201,10 +192,10 @@ class Game {
      * @param data response.
      */
     displayValidMoves(data) {
-        let validDirections = JSON.parse(data.target.response);
+        this.validDirections = JSON.parse(data.target.response);
         let initialPosition = this.ships[this.selected.playerNo][this.selected.shipNo];
 
-        for (let direction of validDirections) {
+        for (let direction of this.validDirections) {
             let position = initialPosition.slice();
             while ((position = moveInDirection(this.board.rows, this.board.columns, direction, position[0], position[1])))
                 this.board.highlight(position);
@@ -239,12 +230,14 @@ class Game {
             case GAMESTATE.PLACE_SHIP:
                 let position = this.ships[this.currentPlayer][this.selected.shipNo];
 
-                let play = new Play();
-                play.setShipMovement(this.currentPlayer, this.selected.shipNo, [position[0], position[1]], [x, y]);
-                this.lastMoves.push(play);
+                if (this.isMoveValid(position, [x, y], this.validDirections)) {
+                    let play = new Play();
+                    play.setShipMovement(this.currentPlayer, this.selected.shipNo, [position[0], position[1]], [x, y]);
+                    this.lastMoves.push(play);
 
-                moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
-                this.selected.shipPiece.move(selectedHex);
+                    moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
+                    this.selected.shipPiece.move(selectedHex);
+                }
                 break;
             case GAMESTATE.PLACE_BUILDING:
                 if (this.selected.shipPiece.animation)
@@ -285,6 +278,37 @@ class Game {
                 this.gameState = GAMESTATE.NORMAL;
                 break;
         }
+    }
+
+    /**
+     * Checks if the direction is valid.
+     * @param source Source position
+     * @param destination Destination position
+     * @param validDirections Valid ship directions.
+     * @returns {boolean} whether or not the ship can be moved in the specified direction.
+     */
+    isMoveValid(source, destination, validDirections) {
+        if (destination[0] > source[0]) {
+            if (destination[1] < source[1]) {
+                if (destination[0] - source[0] === source[1] - destination[1])
+                    return validDirections.includes('northeast');
+            } else if (destination[1] === source[1]) {
+                return validDirections.includes('east');
+            }
+        } else if (destination[0] === source[0]) {
+            if (destination[1] < source[1])
+                return validDirections.includes('northwest');
+            else if (destination[1] > source[1])
+                return validDirections.includes('southeast');
+        } else {
+            if (destination[1] > source[1]) {
+                if (source[0] - destination[0] === destination[1] - source[1])
+                    return validDirections.includes('southwest');
+            } else if (destination[1] === source[1])
+                return validDirections.includes('west');
+        }
+
+        return false;
     }
 
     /**
