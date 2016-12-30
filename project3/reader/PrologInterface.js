@@ -72,6 +72,15 @@ function placeColony(colonies, playerNo, shipNo, shipPosition, callback) {
     getPrologRequest(requestString, callback);
 }
 
+/**
+ * Calculates points from given arguments
+ * @param board Board
+ * @param tradeStations Trade stations
+ * @param colonies Colonies
+ * @param homeSystems Home systems
+ * @param playerNo Player number
+ * @param callback Callback
+ */
 function calculatePoints(board, tradeStations, colonies, homeSystems, playerNo, callback) {
     let requestString = 'calc_points('
         + JSON.stringify(board).replace(/"/g, '') + ','
@@ -83,6 +92,16 @@ function calculatePoints(board, tradeStations, colonies, homeSystems, playerNo, 
     getPrologRequest(requestString, callback);
 }
 
+/**
+ * Gets valid directions
+ * @param board Board
+ * @param ships Ships
+ * @param tradeStations Trade stations
+ * @param colonies Colonies
+ * @param wormholes Wormholes
+ * @param position Position
+ * @param callback Callback
+ */
 function getValidMoves(board, ships, tradeStations, colonies, wormholes, position, callback) {
     let requestString = 'get_valid_moves('
         + JSON.stringify(board).replace(/"/g, '') + ','
@@ -95,6 +114,16 @@ function getValidMoves(board, ships, tradeStations, colonies, wormholes, positio
     getPrologRequest(requestString, callback);
 }
 
+/**
+ * Moves a ship using easy AI.
+ * @param board Board
+ * @param ships Ships
+ * @param tradeStations Trade stations
+ * @param colonies Colonies
+ * @param wormholes Wormholes
+ * @param playerNo Player number
+ * @param callback Callback
+ */
 function easyCPUMove(board, ships, tradeStations, colonies, wormholes, playerNo, callback) {
     let requestString = 'easy_cpu_move('
         + JSON.stringify(board).replace(/"/g, '') + ','
@@ -108,6 +137,15 @@ function easyCPUMove(board, ships, tradeStations, colonies, wormholes, playerNo,
     getPrologRequest(requestString, callback);
 }
 
+/**
+ * Places building using easy AI.
+ * @param ships Ships
+ * @param playerNo Player number
+ * @param shipNo Ship number
+ * @param tradeStations Trade stations
+ * @param colonies Colonies
+ * @param callback Callback
+ */
 function easyCPUPlaceBuilding(ships, playerNo, shipNo, tradeStations, colonies, callback) {
     let requestString = 'easy_cpu_select_action('
         + JSON.stringify(ships) + ','
@@ -119,6 +157,16 @@ function easyCPUPlaceBuilding(ships, playerNo, shipNo, tradeStations, colonies, 
     getPrologRequest(requestString, callback);
 }
 
+/**
+ * Moves ship using hard AI.
+ * @param board Board
+ * @param ships Ships
+ * @param tradeStations Trade stations
+ * @param colonies Colonies
+ * @param wormholes Wormholes
+ * @param playerNo Player number
+ * @param callback Callback
+ */
 function hardCPUMove(board, ships, tradeStations, colonies, wormholes, playerNo, callback) {
     let requestString = 'hard_cpu_move('
         + JSON.stringify(board).replace(/"/g, '') + ','
@@ -132,6 +180,15 @@ function hardCPUMove(board, ships, tradeStations, colonies, wormholes, playerNo,
     getPrologRequest(requestString, callback);
 }
 
+/**
+ * Places building using hard AI.
+ * @param ships Ships
+ * @param playerNo Player number
+ * @param shipNo Ship number
+ * @param tradeStations Trade stations
+ * @param colonies Colonies
+ * @param callback Callback
+ */
 function hardCPUPlaceBuilding(ships, playerNo, shipNo, tradeStations, colonies, callback) {
     let requestString = 'hard_cpu_select_action('
         + JSON.stringify(ships) + ','
@@ -143,6 +200,15 @@ function hardCPUPlaceBuilding(ships, playerNo, shipNo, tradeStations, colonies, 
     getPrologRequest(requestString, callback);
 }
 
+/**
+ * Checks if game is over.
+ * @param board Board
+ * @param ships Ships
+ * @param tradeStations Trade stations
+ * @param colonies Colonies
+ * @param wormholes Wormholes
+ * @param callback Callback
+ */
 function isGameOver(board, ships, tradeStations, colonies, wormholes, callback) {
     let requestString = 'is_game_over('
         + JSON.stringify(board).replace(/"/g, '') + ','
