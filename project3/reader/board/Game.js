@@ -5,6 +5,7 @@ class Game {
      */
     constructor() {
         this.running = false;
+        this.moveTime = 120;
     }
 
     /**
@@ -19,6 +20,7 @@ class Game {
         this.currentPlayer = 0;
         this.botIsPlaying = false;
         this.lastMoves = [];
+        this.botDifficulty = [BOT_DIFFICULTY.EASY, BOT_DIFFICULTY.EASY];
     }
 
     /**
@@ -43,6 +45,7 @@ class Game {
 
         this.running = true;
         this.timeSinceLastPlay = 0;
+        this.fullGameTime = 0;
     }
 
     /**
@@ -159,7 +162,7 @@ class Game {
      * @returns {number}
      */
     getTimeSinceLastPlay() {
-        return this.timeSinceLastPlay | 0;
+        return this.moveTime - this.timeSinceLastPlay | 0;
     }
 
     /**
@@ -381,6 +384,7 @@ class Game {
     previousPlayer() {
         this.currentPlayer = (this.currentPlayer - 1) % 2;
         this.updateGameState();
+        this.fullGameTime -= this.timeSinceLastPlay;
         this.timeSinceLastPlay = 0;
 
         if (this.replayPending)
@@ -415,6 +419,7 @@ class Game {
     nextPlayer() {
         this.currentPlayer = (this.currentPlayer + 1) % 2;
         this.updateGameState();
+        this.fullGameTime += this.timeSinceLastPlay;
         this.timeSinceLastPlay = 0;
 
         if (this.replayPending)
@@ -431,7 +436,7 @@ class Game {
         if (!this.running)
             return;
 
-        if (this.getTimeSinceLastPlay() > 120) {
+        if (this.getTimeSinceLastPlay() < 0) {
             this.lastMoves.push(new Play());
             this.board.resetHighlighting();
             this.nextPlayer();
@@ -451,7 +456,11 @@ class Game {
      */
     botPlay() {
         this.lastMoves.push(new Play());
-        easyCPUMove(this.board.getStringBoard(), this.ships, this.tradeStations, this.colonies, this.wormholes, this.currentPlayer, this.botMoved.bind(this));
+
+        if (this.botDifficulty[this.currentPlayer] === BOT_DIFFICULTY.EASY)
+            easyCPUMove(this.board.getStringBoard(), this.ships, this.tradeStations, this.colonies, this.wormholes, this.currentPlayer, this.botMoved.bind(this));
+        else
+            hardCPUMove(this.board.getStringBoard(), this.ships, this.tradeStations, this.colonies, this.wormholes, this.currentPlayer, this.botMoved.bind(this));
     }
 
     /**
@@ -473,7 +482,10 @@ class Game {
 
         this.ships = newShips;
 
-        easyCPUPlaceBuilding(this.ships, this.currentPlayer, shipMoved, this.tradeStations, this.colonies, this.botPlacedBuilding.bind(this, newPosition));
+        if (this.botDifficulty[this.currentPlayer] === BOT_DIFFICULTY.EASY)
+            easyCPUPlaceBuilding(this.ships, this.currentPlayer, shipMoved, this.tradeStations, this.colonies, this.botPlacedBuilding.bind(this, newPosition));
+        else
+            hardCPUPlaceBuilding(this.ships, this.currentPlayer, shipMoved, this.tradeStations, this.colonies, this.botPlacedBuilding.bind(this, newPosition));
     }
 
     /**
@@ -607,6 +619,15 @@ class Game {
 
         window.setTimeout(this.replayMove.bind(this), 2000, index + 1);
     }
+
+    getTimeElapsed() {
+        return this.fullGameTime + this.timeSinceLastPlay | 0;
+    }
+
+    setBotDifficulty(first, second) {
+        this.botDifficulty[0] = first;
+        this.botDifficulty[1] = second;
+    }
 }
 
 GAMESTATE = {
@@ -629,4 +650,9 @@ AUXBOARD_ID = {
     P1_STATIONS: 2,
     P2_COLONIES: 3,
     P2_STATIONS: 4
+};
+
+BOT_DIFFICULTY = {
+    EASY: 0,
+    HARD: 1
 };

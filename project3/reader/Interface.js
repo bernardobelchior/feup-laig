@@ -30,7 +30,8 @@ Interface.prototype.init = function (application) {
 
     let config = {
         newGame: this.requestNewConfig,
-        gameMode: 0,
+        gameMode: GAMEMODE.HUMAN_VS_HUMAN,
+        botDifficulty: BOT_DIFFICULTY.EASY,
         scene: this.scene
     };
 
@@ -43,6 +44,12 @@ Interface.prototype.init = function (application) {
         'CPU vs CPU': GAMEMODE.CPU_VS_CPU,
     }).name('Game Mode');
 
+    configFolder.add(config, 'botDifficulty', {
+        'Easy': BOT_DIFFICULTY.EASY,
+        'Hard': BOT_DIFFICULTY.HARD
+    }).name('Bot Difficulty');
+
+    configFolder.add(this.scene.game, 'moveTime', 60, 240).name('Move Time');
     configFolder.add(config, 'newGame').name('New Game');
     configFolder.open();
 
@@ -53,7 +60,7 @@ Interface.prototype.init = function (application) {
  * Gets initial configuration from Prolog.
  */
 Interface.prototype.requestNewConfig = function () {
-    getPrologRequest('initialConfig', this.scene.newGame.bind(this.scene, this.gameMode));
+    getPrologRequest('initialConfig', this.scene.newGame.bind(this.scene, this.gameMode, this.botDifficulty));
 };
 
 Interface.prototype.processKeyDown = function (event) {

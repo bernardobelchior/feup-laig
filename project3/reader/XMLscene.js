@@ -74,8 +74,9 @@ XMLscene.prototype.onGraphLoaded = function () {
  * Initializes game class.
  * @param gameMode Game mode.
  * @param data Response
+ * @param botDifficulty Bot difficulty
  */
-XMLscene.prototype.newGame = function (gameMode, data) {
+XMLscene.prototype.newGame = function (gameMode, botDifficulty, data) {
     this.rootNode.children = [];
 
     //Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes
@@ -95,12 +96,12 @@ XMLscene.prototype.newGame = function (gameMode, data) {
     this.game.setColonies(colonies);
     this.game.setHomeSystems(homeSystems);
     this.game.setWormholes(wormholes);
+    this.game.setBotDifficulty(botDifficulty);
 
     this.game.addOnScoreCanChange(this.updateScores.bind(this));
     this.game.addOnPlayerChanged(this.onPlayerChanged.bind(this));
 
     this.camera = this.cameras[0];
-    this.reverseCamera = true;
     this.changingCamera = false;
     this.currentCamera = 0;
 
@@ -177,10 +178,25 @@ XMLscene.prototype.display = function () {
 
         if (this.game.isRunning()) {
             document.getElementById('time_left').innerText = this.game.getTimeSinceLastPlay() + 's';
+            let timeElapsed = this.game.getTimeElapsed();
+
+            if (timeElapsed / 60 >= 10)
+                document.getElementById('time_elapsed').innerText = (timeElapsed / 60 | 0).toString();
+            else
+                document.getElementById('time_elapsed').innerText = '0' + (timeElapsed / 60 | 0).toString();
+
+            document.getElementById('time_elapsed').innerText += 'm';
+
+            if (timeElapsed % 60 >= 10)
+                document.getElementById('time_elapsed').innerText += (timeElapsed % 60).toString();
+            else
+                document.getElementById('time_elapsed').innerText += '0' + (timeElapsed % 60).toString();
+
+            document.getElementById('time_elapsed').innerText += 's';
 
             if (this.game.gameState === GAMESTATE.BOT_PLAY)
                 document.getElementById('instruction').innerText = 'A bot is playing, please wait.';
-            else if(this.game.gameState === GAMESTATE.REPLAY)
+            else if (this.game.gameState === GAMESTATE.REPLAY)
                 document.getElementById('instruction').innerText = 'The game is being replayed, please wait.';
             else
                 document.getElementById('instruction').innerText =
@@ -231,7 +247,6 @@ XMLscene.prototype.animateCamera = function (deltaTime) {
 
     // *0.98 is to avoid flickering when the animation surpasses the expected camera position
     if (this.timeElapsed > this.CAMERA_ANIMATION_TIME * 0.98) {
-        this.reverseCamera = !this.reverseCamera;
         this.changingCamera = false;
         this.camera = this.cameras[this.currentCamera];
         return;
@@ -248,7 +263,7 @@ XMLscene.prototype.animateCamera = function (deltaTime) {
 
     this.timeElapsed += deltaTime / 1000;
     let cameraAngle = Math.PI * this.timeElapsed / this.CAMERA_ANIMATION_TIME;
-    let multiplier = this.reverseCamera ? -1 : 1;
+    let multiplier = this.currentCamera ? -1 : 1;
 
 
     let targetPosition = [

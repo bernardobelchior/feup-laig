@@ -133,6 +133,14 @@ parse_input(easy_cpu_select_action(Ships, PlayerNo, ShipNo, TradeStations, Colon
 	easy_cpu_select_ship_action(Ships, PlayerNo, ShipNo,TradeStations, Colonies, NewTradeStations, NewColonies),
 	json([NewTradeStations, NewColonies], JSON).
 
+parse_input(hard_cpu_move(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer), JSON):-
+	hard_cpu_select_ship_movement(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, NewShips, ShipMoved),
+	json([NewShips, ShipMoved], JSON).
+
+parse_input(hard_cpu_select_action(Ships, PlayerNo, ShipNo, TradeStations, Colonies), JSON):-
+	hard_cpu_select_ship_action(Ships, PlayerNo, ShipNo,TradeStations, Colonies, NewTradeStations, NewColonies),
+	json([NewTradeStations, NewColonies], JSON).
+
 parse_input(place_trade_station(PlayerNo, ShipPosition, TradeStations), NewTradeStations):-
 	place_trade_station(PlayerNo, ShipPosition, TradeStations, NewTradeStations).
 
