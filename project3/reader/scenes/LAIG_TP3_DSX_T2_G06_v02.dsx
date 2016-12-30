@@ -323,15 +323,11 @@
         </primitive>
 
         <primitive id="colony">
-            <SSEcolony/>
-        </primitive>
-
-        <primitive id="trade_station">
-            <SSEtradeStation/>
+            <legacy_colony/>
         </primitive>
 
         <primitive id="spaceship">
-            <vehicle/>
+            <legacy_vehicle/>
         </primitive>
 
     </primitives>
@@ -941,7 +937,7 @@
 
         <component id="trade_station">
             <transformation>
-                <scale x="0.5" y="0.5" z="0.5"/>
+                <scale x="0.9" y="0.9" z="0.9"/>
             </transformation>
             <materials>
                 <material id="inherit"/>
@@ -950,7 +946,7 @@
             <texture id="none"/>
 
             <children>
-                <primitiveref id="trade_station"/>
+                <primitiveref id="unit_cube"/>
             </children>
         </component>
 

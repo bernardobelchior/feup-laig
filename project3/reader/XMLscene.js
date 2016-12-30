@@ -70,13 +70,17 @@ XMLscene.prototype.onGraphLoaded = function () {
     this.graph.loadedOk = true;
 };
 
+/**
+ * Change the theme if necessary
+ * @param theme Theme
+ */
 XMLscene.prototype.loadTheme = function(theme){
     if(theme == THEME.NORMAL){
-        var filename=getUrlVars()['file'] || "LAIG_TP3_DSX_T2_G06_v01.dsx";
+        let filename=getUrlVars()['file'] || "LAIG_TP3_DSX_T2_G06_v01.dsx";
         this.graph = new MySceneGraph(filename, this);
     }
     else {
-        var filename=getUrlVars()['file'] || "LAIG_TP3_DSX_T2_G06_v02.dsx";
+        let filename=getUrlVars()['file'] || "LAIG_TP3_DSX_T2_G06_v02.dsx";
         this.graph = new MySceneGraph(filename, this);
     }
 };
