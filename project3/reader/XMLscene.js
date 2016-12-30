@@ -90,8 +90,8 @@ XMLscene.prototype.newGame = function (gameMode, botDifficulty, data) {
 
     this.game.newGame(this, gameMode);
     this.game.createBoard(board, this.graph.components);
-    this.game.createAuxBoards(this.graph.components);
-    this.game.initializeShips(ships, this.graph.components);
+    this.game.createAuxBoards(this.graph.components, this.graph.materials);
+    this.game.initializeShips(ships, this.graph.materials);
     this.game.setTradeStations(tradeStations);
     this.game.setColonies(colonies);
     this.game.setHomeSystems(homeSystems);

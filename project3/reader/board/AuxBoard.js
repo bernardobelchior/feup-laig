@@ -6,7 +6,7 @@
  * @param type Piece type
  * @constructor
  */
-function AuxBoard(scene, numPieces, components, type, position) {
+function AuxBoard(scene, numPieces, components, type, position, material) {
     let buildingType;
     switch (type) {
         case PIECE_TYPE.TRADE_STATION:
@@ -28,7 +28,7 @@ function AuxBoard(scene, numPieces, components, type, position) {
     this.component = new Component(scene, "auxBoardWrapper");
     this.component.inheritMaterial = true;
     this.component.texture = 'inherit';
-    this.initializePieces();
+    this.initializePieces(material);
     this.component.translate(this.position[0], this.position[1], this.position[2]);
     this.scene.rootNode.addChild(this.component);
 }
@@ -61,22 +61,22 @@ AuxBoard.prototype.getRemainingNo = function () {
 /**
  * Fills the auxiliary board with the pieces that can still be used by the player
  */
-AuxBoard.prototype.initializePieces = function () {
+AuxBoard.prototype.initializePieces = function (material) {
     for (let i = 0; i < this.numPieces; i++)
-        this.putPiece();
+        this.putPiece(material);
 };
 
 /**
  * Puts piece in auxiliary board.
  */
-AuxBoard.prototype.putPiece = function () {
+AuxBoard.prototype.putPiece = function (material) {
     if (this.pieces.length >= this.numPieces)
         return;
 
     let pieceNo = this.pieces.length;
     let nextX = (Math.floor(pieceNo / 4) % 4) * 1.1;
     let nextZ = (pieceNo % 4) * -1.1;
-    let newPiece = new Building(this.scene, this.baseComponent, this, nextX + this.position[0], nextZ + this.position[2]);
+    let newPiece = new Building(this.scene, this.baseComponent, material, this, nextX + this.position[0], nextZ + this.position[2]);
     let newPieceWrapper = new Component(this.scene, "buildingWrapper");
     newPieceWrapper.inheritMaterial = true;
     newPieceWrapper.texture = 'inherit';

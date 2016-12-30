@@ -120,6 +120,8 @@ Component.prototype.display = function (parent) {
     else
         this.material = this.materials[this.currentMaterial];
 
+
+
     if (this.texture)
         this.texture.apply(this.material);
     else

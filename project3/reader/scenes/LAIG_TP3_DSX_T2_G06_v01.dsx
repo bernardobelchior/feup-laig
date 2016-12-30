@@ -175,10 +175,26 @@
 
         <material id="blue_nebula">
             <ambient r="0.0" g="0.0" b="1.0" a="1.0"/>
-            <specular r="0.0" g="0.0" b="1.0" a="1.0"/>
             <diffuse r="0.0" g="0.0" b="1.0" a="1.0"/>
+            <specular r="0.0" g="0.0" b="1.0" a="1.0"/>
             <emission r="0.0" g="0.0" b="1.0" a="1.0"/>
+            <shininess value="100"/>
+        </material>
+
+        <material id="blue_player">
+            <ambient r="0.0" g="0.0" b="0.2" a="1.0"/>
+            <diffuse r="0.1" g="0.1" b="0.6" a="1.0"/>
+            <specular r="1.0" g="1.0" b="1.0" a="1.0"/>
+            <emission r="0.0" g="0.0" b="0.0" a="0.0"/>
             <shininess value="1000"/>
+        </material>
+
+        <material id="red_player">
+            <ambient r="0.2" g="0.0" b="0.0" a="1.0"/>
+            <diffuse r="0.6" g="0.1" b="0.1" a="1.0"/>
+            <specular r="1.0" g="1.0" b="1.0" a="1.0"/>
+            <emission r="0.0" g="0.0" b="0.0" a="0.0"/>
+            <shininess value="100"/>
         </material>
     </materials>
 
@@ -913,7 +929,7 @@
                 <rotate axis="x" angle="-90"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
             <texture id="none"/>
@@ -928,7 +944,7 @@
                 <scale x="0.5" y="0.5" z="0.5"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
             <texture id="none"/>
@@ -945,7 +961,7 @@
                 <rotate axis="x" angle="-90"/>
             </transformation>
             <materials>
-                <material id="default"/>
+                <material id="inherit"/>
             </materials>
 
             <texture id="none"/>

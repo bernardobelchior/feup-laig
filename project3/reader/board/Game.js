@@ -58,18 +58,18 @@ class Game {
         this.components = components;
     }
 
-    createAuxBoards(components) {
+    createAuxBoards(components, materials) {
         this.colonyBoards = [
-            new AuxBoard(this.scene, 16, components, PIECE_TYPE.COLONY, [0.0, 0.0, 0.0]),
+            new AuxBoard(this.scene, 16, components, PIECE_TYPE.COLONY, [0.0, 0.0, 0.0], materials["red_player"]),
             new AuxBoard(this.scene, 16, components, PIECE_TYPE.COLONY,
-                [(this.board.columns / 2 ) * 1.9, 0.0, (this.board.rows + 2) * 1.68])
+                [(this.board.columns / 2 ) * 1.9, 0.0, (this.board.rows + 2) * 1.68], materials["blue_player"])
         ];
 
         this.tradeStationBoards = [
             new AuxBoard(this.scene, 4, components, PIECE_TYPE.TRADE_STATION,
-                [(this.board.columns / 2 + 1), 0.0, 0.0]),
+                [(this.board.columns / 2 + 1), 0.0, 0.0], materials["red_player"]),
             new AuxBoard(this.scene, 4, components, PIECE_TYPE.TRADE_STATION,
-                [(this.board.columns / 2 + 2), 0.0, (this.board.rows + 2) * 1.68])
+                [(this.board.columns / 2 + 2), 0.0, (this.board.rows + 2) * 1.68], materials["blue_player"])
         ];
 
         this.colonyBoards[0].setPickingID(AUXBOARD_ID.P1_COLONIES);
@@ -83,18 +83,31 @@ class Game {
      * Places the ships on the board for the first time setup
      * @param ships
      */
-    initializeShips(ships, components) {
+    initializeShips(ships, materials) {
 
-        for (let player of ships) {
+        for (let i = 0; i < ships.length; i++) {
+            let player = ships[i];
             for (let ship of player) {
                 let x = ship[0];
                 let y = ship[1];
 
                 let selectedHex = this.board.getHex(x, y);
                 let playerShipComponent = this.components['ship'].component;
+                playerShipComponent.updateTextures(this.scene.graph.textures);
 
-                let playerShip = new Ship(this.scene, playerShipComponent, selectedHex);
+                let playerShip;
+
+                if(i === 0) {
+                    let material = materials["red_player"];
+                    playerShip = new Ship(this.scene, playerShipComponent, material, selectedHex);
+                }
+                else {
+                    let material = materials["blue_player"];
+                    playerShip = new Ship(this.scene, playerShipComponent, material, selectedHex);
+                }
+
                 selectedHex.placeShip(playerShip);
+
             }
         }
         this.setShips(ships);

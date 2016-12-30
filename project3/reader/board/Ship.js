@@ -1,5 +1,5 @@
-function Ship(scene, component, hexagon){
-    Piece.call(this, scene, component);
+function Ship(scene, component, material, hexagon){
+    Piece.call(this, scene, component, material);
     this.hexagon = hexagon;
     this.x = this.hexagon.x;
     this.z = this.hexagon.z;

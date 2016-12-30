@@ -1,7 +1,9 @@
-function Piece(scene, component){
+function Piece(scene, component, material){
     this.scene = scene;
     this.component = new Component(scene, "pieceWrapper");
-    this.component.inheritMaterial = true;
+    this.component.inheritMaterial = false;
+    this.component.addMaterial(material);
+    this.component.currentMaterial = this.component.materials.length - 1;
     this.component.texture = "inherit";
     this.component.addChild(component);
     this.animation = null;

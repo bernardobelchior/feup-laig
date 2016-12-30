@@ -1,5 +1,5 @@
-function Building(scene, component, auxBoard, x, z){
-    Piece.call(this, scene, component);
+function Building(scene, component, material, auxBoard, x, z){
+    Piece.call(this, scene, component, material);
     this.originBoard = auxBoard;
     this.hexagon = null;
     this.x = x;
