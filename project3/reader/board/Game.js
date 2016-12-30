@@ -667,11 +667,9 @@ class Game {
 
         let piece;
         if (move.pieceType === PIECE_TYPE.TRADE_STATION)
-            piece = this.replayTradeStationBoards[move.playerNo].getPiece();
+            piece = this.replayTradeStationBoards[move.playerNo].getPiece(this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]));
         else
-            piece = this.replayColonyBoards[move.playerNo].getPiece();
-
-        this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]).placeBuilding(piece);
+            piece = this.replayColonyBoards[move.playerNo].getPiece(this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]));
 
         if (index !== this.lastMoves.length - 1)
             this.scene.nextCamera();

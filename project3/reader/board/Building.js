@@ -49,6 +49,7 @@ Building.prototype.move = function (selectedHex) {
  * Called when the animation is done.
  */
 Building.prototype.onAnimationDone = function () {
+    console.log(this);
     this.component.removeAnimation();
     this.animation = null;
     this.hexagon.placeBuilding(this);
