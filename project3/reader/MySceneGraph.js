@@ -41,7 +41,7 @@ MySceneGraph.prototype.onXMLReady = function () {
     }
 
     this.scene.onGraphLoaded();
-}
+};
 
 /**
  * Calls the parsing functions on every block of the dsx, checking for an error in any of them

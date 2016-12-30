@@ -75,11 +75,13 @@ AuxBoard.prototype.putPiece = function () {
     let newPiece = new Piece(this.scene, this.baseComponent, null);
     let newPieceWrapper = new Component(this.scene, "pieceWrapper");
     newPieceWrapper.inheritMaterial = true;
-    newPieceWrapper.inheritTexture = true;
     newPieceWrapper.texture = 'inherit';
     newPieceWrapper.addChild(newPiece.component);
     newPieceWrapper.translate((Math.floor(pieceNo / 4) % 4) * 1.1, 0.0, (pieceNo % 4) * -1.1);
     this.component.addChild(newPieceWrapper);
+
+    // Update textures.
+    this.component.updateTextures(this.scene.graph.textures);
     this.pieces.push(newPiece);
 };
 

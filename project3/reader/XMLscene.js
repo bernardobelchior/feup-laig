@@ -31,7 +31,6 @@ XMLscene.prototype.init = function (application) {
     this.rootNode;
     this.seqNum = 0;
     this.setUpdatePeriod(1 / 60 * 1000);
-    this.lastUpdateTime = (new Date()).getTime();
 
     this.setPickEnabled(true);
     this.game = new Game();
@@ -65,6 +64,10 @@ XMLscene.prototype.onGraphLoaded = function () {
     //GUI for light control
     for (let i = 0; i < this.lights.length; i++)
         this.lightStatus.push(this.lights[i].enabled);
+
+    this.rootNode.updateTextures(this.graph.textures);
+    this.lastUpdateTime = Date.now();
+    this.graph.loadedOk = true;
 };
 
 /**
@@ -110,7 +113,6 @@ XMLscene.prototype.newGame = function (gameMode, data) {
         score.innerHTML = '0';
 
     this.game.startGame();
-    this.graph.loadedOk = true;
 };
 
 /**

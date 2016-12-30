@@ -25,19 +25,24 @@ class Game {
      * Sets the game state and runs the game.
      */
     startGame() {
-        // Deep clone structures the change during the game.
-        // May be used later in replay
         this.initialShips = JSON.parse(JSON.stringify(this.ships));
-        this.initialTradeStations = JSON.parse(JSON.stringify(this.tradeStations));
-        this.initialColonies = JSON.parse(JSON.stringify(this.colonies));
 
-        if (this.gameMode == GAMEMODE.CPU_VS_CPU)
+        /* Needed in order to use === afterwards.
+         * For some reason, the value from the interface has not the correct type
+         * (Even though it is initialized with the GAMEMODE object/enum) */
+        if (this.gameMode == GAMEMODE.CPU_VS_CPU) {
+            this.gameMode = GAMEMODE.CPU_VS_CPU;
             this.gameState = GAMESTATE.BOT_PLAY;
-        else
+        } else {
+            if (this.gameMode == GAMEMODE.HUMAN_VS_CPU)
+                this.gameMode = GAMEMODE.HUMAN_VS_CPU;
+            else
+                this.gameMode = GAMEMODE.CPU_VS_CPU;
             this.gameState = GAMESTATE.NORMAL;
+        }
 
         this.running = true;
-        this.lastMoveTime = Date.now();
+        this.timeSinceLastPlay = 0;
     }
 
     /**
@@ -84,7 +89,7 @@ class Game {
                 let y = ship[1];
 
                 let selectedHex = this.board.getHex(x, y);
-                let playerShipComponent = components['ship'].component;
+                let playerShipComponent = this.components['ship'].component;
 
                 let playerShip = new Piece(this.scene, playerShipComponent, selectedHex);
                 selectedHex.placeShip(playerShip);
@@ -154,7 +159,7 @@ class Game {
      * @returns {number}
      */
     getTimeSinceLastPlay() {
-        return 120 - (Date.now() - this.lastMoveTime) / 1000 | 0;
+        return this.timeSinceLastPlay | 0;
     }
 
     /**
@@ -185,6 +190,8 @@ class Game {
                 return 'select a tile to move the ship to.';
             case GAMESTATE.PLACE_BUILDING:
                 return 'select which piece to place.';
+            case GAMESTATE.REPLAY:
+                return 'game is replaying. Please wait.';
         }
     }
 
@@ -376,7 +383,7 @@ class Game {
     previousPlayer() {
         this.currentPlayer = (this.currentPlayer - 1) % 2;
         this.updateGameState();
-        this.lastMoveTime = Date.now();
+        this.timeSinceLastPlay = 0;
 
         if (this.onPlayerChanged)
             this.onPlayerChanged();
@@ -406,9 +413,12 @@ class Game {
      * Selects next player and calls the respective event handler.
      */
     nextPlayer() {
+        if (this.gameState === GAMESTATE.REPLAY)
+            return;
+
         this.currentPlayer = (this.currentPlayer + 1) % 2;
         this.updateGameState();
-        this.lastMoveTime = Date.now();
+        this.timeSinceLastPlay = 0;
 
         if (this.onPlayerChanged)
             this.onPlayerChanged();
@@ -419,11 +429,17 @@ class Game {
      * @param deltaTime Delta time since last update.
      */
     update(deltaTime) {
-        if (this.getTimeSinceLastPlay() <= 0) {
+        if (!this.running)
+            return;
+
+        if (this.getTimeSinceLastPlay() > 120) {
             this.lastMoves.push(new Play());
             this.board.resetHighlighting();
             this.nextPlayer();
         }
+
+        if (this.gameState !== GAMESTATE.REPLAY)
+            this.timeSinceLastPlay += deltaTime / 1000;
 
         if (this.gameState === GAMESTATE.BOT_PLAY && !this.botIsPlaying) {
             this.botIsPlaying = true;
@@ -508,12 +524,10 @@ class Game {
      * Function called to replay the game.
      */
     startReplay() {
-        if (!this.running || !this.lastMoves.length)
+        if (!this.running || !this.lastMoves.length || this.gameState === GAMESTATE.REPLAY)
             return;
 
-        this.replayShips = JSON.parse(JSON.stringify(this.ships));
-        this.replayTradeStations = [[], []];
-        this.replayColonies = [[], []];
+        this.replayShips = JSON.parse(JSON.stringify(this.initialShips));
         this.replayTradeStationBoards = [
             new AuxBoard(this.scene, 4, this.components, PIECE_TYPE.TRADE_STATION),
             new AuxBoard(this.scene, 4, this.components, PIECE_TYPE.TRADE_STATION)
@@ -524,7 +538,20 @@ class Game {
             new AuxBoard(this.scene, 16, this.components, PIECE_TYPE.COLONY)
         ];
 
+        this.board.resetHexes();
+        for (let player of this.replayShips) {
+            for (let ship of player) {
+                let selectedHex = this.board.getHex(ship[0], ship[1]);
+                let playerShipComponent = this.components['ship'].component;
+
+                let playerShip = new Piece(this.scene, playerShipComponent, selectedHex);
+                selectedHex.placeShip(playerShip);
+            }
+        }
+
         this.gameState = GAMESTATE.REPLAY;
+        if (this.currentPlayer !== 0)
+            this.scene.nextCamera();
         this.replayMove(0);
     }
 
@@ -536,6 +563,10 @@ class Game {
         let move = this.lastMoves[index];
 
         if (!move) {
+            if (this.lastMoves[this.lastMoves.length - 1].playerNo !== this.currentPlayer)
+                this.scene.nextCamera();
+
+            this.initializeShips(this.ships, this.components);
             this.updateGameState();
             return;
         }
@@ -544,7 +575,7 @@ class Game {
         let selectedHex = this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]);
         this.board.getHex(move.oldShipPosition[0], move.oldShipPosition[1]).getShip().move(selectedHex);
 
-        window.setTimeout(this.replayBuildingPlacement, 1000, index);
+        window.setTimeout(this.replayBuildingPlacement.bind(this), 1000, index);
     }
 
     /**
@@ -562,8 +593,10 @@ class Game {
 
         this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]).placeBuilding(piece);
 
-        //TodO animation
-        window.setTimeout(this.replayMove, 1000, index + 1);
+        if (index !== this.lastMoves.length - 1)
+            this.scene.nextCamera();
+
+        window.setTimeout(this.replayMove.bind(this), 1000, index + 1);
     }
 }
 

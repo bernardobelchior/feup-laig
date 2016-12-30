@@ -12,12 +12,14 @@ function Hex(scene, component, visibilityIndex, y) {
     this.piecesWrapper = new Component(this.scene, "piecesWrapper");
     this.piecesWrapper.inheritMaterial = true;
     this.piecesWrapper.texture = "inherit";
+    this.piecesWrapper.translate(0.0, 0.5, 0.0);
     this.component.addChild(this.piecesWrapper);
 
     this.ship = null;
     this.building = null;
 
     this.scene.rootNode.addChild(this.component);
+    this.component.updateTextures(this.scene.graph.textures);
     this.transform();
 }
 
@@ -38,13 +40,12 @@ Hex.prototype.placeShip = function (piece) {
 
     this.ship = piece;
     this.piecesWrapper.addChild(this.ship.component);
+    this.piecesWrapper.updateTextures(this.scene.graph.textures);
 };
 
 Hex.prototype.removeShip = function () {
-    if (this.ship === null) {
-        console.log("Hex has no piece!");
+    if (this.ship === null)
         return;
-    }
 
     this.piecesWrapper.removeChild(this.ship.component);
     this.ship = null;
@@ -60,7 +61,7 @@ Hex.prototype.placeBuilding = function (piece) {
 
     this.building = piece;
     this.piecesWrapper.addChild(piece.component);
-    this.piecesWrapper.translate(0.0, 0.5, 0.0);
+    this.piecesWrapper.updateTextures(this.scene.graph.textures);
 };
 
 Hex.prototype.removeBuilding = function () {
