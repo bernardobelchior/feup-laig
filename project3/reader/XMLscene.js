@@ -96,7 +96,7 @@ XMLscene.prototype.newGame = function (gameMode, botDifficulty, data) {
     this.game.setColonies(colonies);
     this.game.setHomeSystems(homeSystems);
     this.game.setWormholes(wormholes);
-    this.game.setBotDifficulty(botDifficulty);
+    this.game.setBotDifficulty(botDifficulty, botDifficulty);
 
     this.game.addOnScoreCanChange(this.updateScores.bind(this));
     this.game.addOnPlayerChanged(this.onPlayerChanged.bind(this));
@@ -110,6 +110,7 @@ XMLscene.prototype.newGame = function (gameMode, botDifficulty, data) {
     document.getElementById('overlay').style.display = 'block';
     let scores = document.getElementsByClassName('score');
 
+    this.scores = [0, 0];
     for (let score of scores)
         score.innerHTML = '0';
 
@@ -198,7 +199,18 @@ XMLscene.prototype.display = function () {
                 document.getElementById('instruction').innerText = 'A bot is playing, please wait.';
             else if (this.game.gameState === GAMESTATE.REPLAY)
                 document.getElementById('instruction').innerText = 'The game is being replayed, please wait.';
-            else
+            else if (this.game.gameState === GAMESTATE.GAME_OVER) {
+                document.getElementById('instruction').innerText = 'Game over.';
+
+                if (this.scores[0] > this.scores[1])
+                    document.getElementById('instruction').innerText += 'Player 1 won!';
+                else if (this.scores[0] === this.scores[1])
+                    document.getElementById('instruction').innerText += 'It\'s a draw!';
+                else
+                    document.getElementById('instruction').innerText += 'Player 2 won!';
+
+
+            } else
                 document.getElementById('instruction').innerText =
                     'Player ' + (this.game.getCurrentPlayer() + 1) + ', ' + this.game.getGameStateInstruction();
         }
@@ -213,13 +225,14 @@ XMLscene.prototype.display = function () {
 
 XMLscene.prototype.updateScores = function () {
     calculatePoints(this.game.board.getStringBoard(), this.game.tradeStations,
-        this.game.colonies, this.game.homeSystems, 0, this.updateScoreDisplay.bind(null, 0));
+        this.game.colonies, this.game.homeSystems, 0, this.updateScoreDisplay.bind(this, 0));
 
     calculatePoints(this.game.board.getStringBoard(), this.game.tradeStations,
-        this.game.colonies, this.game.homeSystems, 1, this.updateScoreDisplay.bind(null, 1));
+        this.game.colonies, this.game.homeSystems, 1, this.updateScoreDisplay.bind(this, 1));
 };
 
 XMLscene.prototype.updateScoreDisplay = function (playerNo, response) {
+    this.scores[playerNo] = response.target.response;
     document.getElementsByClassName('score')[playerNo].innerHTML = response.target.response;
 };
 

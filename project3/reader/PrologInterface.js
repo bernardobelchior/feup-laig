@@ -142,3 +142,14 @@ function hardCPUPlaceBuilding(ships, playerNo, shipNo, tradeStations, colonies, 
 
     getPrologRequest(requestString, callback);
 }
+
+function isGameOver(board, ships, tradeStations, colonies, wormholes, callback) {
+    let requestString = 'is_game_over('
+        + JSON.stringify(board).replace(/"/g, '') + ','
+        + JSON.stringify(ships) + ','
+        + JSON.stringify(tradeStations) + ','
+        + JSON.stringify(colonies) + ','
+        + JSON.stringify(wormholes) + ')';
+
+    getPrologRequest(requestString, callback);
+}
