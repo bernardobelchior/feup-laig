@@ -1,4 +1,11 @@
-function Piece(scene, component, material){
+/**
+ * Piece constructor
+ * @param scene Scene
+ * @param component Component
+ * @param material Material
+ * @constructor
+ */
+function Piece(scene, component, material) {
     this.scene = scene;
     this.component = new Component(scene, "pieceWrapper");
     this.component.inheritMaterial = false;
@@ -12,19 +19,34 @@ function Piece(scene, component, material){
 Piece.prototype = Object.create(Object.prototype);
 Piece.prototype.constructor = Piece;
 
+/**
+ * Gets the hex
+ * @returns Hex
+ */
 Piece.prototype.getHex = function () {
     return this.hexagon;
 };
 
+/**
+ * Sets the hex
+ * @param hexagon Hex
+ */
 Piece.prototype.setHex = function (hexagon) {
     this.hexagon = hexagon;
 };
 
+/**
+ * Sets the piece animation
+ * @param animation Animation
+ */
 Piece.prototype.setAnimation = function (animation) {
     this.component.addAnimation(animation);
     this.animation = animation;
 };
 
+/**
+ * Function to call when the animation is done.
+ */
 Piece.prototype.onAnimationDone = function () {
     this.hexagon.removeShip();
     this.component.removeAnimation();
@@ -33,6 +55,10 @@ Piece.prototype.onAnimationDone = function () {
     this.nextHex.placeShip(this);
 };
 
+/**
+ * Moves the piece to the given hex
+ * @param selectedHex Hex to move the piece to.
+ */
 Piece.prototype.move = function (selectedHex) {
     this.nextHex = selectedHex;
     let xi = this.hexagon.x;

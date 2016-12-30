@@ -72,9 +72,6 @@ Interface.prototype.processKeyUp = function (event) {
     CGFinterface.prototype.processKeyUp.call(this, event);
 
     switch (event.keyCode) {
-        case (77): // 'M'
-            this.scene.switchMaterials();
-            break;
         case (27): //Esc
             this.scene.cancelMode();
             break;

@@ -1,3 +1,11 @@
+/**
+ * Hex constructor
+ * @param scene Scene
+ * @param component Component that represents the hex
+ * @param visibilityIndex Visibility index
+ * @param y Y index
+ * @constructor
+ */
 function Hex(scene, component, visibilityIndex, y) {
     this.scene = scene;
     this.component = new Component(this.scene, 'wrapper');
@@ -26,20 +34,34 @@ function Hex(scene, component, visibilityIndex, y) {
 Hex.prototype = Object.create(Object.prototype);
 Hex.prototype.constructor = Hex;
 
+/**
+ * Transforms the hex
+ */
 Hex.prototype.transform = function () {
     this.component.translate(this.x, 0, this.z);
 };
 
+/**
+ * Sets the picking ID.
+ * @param pickingID Picking ID
+ */
 Hex.prototype.setPickingID = function (pickingID) {
     this.component.setPickingID(pickingID);
 };
 
+/**
+ * Places the ship.
+ * @param ship Ship
+ */
 Hex.prototype.placeShip = function (ship) {
     this.ship = ship;
     this.piecesWrapper.addChild(this.ship.component);
     this.piecesWrapper.updateTextures(this.scene.graph.textures);
 };
 
+/**
+ * Removes ship
+ */
 Hex.prototype.removeShip = function () {
     if (this.ship === null)
         return;
@@ -48,14 +70,26 @@ Hex.prototype.removeShip = function () {
     this.ship = null;
 };
 
+/**
+ * Gets ship.
+ * @returns Ship
+ */
 Hex.prototype.getShip = function () {
     return this.ship;
 };
 
-Hex.prototype.setShip = function(ship){
+/**
+ * Sets ship
+ * @param ship Ship
+ */
+Hex.prototype.setShip = function (ship) {
     this.ship = ship;
 }
 
+/**
+ * Places building
+ * @param building Building
+ */
 Hex.prototype.placeBuilding = function (building) {
     if (this.building !== null)
         return;
@@ -67,6 +101,9 @@ Hex.prototype.placeBuilding = function (building) {
     this.piecesWrapper.updateTextures(this.scene.graph.textures);
 };
 
+/**
+ * Removes building.
+ */
 Hex.prototype.removeBuilding = function () {
     if (this.building === null)
         return;
@@ -75,14 +112,24 @@ Hex.prototype.removeBuilding = function () {
     this.building = null;
 };
 
+/**
+ * Gets building
+ * @returns Building
+ */
 Hex.prototype.getBuilding = function () {
     return this.building;
 };
 
+/**
+ * Highlights the hex.
+ */
 Hex.prototype.highlight = function () {
     this.component.currentMaterial = 1;
 };
 
+/**
+ * Resets the hex highlighting.
+ */
 Hex.prototype.resetHighlighting = function () {
     this.component.currentMaterial = 0;
 };

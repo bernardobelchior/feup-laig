@@ -230,7 +230,7 @@ class Game {
     picked(pickingID) {
         let x = (pickingID - this.board.PICKING_OFFSET) % this.board.columns;
         let y = ((pickingID - this.board.PICKING_OFFSET) / this.board.columns) | 0;
-        if(this.gameState !== GAMESTATE.PLACE_BUILDING)
+        if (this.gameState !== GAMESTATE.PLACE_BUILDING)
             this.selectedHex = this.board.getHex(x, y);
 
         switch (this.gameState) {

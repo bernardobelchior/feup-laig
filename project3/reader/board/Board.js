@@ -1,3 +1,10 @@
+/**
+ * Board class
+ * @param scene Scene
+ * @param boardElements String with board elements
+ * @param components Components
+ * @constructor
+ */
 function Board(scene, boardElements, components) {
     this.scene = scene;
     this.board = [];
@@ -35,6 +42,10 @@ function Board(scene, boardElements, components) {
 Board.prototype = Object.create(Object.prototype);
 Board.prototype.constructor = Board;
 
+/**
+ * Board picking handler
+ * @param pickingID Picking ID.
+ */
 Board.prototype.picked = function (pickingID) {
     let x = (pickingID - this.PICKING_OFFSET) % this.columns;
     let y = ((pickingID - this.PICKING_OFFSET) / this.columns) | 0;
@@ -43,6 +54,12 @@ Board.prototype.picked = function (pickingID) {
     console.log('Selected: ' + this.board[y][x].name);
 };
 
+/**
+ * Gets hex from x,y
+ * @param x X
+ * @param y Y
+ * @returns Hex
+ */
 Board.prototype.getHex = function (x, y) {
     if (x >= this.columns || y >= this.rows) {
         console.log("Invalid Position: " + x + ", " + y);
@@ -52,14 +69,25 @@ Board.prototype.getHex = function (x, y) {
     return this.board[y][x];
 };
 
+/**
+ * Gets the string board.
+ * @returns String board.
+ */
 Board.prototype.getStringBoard = function () {
     return this.boardElements;
 };
 
+/**
+ * Highlights the hex in the given position
+ * @param position Array of x,y
+ */
 Board.prototype.highlight = function (position) {
     this.board[position[1]][position[0]].highlight();
 };
 
+/**
+ * Resets highlighting in all hexes.
+ */
 Board.prototype.resetHighlighting = function () {
     for (let row of this.board) {
         for (let hex of row) {
