@@ -6,7 +6,7 @@
  * @param type Piece type
  * @constructor
  */
-function AuxBoard(scene, numPieces, components, type) {
+function AuxBoard(scene, numPieces, components, type, position) {
     let buildingType;
     switch (type) {
         case PIECE_TYPE.TRADE_STATION:
@@ -23,11 +23,13 @@ function AuxBoard(scene, numPieces, components, type) {
     this.scene = scene;
     this.baseComponent = components[buildingType].component;
     this.numPieces = numPieces;
+    this.position = position;
     this.pieces = [];
     this.component = new Component(scene, "auxBoardWrapper");
     this.component.inheritMaterial = true;
     this.component.texture = 'inherit';
     this.initializePieces();
+    this.component.translate(this.position[0], this.position[1], this.position[2]);
     this.scene.rootNode.addChild(this.component);
 }
 
@@ -38,10 +40,10 @@ AuxBoard.prototype.constructor = AuxBoard;
  * Get a piece, if there are any remaining
  * @returns a piece to be placed on the board
  */
-AuxBoard.prototype.getPiece = function () {
+AuxBoard.prototype.getPiece = function (selectedHex) {
     if (this.pieces.length > 0) {
         let piece = this.pieces.pop();
-        this.component.children.pop();
+        piece.move(selectedHex);
         return piece;
     }
 
@@ -72,13 +74,15 @@ AuxBoard.prototype.putPiece = function () {
         return;
 
     let pieceNo = this.pieces.length;
-    let newPiece = new Piece(this.scene, this.baseComponent, null);
-    let newPieceWrapper = new Component(this.scene, "pieceWrapper");
+    let nextX = (Math.floor(pieceNo / 4) % 4) * 1.1;
+    let nextZ = (pieceNo % 4) * -1.1;
+    let newPiece = new Building(this.scene, this.baseComponent, this, nextX + this.position[0], nextZ + this.position[2]);
+    let newPieceWrapper = new Component(this.scene, "buildingWrapper");
     newPieceWrapper.inheritMaterial = true;
     newPieceWrapper.inheritTexture = true;
     newPieceWrapper.texture = 'inherit';
     newPieceWrapper.addChild(newPiece.component);
-    newPieceWrapper.translate((Math.floor(pieceNo / 4) % 4) * 1.1, 0.0, (pieceNo % 4) * -1.1);
+    newPieceWrapper.translate(nextX, 0.0, nextZ);
     this.component.addChild(newPieceWrapper);
     this.pieces.push(newPiece);
 };

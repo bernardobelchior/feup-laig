@@ -1,11 +1,9 @@
-function Piece(scene, component, hexagon){
-    Object.call(this);
+function Piece(scene, component){
     this.scene = scene;
     this.component = new Component(scene, "pieceWrapper");
     this.component.inheritMaterial = true;
     this.component.texture = "inherit";
     this.component.addChild(component);
-    this.hexagon = hexagon;
     this.animation = null;
 }
 
@@ -25,29 +23,6 @@ Piece.prototype.setAnimation = function(animation){
     this.animation = animation;
 };
 
-Piece.prototype.onAnimationDone = function () {
-    this.hexagon.removeShip();
-    this.component.removeAnimation();
-    this.animation = null;
-    this.setHex(this.nextHex);
-    this.nextHex.placeShip(this);
-};
-
-Piece.prototype.move = function(selectedHex){
-    this.nextHex = selectedHex;
-    let xi = this.hexagon.x;
-    let zi = this.hexagon.z;
-    let xf = selectedHex.x;
-    let zf = selectedHex.z;
-
-    let animationRoot = new ListNode([0,0,0]);
-    let nextNode = new ListNode([xf - xi, 0.0, zf - zi]);
-    animationRoot.next = nextNode;
-    nextNode.next = animationRoot;
-
-    this.setAnimation(new LinearPieceAnimation(this.scene, "shipAnimation", 1.0,
-    animationRoot, this));
-};
 
 
 PIECE_TYPE = {

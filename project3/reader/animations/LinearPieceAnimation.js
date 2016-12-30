@@ -1,6 +1,3 @@
-/**
- * Created by epassos on 12/29/16.
- */
 class LinearPieceAnimation extends LinearAnimation{
     constructor(scene, id, time, listRoot, piece){
         super(scene, id, time, listRoot);

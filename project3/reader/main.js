@@ -18,8 +18,8 @@ serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'primitives/Re
     'ListNode.js', 'primitives/Plane.js', 'primitives/Patch.js', 'primitives/Vehicle.js', 'primitives/Chessboard.js',
     'primitives/Prism.js', 'primitives/Tile.js', 'primitives/tile_decorations/Wormhole.js', 'primitives/UnitCube.js',
     'PrologInterface.js','board/Board.js', 'board/Hex.js', 'board/Game.js', 'board/Piece.js', 'board/AuxBoard.js',
-    'primitives/buildings/SSEColony.js', 'primitives/buildings/SSETradeStation.js', 'board/Play.js',
-    'animations/LinearPieceAnimation.js',
+    'board/Building.js', 'board/Ship.js', 'primitives/buildings/SSEColony.js', 'primitives/buildings/SSETradeStation.js',
+    'board/Play.js', 'animations/LinearPieceAnimation.js',
 
 
 main=function()
