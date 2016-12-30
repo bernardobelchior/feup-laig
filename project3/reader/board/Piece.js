@@ -1,11 +1,9 @@
-function Piece(scene, component, hexagon) {
-    Object.call(this);
+function Piece(scene, component){
     this.scene = scene;
     this.component = new Component(scene, "pieceWrapper");
     this.component.inheritMaterial = true;
     this.component.texture = "inherit";
     this.component.addChild(component);
-    this.hexagon = hexagon;
     this.animation = null;
 }
 

@@ -34,11 +34,11 @@ Hex.prototype.setPickingID = function (pickingID) {
     this.component.setPickingID(pickingID);
 };
 
-Hex.prototype.placeShip = function (piece) {
+Hex.prototype.placeShip = function (ship) {
     if (this.ship !== null)
         return;
 
-    this.ship = piece;
+    this.ship = ship;
     this.piecesWrapper.addChild(this.ship.component);
     this.piecesWrapper.updateTextures(this.scene.graph.textures);
 };
@@ -55,12 +55,14 @@ Hex.prototype.getShip = function () {
     return this.ship;
 };
 
-Hex.prototype.placeBuilding = function (piece) {
+Hex.prototype.placeBuilding = function (building) {
     if (this.building !== null)
         return;
 
-    this.building = piece;
-    this.piecesWrapper.addChild(piece.component);
+    this.building = building;
+    this.piecesWrapper.addChild(this.building.component);
+    this.piecesWrapper.translate(0.0, 0.5, 0.0);
+    this.ship.component.translate(0.0, -0.5, 0.0);
     this.piecesWrapper.updateTextures(this.scene.graph.textures);
 };
 

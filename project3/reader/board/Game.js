@@ -60,13 +60,16 @@ class Game {
 
     createAuxBoards(components) {
         this.colonyBoards = [
-            new AuxBoard(this.scene, 16, components, PIECE_TYPE.COLONY),
-            new AuxBoard(this.scene, 16, components, PIECE_TYPE.COLONY)
+            new AuxBoard(this.scene, 16, components, PIECE_TYPE.COLONY, [0.0, 0.0, 0.0]),
+            new AuxBoard(this.scene, 16, components, PIECE_TYPE.COLONY,
+                [(this.board.columns / 2 ) * 1.9, 0.0, (this.board.rows + 2) * 1.68])
         ];
 
         this.tradeStationBoards = [
-            new AuxBoard(this.scene, 4, components, PIECE_TYPE.TRADE_STATION),
-            new AuxBoard(this.scene, 4, components, PIECE_TYPE.TRADE_STATION)
+            new AuxBoard(this.scene, 4, components, PIECE_TYPE.TRADE_STATION,
+                [(this.board.columns / 2 + 1), 0.0, 0.0]),
+            new AuxBoard(this.scene, 4, components, PIECE_TYPE.TRADE_STATION,
+                [(this.board.columns / 2 + 2), 0.0, (this.board.rows + 2) * 1.68])
         ];
 
         this.colonyBoards[0].setPickingID(AUXBOARD_ID.P1_COLONIES);
@@ -74,10 +77,6 @@ class Game {
 
         this.tradeStationBoards[0].setPickingID(AUXBOARD_ID.P1_STATIONS);
         this.tradeStationBoards[1].setPickingID(AUXBOARD_ID.P2_STATIONS);
-
-        this.tradeStationBoards[0].component.translate((this.board.columns / 2 + 1), 0.0, 0.0);
-        this.colonyBoards[1].component.translate((this.board.columns / 2 ) * 1.9, 0.0, (this.board.rows + 2) * 1.68);
-        this.tradeStationBoards[1].component.translate((this.board.columns / 2 + 2), 0.0, (this.board.rows + 2) * 1.68);
     }
 
     /**
@@ -94,7 +93,7 @@ class Game {
                 let selectedHex = this.board.getHex(x, y);
                 let playerShipComponent = this.components['ship'].component;
 
-                let playerShip = new Piece(this.scene, playerShipComponent, selectedHex);
+                let playerShip = new Ship(this.scene, playerShipComponent, selectedHex);
                 selectedHex.placeShip(playerShip);
             }
         }
@@ -218,7 +217,8 @@ class Game {
     picked(pickingID) {
         let x = (pickingID - this.board.PICKING_OFFSET) % this.board.columns;
         let y = ((pickingID - this.board.PICKING_OFFSET) / this.board.columns) | 0;
-        let selectedHex = this.board.getHex(x, y);
+        if(this.gameState !== GAMESTATE.PLACE_BUILDING)
+            this.selectedHex = this.board.getHex(x, y);
 
         switch (this.gameState) {
             case GAMESTATE.NORMAL:
@@ -228,7 +228,7 @@ class Game {
                         this.selected = {
                             playerNo: this.currentPlayer,
                             shipNo: ship,
-                            shipPiece: selectedHex.getShip()
+                            shipPiece: this.selectedHex.getShip()
                         };
 
                         this.gameState = GAMESTATE.PLACE_SHIP;
@@ -245,26 +245,27 @@ class Game {
                     this.lastMoves.push(play);
 
                     moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
-                    this.selected.shipPiece.move(selectedHex);
+                    this.selected.shipPiece.move(this.selectedHex);
                 }
                 break;
             case GAMESTATE.PLACE_BUILDING:
                 if (this.selected.shipPiece.animation)
                     return;
                 let shipPosition = this.ships[this.selected.playerNo][this.selected.shipNo];
+                console.log(this.selectedHex);
 
                 if (this.currentPlayer === 0) {
                     if (pickingID !== AUXBOARD_ID.P1_COLONIES && pickingID !== AUXBOARD_ID.P1_STATIONS)
                         break;
 
                     if (pickingID === AUXBOARD_ID.P1_COLONIES) {
-                        let colony = this.colonyBoards[this.currentPlayer].getPiece();
-                        this.selected.shipPiece.getHex().placeBuilding(colony);
+                        let colony = this.colonyBoards[this.currentPlayer].getPiece(this.selectedHex);
+                        // this.selected.shipPiece.getHex().placeBuilding(colony);
                         placeColony(this.colonies, this.selected.playerNo, this.selected.shipNo, [shipPosition[0], shipPosition[1]], this.onColoniesChanged.bind(this))
                     }
                     else {
-                        let tradeStation = this.tradeStationBoards[this.currentPlayer].getPiece();
-                        this.selected.shipPiece.getHex().placeBuilding(tradeStation);
+                        let tradeStation = this.tradeStationBoards[this.currentPlayer].getPiece(this.selectedHex);
+                        // this.selected.shipPiece.getHex().placeBuilding(tradeStation);
                         placeTradeStation(this.tradeStations, this.selected.playerNo, this.selected.shipNo, [shipPosition[0], shipPosition[1]], this.onTradeStationsChanged.bind(this))
                     }
                 }
@@ -273,13 +274,13 @@ class Game {
                         break;
 
                     if (pickingID === AUXBOARD_ID.P2_COLONIES) {
-                        let colony = this.colonyBoards[this.currentPlayer].getPiece();
-                        this.selected.shipPiece.getHex().placeBuilding(colony);
+                        let colony = this.colonyBoards[this.currentPlayer].getPiece(this.selectedHex);
+                        // this.selected.shipPiece.getHex().placeBuilding(colony);
                         placeColony(this.colonies, this.selected.playerNo, this.selected.shipNo, [shipPosition[0], shipPosition[1]], this.onColoniesChanged.bind(this))
                     }
                     else {
-                        let tradeStation = this.tradeStationBoards[this.currentPlayer].getPiece();
-                        this.selected.shipPiece.getHex().placeBuilding(tradeStation);
+                        let tradeStation = this.tradeStationBoards[this.currentPlayer].getPiece(this.selectedHex);
+                        // this.selected.shipPiece.getHex().placeBuilding(tradeStation);
                         placeTradeStation(this.tradeStations, this.selected.playerNo, this.selected.shipNo, [shipPosition[0], shipPosition[1]], this.onTradeStationsChanged.bind(this))
                     }
 
