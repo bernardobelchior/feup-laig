@@ -32,6 +32,21 @@ Ship.prototype.onAnimationDone = function () {
     this.nextHex.placeShip(this);
 };
 
+Ship.prototype.liftForBuilding = function(){
 
+    let shipAnimationRoot = new ListNode([0.0, 0.0, 0.0]);
+    let node2 = new ListNode([0.0, 2.0, 0.0]);
+    let node3 = new ListNode([0.0, 2.0001, 0.0]);
+    let node4 = new ListNode([0.0, 1.0, 0.0]);
 
+    shipAnimationRoot.next = node2;
+    node2.next = node3;
+    node3.next = node4;
+    node4.next = shipAnimationRoot;
+
+    this.setAnimation(new LinearPieceAnimation(this.scene, "shipLiftAnimation", 3.0,
+        shipAnimationRoot, this));
+
+    this.component.translate(0.0, 0.5, 0.0);
+};
 
