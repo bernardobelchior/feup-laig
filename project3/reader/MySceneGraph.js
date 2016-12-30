@@ -639,12 +639,9 @@ MySceneGraph.prototype.parseComponentChildren = function (components, component,
             if(component.getId() !== "root")
             children.push(id);
 
-            // else children.push(id);//TODO remove, only for debugarino, if found, it's Bernardo's fault
-
         } else if(component.getId() !== "root") //primitiveref
             component.addChild(this.primitives[id]);
 
-        // else component.addChild(this.primitives[id]);//TODO, remove, it's only for debugging, Nardo did it :'(
     }
 
     components[component.getId()] = {
@@ -770,6 +767,15 @@ MySceneGraph.prototype.parsePrimitives = function (primitives) {
             case "SSEcolony":
                 object = new SSEColony(this.scene);
                 break;
+
+            case "legacy_colony":
+                object = new Cylinder(this.scene, 0.9, 0.9, 0.6, 10, 1);
+                break;
+
+            case "legacy_vehicle":
+                object = new LegacyVehicle(this.scene);
+                break;
+
 
             default:
                 return ('Unknown primitive found ' + shape.nodeName + '.');

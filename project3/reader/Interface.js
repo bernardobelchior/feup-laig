@@ -32,8 +32,11 @@ Interface.prototype.init = function (application) {
         newGame: this.requestNewConfig,
         gameMode: GAMEMODE.HUMAN_VS_HUMAN,
         botDifficulty: BOT_DIFFICULTY.EASY,
+        theme: THEME.NORMAL,
+        loadTheme: this.loadTheme,
         scene: this.scene
     };
+
 
     this.gui.add(menu, 'undo').name('Undo');
     this.gui.add(menu, 'replay').name('Replay');
@@ -50,6 +53,11 @@ Interface.prototype.init = function (application) {
     }).name('Bot Difficulty');
 
     configFolder.add(this.scene.game, 'moveTime', 60, 240).name('Move Time');
+    configFolder.add(config, 'theme', {
+        'SSE Legacy Edition': THEME.LEGACY,
+        'Normal Small Star Empires': THEME.NORMAL
+    }).name('Theme');
+    configFolder.add(config, 'loadTheme').name('Load Theme');
     configFolder.add(config, 'newGame').name('New Game');
     configFolder.open();
 
@@ -85,4 +93,10 @@ Interface.prototype.processKeyUp = function (event) {
  */
 Interface.prototype.addLightControls = function (i, id) {
     this.lightGroup.add(this.scene.lightStatus, i, this.scene.lightStatus[i]).name(id);
+};
+
+Interface.prototype.loadTheme = function () {
+    console.log(this.theme);
+    this.scene.loadTheme(this.theme);
+
 }

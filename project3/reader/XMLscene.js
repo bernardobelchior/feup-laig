@@ -13,8 +13,6 @@ XMLscene.prototype.constructor = XMLscene;
 XMLscene.prototype.init = function (application) {
     CGFscene.prototype.init.call(this, application);
 
-    this.colony = new SSETradeStation(this);
-
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
     this.gl.clearDepth(100.0);
@@ -33,7 +31,9 @@ XMLscene.prototype.init = function (application) {
     this.setUpdatePeriod(1 / 60 * 1000);
 
     this.setPickEnabled(true);
+    this.theme = 0;
     this.game = new Game();
+
 };
 
 /**
@@ -70,15 +70,25 @@ XMLscene.prototype.onGraphLoaded = function () {
     this.graph.loadedOk = true;
 };
 
+XMLscene.prototype.loadTheme = function(theme){
+    if(theme == THEME.NORMAL){
+        var filename=getUrlVars()['file'] || "LAIG_TP3_DSX_T2_G06_v01.dsx";
+        this.graph = new MySceneGraph(filename, this);
+    }
+    else {
+        var filename=getUrlVars()['file'] || "LAIG_TP3_DSX_T2_G06_v02.dsx";
+        this.graph = new MySceneGraph(filename, this);
+    }
+};
 /**
  * Initializes game class.
  * @param gameMode Game mode.
  * @param data Response
  * @param botDifficulty Bot difficulty
  */
-XMLscene.prototype.newGame = function (gameMode, botDifficulty, data) {
-    this.rootNode.children = [];
+XMLscene.prototype.newGame = function (gameMode, botDifficulty,  data) {
 
+    this.rootNode.children = [];
     //Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes
     let response = JSON.parse(data.target.response);
     let board = response[0];

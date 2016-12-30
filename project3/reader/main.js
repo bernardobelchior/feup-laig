@@ -19,7 +19,7 @@ serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'primitives/Re
     'primitives/Prism.js', 'primitives/Tile.js', 'primitives/tile_decorations/Wormhole.js', 'primitives/UnitCube.js',
     'PrologInterface.js','board/Board.js', 'board/Hex.js', 'board/Game.js', 'board/Piece.js', 'board/AuxBoard.js',
     'board/Building.js', 'board/Ship.js', 'primitives/buildings/SSEColony.js', 'primitives/buildings/SSETradeStation.js',
-    'board/Play.js', 'animations/LinearPieceAnimation.js',
+    'board/Play.js', 'animations/LinearPieceAnimation.js', 'primitives/buildings/LegacyVehicle.js',
 
 
 main=function()
@@ -41,7 +41,7 @@ main=function()
 	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml
 	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor)
 
-	var filename=getUrlVars()['file'] || "LAIG_TP3_DSX_T2_G06_v01.dsx";
+	var filename=getUrlVars()['file'] || "LAIG_TP3_DSX_T2_G06_v02.dsx";
 
 	// create and load graph, and associate it to scene.
 	// Check console for loading errors

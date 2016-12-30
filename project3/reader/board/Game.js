@@ -722,3 +722,8 @@ BOT_DIFFICULTY = {
     EASY: 0,
     HARD: 1
 };
+
+THEME = {
+    NORMAL: 0,
+    LEGACY: 1,
+};
