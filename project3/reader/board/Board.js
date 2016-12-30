@@ -67,3 +67,14 @@ Board.prototype.resetHighlighting = function () {
         }
     }
 };
+
+/**
+ * Visually deletes hex information.
+ */
+Board.prototype.resetHexes = function () {
+    for (let row of this.board)
+        for (let hex of row) {
+            hex.removeShip();
+            hex.removeBuilding();
+        }
+};

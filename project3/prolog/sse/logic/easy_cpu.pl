@@ -5,15 +5,14 @@
 easy_cpu_select_ship_movement(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, NewShips, ShipNo):-
   easy_cpu_select_ship(NumShipsPerPlayer, NewShipNo),
   get_piece_position(Ships, CurrentPlayer, NewShipNo, ShipPosition),
-  list_valid_moves(Board, Ships, TradeStations, Colonies, Wormholes, ShipPosition, ValidMoves), get_char(_),
+  list_valid_moves(Board, Ships, TradeStations, Colonies, Wormholes, ShipPosition, ValidMoves),
   list_length(ValidMoves, ValidMovesLength),
   ValidMovesLength > 0,
   easy_cpu_select_ship_direction(ValidMoves, ValidMovesLength, Direction),
   easy_cpu_do_appropriate_move(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, NewShipNo, ShipPosition, Direction, NewShips),
   PrintShip is NewShipNo + 1,
   ShipNo is NewShipNo,
-  PlayerActualNo is CurrentPlayer + 1,
-  nl, write('CPU'), write(PlayerActualNo), write(' moved Ship '), write(PrintShip), write(' '), write(Direction), write(' and').
+  PlayerActualNo is CurrentPlayer + 1.
 
  easy_cpu_select_ship_movement(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, NewShips, ShipNo):-
   easy_cpu_select_ship_movement(Board, Ships, TradeStations, Colonies, Wormholes, NumPlayers, NumShipsPerPlayer, CurrentPlayer, NewShips, ShipNo).
@@ -42,9 +41,7 @@ easy_cpu_select_ship_action(Ships, PlayerNo, ShipNo,TradeStations, Colonies,  Ne
   easy_cpu_select_action(ReadAction),
   convert_number_to_action(ReadAction,Action),
   valid_action(Action, PlayerNo, TradeStations, Colonies),!,
-  perform_action(Ships, PlayerNo, ShipNo, Action, TradeStations, Colonies, NewTradeStations, NewColonies),
-  write(' placed a '), print_changes(TradeStations, NewTradeStations, Colonies, NewColonies), write('.'), nl,
-  write('Press any key to continue..'),get_char(_).
+  perform_action(Ships, PlayerNo, ShipNo, Action, TradeStations, Colonies, NewTradeStations, NewColonies).
 
 easy_cpu_select_ship_action(Ships, PlayerNo, ShipNo, TradeStations, Colonies,  NewTradeStations, NewColonies) :-
   easy_cpu_select_ship_action(Ships, PlayerNo, ShipNo, TradeStations, Colonies,  NewTradeStations, NewColonies).

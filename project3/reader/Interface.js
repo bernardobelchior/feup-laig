@@ -24,23 +24,32 @@ Interface.prototype.init = function (application) {
 
     let menu = {
         undo: this.scene.game.undo.bind(this.scene.game),
+        replay: this.scene.game.askForReplay.bind(this.scene.game),
         scene: this.scene
     };
 
     let config = {
         newGame: this.requestNewConfig,
-        gameMode: 0,
+        gameMode: GAMEMODE.HUMAN_VS_HUMAN,
+        botDifficulty: BOT_DIFFICULTY.EASY,
         scene: this.scene
     };
 
     this.gui.add(menu, 'undo').name('Undo');
+    this.gui.add(menu, 'replay').name('Replay');
     let configFolder = this.gui.addFolder('Configuration');
     configFolder.add(config, 'gameMode', {
-        'Human vs Human': 0,
-        'Human vs CPU': 1,
-        'CPU vs CPU': 2,
+        'Human vs Human': GAMEMODE.HUMAN_VS_HUMAN,
+        'Human vs CPU': GAMEMODE.HUMAN_VS_CPU,
+        'CPU vs CPU': GAMEMODE.CPU_VS_CPU,
     }).name('Game Mode');
 
+    configFolder.add(config, 'botDifficulty', {
+        'Easy': BOT_DIFFICULTY.EASY,
+        'Hard': BOT_DIFFICULTY.HARD
+    }).name('Bot Difficulty');
+
+    configFolder.add(this.scene.game, 'moveTime', 60, 240).name('Move Time');
     configFolder.add(config, 'newGame').name('New Game');
     configFolder.open();
 
@@ -51,7 +60,7 @@ Interface.prototype.init = function (application) {
  * Gets initial configuration from Prolog.
  */
 Interface.prototype.requestNewConfig = function () {
-    getPrologRequest('initialConfig', this.scene.newGame.bind(this.scene, this.gameMode));
+    getPrologRequest('initialConfig', this.scene.newGame.bind(this.scene, this.gameMode, this.botDifficulty));
 };
 
 Interface.prototype.processKeyDown = function (event) {

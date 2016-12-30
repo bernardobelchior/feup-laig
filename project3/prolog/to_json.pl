@@ -38,4 +38,4 @@ list_to_json([Element | Rest], [JSONElem | JsonRest]):-
 key_value_to_json_obj([K-V | Ls], [PropName:PropVal | Os]):-
     surround(K, '"', '"', PropName),
     json(V, PropVal),
-    key_value_to_json_obj(Ls, Os).
+    key_value_to_json_obj(Ls, Os).*/

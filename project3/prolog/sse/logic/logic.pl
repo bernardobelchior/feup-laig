@@ -70,7 +70,7 @@ change_piece_position(PieceList, PlayerNo, PieceNo, NewPiecePosition, NewPieceLi
   list_get_nth(PieceList, PlayerNo, PlayerPieces),
   list_replace_nth(PlayerPieces, PieceNo, NewPiecePosition, NewPlayerPieces),
   list_replace_nth(PieceList, PlayerNo, NewPlayerPieces, NewPieceList).
-  
+
 move(Ships, PlayerNo, ShipNo, NewShipPosition, NewShips):-
   list_get_nth(Ships, PlayerNo, PlayerShips),
   list_replace_nth(PlayerShips, ShipNo, NewShipPosition, NewPlayerShips),
@@ -141,9 +141,6 @@ valid_action(colony, Player, _TradeStations, Colonies) :-
 valid_action(tradeStation, Player, TradeStations, _Colonies) :-
   list_get_nth(TradeStations, Player, PlayerTradeStations), !,
   player_has_trade_stations(PlayerTradeStations), !.
-
-valid_action(_Action, _Player, _TradeStations, _Colonies) :-
-  write('Player has no buildings of requested type'), fail.
 
 %places the trade station or colony
 perform_action(Ships, PlayerNo, ShipNo, tradeStation, TradeStations, Colonies, NewTradeStations, NewColonies):-

@@ -94,3 +94,51 @@ function getValidMoves(board, ships, tradeStations, colonies, wormholes, positio
 
     getPrologRequest(requestString, callback);
 }
+
+function easyCPUMove(board, ships, tradeStations, colonies, wormholes, playerNo, callback) {
+    let requestString = 'easy_cpu_move('
+        + JSON.stringify(board).replace(/"/g, '') + ','
+        + JSON.stringify(ships) + ','
+        + JSON.stringify(tradeStations) + ','
+        + JSON.stringify(colonies) + ','
+        + JSON.stringify(wormholes) + ','
+        + '2,3,'
+        + playerNo + ')';
+
+    getPrologRequest(requestString, callback);
+}
+
+function easyCPUPlaceBuilding(ships, playerNo, shipNo, tradeStations, colonies, callback) {
+    let requestString = 'easy_cpu_select_action('
+        + JSON.stringify(ships) + ','
+        + playerNo + ','
+        + shipNo + ','
+        + JSON.stringify(tradeStations) + ','
+        + JSON.stringify(colonies) + ')';
+
+    getPrologRequest(requestString, callback);
+}
+
+function hardCPUMove(board, ships, tradeStations, colonies, wormholes, playerNo, callback) {
+    let requestString = 'hard_cpu_move('
+        + JSON.stringify(board).replace(/"/g, '') + ','
+        + JSON.stringify(ships) + ','
+        + JSON.stringify(tradeStations) + ','
+        + JSON.stringify(colonies) + ','
+        + JSON.stringify(wormholes) + ','
+        + '2,3,'
+        + playerNo + ')';
+
+    getPrologRequest(requestString, callback);
+}
+
+function hardCPUPlaceBuilding(ships, playerNo, shipNo, tradeStations, colonies, callback) {
+    let requestString = 'hard_cpu_select_action('
+        + JSON.stringify(ships) + ','
+        + playerNo + ','
+        + shipNo + ','
+        + JSON.stringify(tradeStations) + ','
+        + JSON.stringify(colonies) + ')';
+
+    getPrologRequest(requestString, callback);
+}

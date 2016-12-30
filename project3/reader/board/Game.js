@@ -5,33 +5,47 @@ class Game {
      */
     constructor() {
         this.running = false;
+        this.moveTime = 120;
     }
 
     /**
      * Sets new game scene and resets game state. Should be called after initialization of all variables.
      * @param scene
+     * @param gameMode
      */
     newGame(scene, gameMode) {
+        this.running = false;
         this.scene = scene;
         this.gameMode = gameMode;
-        this.gameState = GAMESTATE.NORMAL;
         this.currentPlayer = 0;
+        this.botIsPlaying = false;
         this.lastMoves = [];
+        this.botDifficulty = [BOT_DIFFICULTY.EASY, BOT_DIFFICULTY.EASY];
     }
 
     /**
      * Sets the game state and runs the game.
      */
     startGame() {
-        // Deep clone structures the change during the game.
-        // May be used later in replay
         this.initialShips = JSON.parse(JSON.stringify(this.ships));
-        this.initialTradeStations = JSON.parse(JSON.stringify(this.tradeStations));
-        this.initialColonies = JSON.parse(JSON.stringify(this.colonies));
 
+        /* Needed in order to use === or switches afterwards.
+         * For some reason, the value from the interface has not the correct type
+         * (Even though it is initialized with the GAMEMODE object/enum) */
+        if (this.gameMode == GAMEMODE.CPU_VS_CPU) {
+            this.gameMode = GAMEMODE.CPU_VS_CPU;
+            this.gameState = GAMESTATE.BOT_PLAY;
+        } else {
+            if (this.gameMode == GAMEMODE.HUMAN_VS_CPU)
+                this.gameMode = GAMEMODE.HUMAN_VS_CPU;
+            else
+                this.gameMode = GAMEMODE.CPU_VS_CPU;
+            this.gameState = GAMESTATE.NORMAL;
+        }
 
         this.running = true;
-        this.lastMoveTime = Date.now();
+        this.timeSinceLastPlay = 0;
+        this.fullGameTime = 0;
     }
 
     /**
@@ -41,6 +55,7 @@ class Game {
      */
     createBoard(boardElements, components) {
         this.board = new Board(this.scene, boardElements, components);
+        this.components = components;
     }
 
     createAuxBoards(components) {
@@ -76,7 +91,7 @@ class Game {
                 let y = ship[1];
 
                 let selectedHex = this.board.getHex(x, y);
-                let playerShipComponent = components['ship'].component;
+                let playerShipComponent = this.components['ship'].component;
 
                 let playerShip = new Ship(this.scene, playerShipComponent, selectedHex);
                 selectedHex.placeShip(playerShip);
@@ -126,22 +141,6 @@ class Game {
     }
 
     /**
-     * Sets the number of colonies the players can still place on the board
-     * @param numColonies maximum number of colonies the players can have on the board
-     */
-    setRemainingColonies(numColonies) {
-        this.remainingColonies = [numColonies, numColonies];
-    }
-
-    /**
-     * Sets the number of Trade Stations the players can still place on the board
-     * @param numTradeStations maximum number of trade stations the players can have on the board
-     */
-    setRemainingTradeStations(numTradeStations) {
-        this.remainingTradeStations = [numTradeStations, numTradeStations];
-    }
-
-    /**
      * Returns if the game is running.
      * @returns {boolean} Whether the game is running or not.
      */
@@ -162,7 +161,7 @@ class Game {
      * @returns {number}
      */
     getTimeSinceLastPlay() {
-        return 120 - (Date.now() - this.lastMoveTime) / 1000 | 0;
+        return this.moveTime - this.timeSinceLastPlay | 0;
     }
 
     /**
@@ -196,11 +195,15 @@ class Game {
         }
     }
 
+    /**
+     * Displays valid moves.
+     * @param data response.
+     */
     displayValidMoves(data) {
-        let validDirections = JSON.parse(data.target.response);
+        this.validDirections = JSON.parse(data.target.response);
         let initialPosition = this.ships[this.selected.playerNo][this.selected.shipNo];
 
-        for (let direction of validDirections) {
+        for (let direction of this.validDirections) {
             let position = initialPosition.slice();
             while ((position = moveInDirection(this.board.rows, this.board.columns, direction, position[0], position[1])))
                 this.board.highlight(position);
@@ -236,15 +239,17 @@ class Game {
             case GAMESTATE.PLACE_SHIP:
                 let position = this.ships[this.currentPlayer][this.selected.shipNo];
 
-                let play = new Play();
-                play.setShipMovement(this.currentPlayer, this.selected.shipNo, [position[0], position[1]]);
-                this.lastMoves.push(play);
+                if (this.isMoveValid(position, [x, y], this.validDirections)) {
+                    let play = new Play();
+                    play.setShipMovement(this.currentPlayer, this.selected.shipNo, [position[0], position[1]], [x, y]);
+                    this.lastMoves.push(play);
 
-                moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
-                this.selected.shipPiece.move(this.selectedHex);
+                    moveShip(this.ships, this.selected.playerNo, this.selected.shipNo, [x, y], this.onShipsChanged.bind(this));
+                    this.selected.shipPiece.move(this.selectedHex);
+                }
                 break;
             case GAMESTATE.PLACE_BUILDING:
-                if(this.selected.shipPiece.animation)
+                if (this.selected.shipPiece.animation)
                     return;
                 let shipPosition = this.ships[this.selected.playerNo][this.selected.shipNo];
                 console.log(this.selectedHex);
@@ -286,10 +291,41 @@ class Game {
     }
 
     /**
+     * Checks if the direction is valid.
+     * @param source Source position
+     * @param destination Destination position
+     * @param validDirections Valid ship directions.
+     * @returns {boolean} whether or not the ship can be moved in the specified direction.
+     */
+    isMoveValid(source, destination, validDirections) {
+        if (destination[0] > source[0]) {
+            if (destination[1] < source[1]) {
+                if (destination[0] - source[0] === source[1] - destination[1])
+                    return validDirections.includes('northeast');
+            } else if (destination[1] === source[1]) {
+                return validDirections.includes('east');
+            }
+        } else if (destination[0] === source[0]) {
+            if (destination[1] < source[1])
+                return validDirections.includes('northwest');
+            else if (destination[1] > source[1])
+                return validDirections.includes('southeast');
+        } else {
+            if (destination[1] > source[1]) {
+                if (source[0] - destination[0] === destination[1] - source[1])
+                    return validDirections.includes('southwest');
+            } else if (destination[1] === source[1])
+                return validDirections.includes('west');
+        }
+
+        return false;
+    }
+
+    /**
      * Changes the game back to normal game state.
      */
     cancelMode() {
-        if (this.gameState !== GAMESTATE.PLACE_BUILDING) {
+        if (this.gameState === GAMESTATE.PLACE_SHIP) {
             this.gameState = GAMESTATE.NORMAL;
             this.board.resetHighlighting();
             this.selected = null;
@@ -352,12 +388,10 @@ class Game {
      */
     onTradeStationsChanged(data) {
         this.setTradeStations(JSON.parse(data.target.response));
-        this.gameState = GAMESTATE.NORMAL;
         this.selected = null;
         this.nextPlayer();
 
-        let buildingPosition = this.tradeStations[this.currentPlayer][this.tradeStations.length - 1];
-        this.lastMoves[this.lastMoves.length - 1].setBuildingPlacement(PIECE_TYPE.TRADE_STATION, this.tradeStations.length - 1, buildingPosition);
+        this.lastMoves[this.lastMoves.length - 1].setBuildingPlacement(PIECE_TYPE.TRADE_STATION, this.tradeStations.length - 1);
 
         if (this.onScoreCanChange)
             this.onScoreCanChange();
@@ -369,12 +403,10 @@ class Game {
      */
     onColoniesChanged(data) {
         this.setColonies(JSON.parse(data.target.response));
-        this.gameState = GAMESTATE.NORMAL;
         this.selected = null;
         this.nextPlayer();
 
-        let buildingPosition = this.colonies[this.currentPlayer][this.colonies.length - 1];
-        this.lastMoves[this.lastMoves.length - 1].setBuildingPlacement(PIECE_TYPE.COLONY, this.colonies.length - 1, buildingPosition);
+        this.lastMoves[this.lastMoves.length - 1].setBuildingPlacement(PIECE_TYPE.COLONY, this.colonies.length - 1);
 
         if (this.onScoreCanChange)
             this.onScoreCanChange();
@@ -385,10 +417,34 @@ class Game {
      */
     previousPlayer() {
         this.currentPlayer = (this.currentPlayer - 1) % 2;
-        this.lastMoveTime = Date.now();
+        this.updateGameState();
+        this.fullGameTime -= this.timeSinceLastPlay;
+        this.timeSinceLastPlay = 0;
 
-        if (this.onPlayerChanged)
+        if (this.replayPending)
+            this.startReplay();
+        else if (this.onPlayerChanged)
             this.onPlayerChanged();
+    }
+
+    /**
+     * Updates the game state based on the game mode.
+     */
+    updateGameState() {
+        switch (this.gameMode) {
+            case GAMEMODE.HUMAN_VS_HUMAN:
+                this.gameState = GAMESTATE.NORMAL;
+                break;
+            case GAMEMODE.HUMAN_VS_CPU:
+                if (this.currentPlayer === 1)
+                    this.gameState = GAMESTATE.BOT_PLAY;
+                else
+                    this.gameState = GAMESTATE.NORMAL;
+                break;
+            case GAMEMODE.CPU_VS_CPU:
+                this.gameState = GAMESTATE.BOT_PLAY;
+                break;
+        }
     }
 
     /**
@@ -396,9 +452,13 @@ class Game {
      */
     nextPlayer() {
         this.currentPlayer = (this.currentPlayer + 1) % 2;
-        this.lastMoveTime = Date.now();
+        this.updateGameState();
+        this.fullGameTime += this.timeSinceLastPlay;
+        this.timeSinceLastPlay = 0;
 
-        if (this.onPlayerChanged)
+        if (this.replayPending)
+            this.startReplay();
+        else if (this.onPlayerChanged)
             this.onPlayerChanged();
     }
 
@@ -407,18 +467,217 @@ class Game {
      * @param deltaTime Delta time since last update.
      */
     update(deltaTime) {
-        if (this.getTimeSinceLastPlay() <= 0) {
+        if (!this.running)
+            return;
+
+        if (this.getTimeSinceLastPlay() < 0) {
             this.lastMoves.push(new Play());
             this.board.resetHighlighting();
             this.nextPlayer();
         }
+
+        if (this.gameState !== GAMESTATE.REPLAY)
+            this.timeSinceLastPlay += deltaTime / 1000;
+
+        if (this.gameState === GAMESTATE.BOT_PLAY && !this.botIsPlaying) {
+            this.botIsPlaying = true;
+            window.setTimeout(this.botPlay.bind(this), 3000);
+        }
+    }
+
+    /**
+     * Function that executes the request to make the bot play.
+     */
+    botPlay() {
+        this.lastMoves.push(new Play());
+
+        if (this.botDifficulty[this.currentPlayer] === BOT_DIFFICULTY.EASY)
+            easyCPUMove(this.board.getStringBoard(), this.ships, this.tradeStations, this.colonies, this.wormholes, this.currentPlayer, this.botMoved.bind(this));
+        else
+            hardCPUMove(this.board.getStringBoard(), this.ships, this.tradeStations, this.colonies, this.wormholes, this.currentPlayer, this.botMoved.bind(this));
+    }
+
+    /**
+     * Function called when the bot has moved its ships.
+     * @param data Ship movement request response.
+     */
+    botMoved(data) {
+        let response = JSON.parse(data.target.response);
+
+        let newShips = response[0];
+        let shipMoved = response[1];
+
+        let oldPosition = this.ships[this.currentPlayer][shipMoved];
+        let newPosition = newShips[this.currentPlayer][shipMoved];
+
+        let destinationHex = this.board.getHex(newPosition[0], newPosition[1]);
+        this.lastMoves[this.lastMoves.length - 1].setShipMovement(this.currentPlayer, shipMoved, oldPosition, newPosition);
+        this.board.getHex(oldPosition[0], oldPosition[1]).getShip().move(destinationHex);
+
+        this.ships = newShips;
+
+        if (this.botDifficulty[this.currentPlayer] === BOT_DIFFICULTY.EASY)
+            easyCPUPlaceBuilding(this.ships, this.currentPlayer, shipMoved, this.tradeStations, this.colonies, this.botPlacedBuilding.bind(this, newPosition));
+        else
+            hardCPUPlaceBuilding(this.ships, this.currentPlayer, shipMoved, this.tradeStations, this.colonies, this.botPlacedBuilding.bind(this, newPosition));
+    }
+
+    /**
+     * Function called when the bot has moved its ship and needs to select an action.
+     * @param data Action choice request response.
+     */
+    botPlacedBuilding(shipPosition, data) {
+        let response = JSON.parse(data.target.response);
+
+        let newTradeStations = response[0];
+        let newColonies = response[1];
+
+        let lastMove = this.lastMoves[this.lastMoves.length - 1];
+        let building;
+
+        if (newTradeStations[this.currentPlayer].length !== this.tradeStations[this.currentPlayer].length) {
+            lastMove.setBuildingPlacement(PIECE_TYPE.TRADE_STATION, this.tradeStations[this.currentPlayer].length);
+            building = this.tradeStationBoards[this.currentPlayer].getPiece();
+        }
+        else {
+            lastMove.setBuildingPlacement(PIECE_TYPE.COLONY, this.colonies[this.currentPlayer].length);
+            building = this.colonyBoards[this.currentPlayer].getPiece();
+        }
+
+        if (building)
+            this.board.getHex(shipPosition[0], shipPosition[1]).placeBuilding(building);
+
+        this.tradeStations = newTradeStations;
+        this.colonies = newColonies;
+
+
+        window.setTimeout(this.botFinishedPlay.bind(this), 2500);
+    }
+
+    /**
+     * Function called when the bot has finished its play.
+     */
+    botFinishedPlay() {
+        this.botIsPlaying = false;
+        this.nextPlayer();
+
+        if (this.onScoreCanChange)
+            this.onScoreCanChange();
+    }
+
+    /**
+     * Sets the replay pending flag to true.
+     */
+    askForReplay() {
+        this.replayPending = true;
+    }
+
+    /**
+     * Function called to replay the game.
+     */
+    startReplay() {
+        if (!this.running || !this.lastMoves.length || this.gameState === GAMESTATE.REPLAY)
+            return;
+
+        this.replayShips = JSON.parse(JSON.stringify(this.initialShips));
+        this.replayTradeStationBoards = [
+            new AuxBoard(this.scene, 4, this.components, PIECE_TYPE.TRADE_STATION),
+            new AuxBoard(this.scene, 4, this.components, PIECE_TYPE.TRADE_STATION)
+        ];
+
+        this.replayColonyBoards = [
+            new AuxBoard(this.scene, 16, this.components, PIECE_TYPE.COLONY),
+            new AuxBoard(this.scene, 16, this.components, PIECE_TYPE.COLONY)
+        ];
+
+        this.board.resetHexes();
+        for (let player of this.replayShips) {
+            for (let ship of player) {
+                let selectedHex = this.board.getHex(ship[0], ship[1]);
+                let playerShipComponent = this.components['ship'].component;
+
+                let playerShip = new Piece(this.scene, playerShipComponent, selectedHex);
+                selectedHex.placeShip(playerShip);
+            }
+        }
+
+        this.gameState = GAMESTATE.REPLAY;
+        if (this.currentPlayer === 0) {
+            this.scene.nextCamera();
+            window.setTimeout(this.replayMove.bind(this, 0), 1500);
+        } else
+            this.replayMove(0);
+    }
+
+    /**
+     * Replays the move with the given index
+     * @param index Play index
+     */
+    replayMove(index) {
+        let move = this.lastMoves[index];
+
+        if (!move) {
+            if (this.lastMoves[this.lastMoves.length - 1].playerNo !== this.currentPlayer)
+                this.scene.nextCamera();
+
+            this.initializeShips(this.ships, this.components);
+            this.replayPending = false;
+            this.updateGameState();
+            this.nextPlayer();
+            return;
+        }
+
+        this.replayShips[move.playerNo][move.shipNo] = move.newShipPosition;
+        let selectedHex = this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]);
+        this.board.getHex(move.oldShipPosition[0], move.oldShipPosition[1]).getShip().move(selectedHex);
+
+        window.setTimeout(this.replayBuildingPlacement.bind(this), 1000, index);
+    }
+
+    /**
+     * Replays the building placement with the given index.
+     * @param index Play index
+     */
+    replayBuildingPlacement(index) {
+        let move = this.lastMoves[index];
+
+        let piece;
+        if (move.pieceType === PIECE_TYPE.TRADE_STATION)
+            piece = this.replayTradeStationBoards[move.playerNo].getPiece();
+        else
+            piece = this.replayColonyBoards[move.playerNo].getPiece();
+
+        this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]).placeBuilding(piece);
+
+        if (index !== this.lastMoves.length - 1)
+            this.scene.nextCamera();
+
+        window.setTimeout(this.replayMove.bind(this), 2000, index + 1);
+    }
+
+    getTimeElapsed() {
+        return this.fullGameTime + this.timeSinceLastPlay | 0;
+    }
+
+    setBotDifficulty(first, second) {
+        this.botDifficulty[0] = first;
+        this.botDifficulty[1] = second;
     }
 }
 
 GAMESTATE = {
     NORMAL: 0,
     PLACE_SHIP: 1,
-    PLACE_BUILDING: 2
+    PLACE_BUILDING: 2,
+    GAME_OVER: 3,
+    BOT_PLAY: 4,
+    REPLAY: 5
+};
+
+GAMEMODE = {
+    HUMAN_VS_HUMAN: 0,
+    HUMAN_VS_CPU: 1,
+    CPU_VS_CPU: 2
 };
 
 AUXBOARD_ID = {
@@ -426,4 +685,9 @@ AUXBOARD_ID = {
     P1_STATIONS: 2,
     P2_COLONIES: 3,
     P2_STATIONS: 4
+};
+
+BOT_DIFFICULTY = {
+    EASY: 0,
+    HARD: 1
 };

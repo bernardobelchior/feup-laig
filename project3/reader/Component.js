@@ -261,8 +261,8 @@ Component.prototype.removeChild = function (childComponent) {
     }
 };
 
-Component.prototype.removeAnimation = function(){
-    if(!this.animationsRoot)
+Component.prototype.removeAnimation = function () {
+    if (!this.animationsRoot)
         return;
 
     this.animationsRoot = null;
