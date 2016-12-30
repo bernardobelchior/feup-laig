@@ -190,8 +190,6 @@ class Game {
                 return 'select a tile to move the ship to.';
             case GAMESTATE.PLACE_BUILDING:
                 return 'select which piece to place.';
-            case GAMESTATE.REPLAY:
-                return 'game is replaying. Please wait.';
         }
     }
 
@@ -385,7 +383,9 @@ class Game {
         this.updateGameState();
         this.timeSinceLastPlay = 0;
 
-        if (this.onPlayerChanged)
+        if (this.replayPending)
+            this.startReplay();
+        else if (this.onPlayerChanged)
             this.onPlayerChanged();
     }
 
@@ -413,14 +413,13 @@ class Game {
      * Selects next player and calls the respective event handler.
      */
     nextPlayer() {
-        if (this.gameState === GAMESTATE.REPLAY)
-            return;
-
         this.currentPlayer = (this.currentPlayer + 1) % 2;
         this.updateGameState();
         this.timeSinceLastPlay = 0;
 
-        if (this.onPlayerChanged)
+        if (this.replayPending)
+            this.startReplay();
+        else if (this.onPlayerChanged)
             this.onPlayerChanged();
     }
 
@@ -443,7 +442,7 @@ class Game {
 
         if (this.gameState === GAMESTATE.BOT_PLAY && !this.botIsPlaying) {
             this.botIsPlaying = true;
-            window.setTimeout(this.botPlay.bind(this), 2000);
+            window.setTimeout(this.botPlay.bind(this), 3000);
         }
     }
 
@@ -506,7 +505,7 @@ class Game {
         this.colonies = newColonies;
 
 
-        window.setTimeout(this.botFinishedPlay.bind(this), 1500);
+        window.setTimeout(this.botFinishedPlay.bind(this), 2500);
     }
 
     /**
@@ -518,6 +517,13 @@ class Game {
 
         if (this.onScoreCanChange)
             this.onScoreCanChange();
+    }
+
+    /**
+     * Sets the replay pending flag to true.
+     */
+    askForReplay() {
+        this.replayPending = true;
     }
 
     /**
@@ -550,9 +556,11 @@ class Game {
         }
 
         this.gameState = GAMESTATE.REPLAY;
-        if (this.currentPlayer !== 0)
+        if (this.currentPlayer === 0) {
             this.scene.nextCamera();
-        this.replayMove(0);
+            window.setTimeout(this.replayMove.bind(this, 0), 1500);
+        } else
+            this.replayMove(0);
     }
 
     /**
@@ -567,7 +575,8 @@ class Game {
                 this.scene.nextCamera();
 
             this.initializeShips(this.ships, this.components);
-            this.updateGameState();
+            this.replayPending = false;
+            this.nextPlayer();
             return;
         }
 
@@ -596,7 +605,7 @@ class Game {
         if (index !== this.lastMoves.length - 1)
             this.scene.nextCamera();
 
-        window.setTimeout(this.replayMove.bind(this), 1000, index + 1);
+        window.setTimeout(this.replayMove.bind(this), 2000, index + 1);
     }
 }
 

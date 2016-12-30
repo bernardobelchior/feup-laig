@@ -24,7 +24,7 @@ Interface.prototype.init = function (application) {
 
     let menu = {
         undo: this.scene.game.undo.bind(this.scene.game),
-        replay: this.scene.game.startReplay.bind(this.scene.game),
+        replay: this.scene.game.askForReplay.bind(this.scene.game),
         scene: this.scene
     };
 

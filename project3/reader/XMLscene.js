@@ -180,6 +180,8 @@ XMLscene.prototype.display = function () {
 
             if (this.game.gameState === GAMESTATE.BOT_PLAY)
                 document.getElementById('instruction').innerText = 'A bot is playing, please wait.';
+            else if(this.game.gameState === GAMESTATE.REPLAY)
+                document.getElementById('instruction').innerText = 'The game is being replayed, please wait.';
             else
                 document.getElementById('instruction').innerText =
                     'Player ' + (this.game.getCurrentPlayer() + 1) + ', ' + this.game.getGameStateInstruction();
