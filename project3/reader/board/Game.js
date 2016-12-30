@@ -43,9 +43,9 @@ class Game {
             this.gameState = GAMESTATE.NORMAL;
         }
 
-        this.running = true;
         this.timeSinceLastPlay = 0;
         this.fullGameTime = 0;
+        this.running = true;
     }
 
     /**
@@ -459,6 +459,19 @@ class Game {
             this.startReplay();
         else if (this.onPlayerChanged)
             this.onPlayerChanged();
+
+        this.checkGameOver();
+    }
+
+    /**
+     * Checks if the game is over and updates the game state if it is.
+     */
+    checkGameOver() {
+        isGameOver(this.board.getStringBoard(), this.ships, this.tradeStations, this.colonies, this.wormholes,
+            (function (data) {
+                if (data.target.response == 1)
+                    this.gameState = GAMESTATE.GAME_OVER;
+            }).bind(this));
     }
 
     /**
@@ -600,6 +613,7 @@ class Game {
             }
         }
 
+        this.stateBeforeReplay = this.gameState;
         this.gameState = GAMESTATE.REPLAY;
         if (this.currentPlayer === 0) {
             this.scene.nextCamera();
@@ -621,7 +635,7 @@ class Game {
 
             this.initializeShips(this.ships, this.components);
             this.replayPending = false;
-            this.updateGameState();
+            this.gameState = this.stateBeforeReplay;
             this.nextPlayer();
             return;
         }
@@ -659,8 +673,15 @@ class Game {
     }
 
     setBotDifficulty(first, second) {
-        this.botDifficulty[0] = first;
-        this.botDifficulty[1] = second;
+        if (first == BOT_DIFFICULTY.EASY)
+            this.botDifficulty[0] = BOT_DIFFICULTY.EASY;
+        else
+            this.botDifficulty[0] = BOT_DIFFICULTY.HARD;
+
+        if (second == BOT_DIFFICULTY.EASY)
+            this.botDifficulty[1] = BOT_DIFFICULTY.EASY;
+        else
+            this.botDifficulty[1] = BOT_DIFFICULTY.HARD;
     }
 }
 
