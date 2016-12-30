@@ -95,7 +95,9 @@ Interface.prototype.addLightControls = function (i, id) {
     this.lightGroup.add(this.scene.lightStatus, i, this.scene.lightStatus[i]).name(id);
 };
 
+/**
+ * Loads theme.
+ */
 Interface.prototype.loadTheme = function () {
     this.scene.loadTheme(this.theme);
-
 };

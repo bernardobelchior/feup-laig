@@ -49,22 +49,17 @@ Board.prototype.constructor = Board;
 Board.prototype.picked = function (pickingID) {
     let x = (pickingID - this.PICKING_OFFSET) % this.columns;
     let y = ((pickingID - this.PICKING_OFFSET) / this.columns) | 0;
-
-    console.log('Selected position (' + x + ', ' + y + ').');
-    console.log('Selected: ' + this.board[y][x].name);
 };
 
 /**
  * Gets hex from x,y
  * @param x X
  * @param y Y
- * @returns Hex
+ * @returns {*} Hex
  */
 Board.prototype.getHex = function (x, y) {
-    if (x >= this.columns || y >= this.rows) {
-        console.log("Invalid Position: " + x + ", " + y);
+    if (x >= this.columns || y >= this.rows)
         return;
-    }
 
     return this.board[y][x];
 };

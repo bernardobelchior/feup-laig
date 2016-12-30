@@ -74,15 +74,15 @@ XMLscene.prototype.onGraphLoaded = function () {
  * Change the theme if necessary
  * @param theme Theme
  */
-XMLscene.prototype.loadTheme = function(theme){
-    if(theme == THEME.NORMAL){
-        let filename=getUrlVars()['file'] || "LAIG_TP3_DSX_T2_G06_v01.dsx";
+XMLscene.prototype.loadTheme = function (theme) {
+    if (theme == THEME.NORMAL) {
+        let filename = getUrlVars()['file'] || "LAIG_TP3_DSX_T2_G06_v01.dsx";
         this.lights = [];
         this.cameras = [];
         this.graph = new MySceneGraph(filename, this);
     }
     else {
-        let filename=getUrlVars()['file'] || "LAIG_TP3_DSX_T2_G06_v02.dsx";
+        let filename = getUrlVars()['file'] || "LAIG_TP3_DSX_T2_G06_v02.dsx";
         this.cameras = [];
         this.lights = [];
         this.graph = new MySceneGraph(filename, this);
@@ -94,7 +94,7 @@ XMLscene.prototype.loadTheme = function(theme){
  * @param data Response
  * @param botDifficulty Bot difficulty
  */
-XMLscene.prototype.newGame = function (gameMode, botDifficulty,  data) {
+XMLscene.prototype.newGame = function (gameMode, botDifficulty, data) {
 
     this.rootNode.children = [];
     //Board, Ships, TradeStations, Colonies, HomeSystems, Wormholes
@@ -262,7 +262,7 @@ XMLscene.prototype.switchMaterials = function () {
  * Switches camera to the next one on the scene cameras array
  */
 XMLscene.prototype.nextCamera = function () {
-    this.currentCamera = (this.currentCamera + 1) % this.cameras.length;
+    //this.currentCamera = (this.currentCamera + 1) % this.cameras.length;
 
     this.changingCamera = true;
     this.timeElapsed = 0;
@@ -276,25 +276,26 @@ XMLscene.prototype.animateCamera = function (deltaTime) {
     if (!this.changingCamera)
         return;
 
-    // *0.98 is to avoid flickering when the animation surpasses the expected camera position
-    if (this.timeElapsed > this.CAMERA_ANIMATION_TIME * 0.98) {
+    // *0.95 is to avoid flickering when the animation surpasses the expected camera position
+    if (this.timeElapsed > this.CAMERA_ANIMATION_TIME * 0.95) {
         this.changingCamera = false;
+        this.currentCamera = (this.currentCamera + 1) % this.cameras.length;
         this.camera = this.cameras[this.currentCamera];
         return;
     }
 
-    let prevCamera = this.cameras[(this.cameras.length + this.currentCamera - 1) % this.cameras.length];
     let currCamera = this.cameras[this.currentCamera];
+    let nextCamera = this.cameras[(this.currentCamera + 1) % this.cameras.length];
 
-    let targetCenter = midPoint(prevCamera.target, currCamera.target);
-    let positionCenter = midPoint(prevCamera.position, currCamera.position);
+    let targetCenter = midPoint(currCamera.target, nextCamera.target);
+    let positionCenter = midPoint(currCamera.position, nextCamera.position);
 
-    let targetRadius = distance(targetCenter, currCamera.target);
-    let positionRadius = distance(positionCenter, currCamera.position);
+    let targetRadius = distance(targetCenter, nextCamera.target);
+    let positionRadius = distance(positionCenter, nextCamera.position);
 
     this.timeElapsed += deltaTime / 1000;
     let cameraAngle = Math.PI * this.timeElapsed / this.CAMERA_ANIMATION_TIME;
-    let multiplier = this.currentCamera ? -1 : 1;
+    let multiplier = this.currentCamera ? 1 : -1;
 
 
     let targetPosition = [

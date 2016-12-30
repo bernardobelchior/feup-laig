@@ -39,7 +39,7 @@ class Game {
             if (this.gameMode == GAMEMODE.HUMAN_VS_CPU)
                 this.gameMode = GAMEMODE.HUMAN_VS_CPU;
             else
-                this.gameMode = GAMEMODE.CPU_VS_CPU;
+                this.gameMode = GAMEMODE.HUMAN_VS_HUMAN;
             this.gameState = GAMESTATE.NORMAL;
         }
 
@@ -84,6 +84,7 @@ class Game {
      * @param ships
      */
     initializeShips(ships, materials) {
+        this.materials = materials;
 
         for (let i = 0; i < ships.length; i++) {
             let player = ships[i];
@@ -95,19 +96,14 @@ class Game {
                 let playerShipComponent = this.components['ship'].component;
                 playerShipComponent.updateTextures(this.scene.graph.textures);
 
-                let playerShip;
+                let material;
 
-                if(i === 0) {
-                    let material = materials["red_player"];
-                    playerShip = new Ship(this.scene, playerShipComponent, material, selectedHex);
-                }
-                else {
-                    let material = materials["blue_player"];
-                    playerShip = new Ship(this.scene, playerShipComponent, material, selectedHex);
-                }
+                if (i === 0)
+                    material = materials["red_player"];
+                else
+                    material = materials["blue_player"];
 
-                selectedHex.placeShip(playerShip);
-
+                selectedHex.placeShip(new Ship(this.scene, playerShipComponent, material, selectedHex));
             }
         }
         this.setShips(ships);
@@ -265,20 +261,17 @@ class Game {
                 if (this.selected.shipPiece.animation)
                     return;
                 let shipPosition = this.ships[this.selected.playerNo][this.selected.shipNo];
-                console.log(this.selectedHex);
 
                 if (this.currentPlayer === 0) {
                     if (pickingID !== AUXBOARD_ID.P1_COLONIES && pickingID !== AUXBOARD_ID.P1_STATIONS)
                         break;
 
                     if (pickingID === AUXBOARD_ID.P1_COLONIES) {
-                        let colony = this.colonyBoards[this.currentPlayer].getPiece(this.selectedHex);
-                        // this.selected.shipPiece.getHex().placeBuilding(colony);
+                        this.colonyBoards[this.currentPlayer].getPiece(this.selectedHex);
                         placeColony(this.colonies, this.selected.playerNo, this.selected.shipNo, [shipPosition[0], shipPosition[1]], this.onColoniesChanged.bind(this))
                     }
                     else {
-                        let tradeStation = this.tradeStationBoards[this.currentPlayer].getPiece(this.selectedHex);
-                        // this.selected.shipPiece.getHex().placeBuilding(tradeStation);
+                        this.tradeStationBoards[this.currentPlayer].getPiece(this.selectedHex);
                         placeTradeStation(this.tradeStations, this.selected.playerNo, this.selected.shipNo, [shipPosition[0], shipPosition[1]], this.onTradeStationsChanged.bind(this))
                     }
                 }
@@ -287,13 +280,11 @@ class Game {
                         break;
 
                     if (pickingID === AUXBOARD_ID.P2_COLONIES) {
-                        let colony = this.colonyBoards[this.currentPlayer].getPiece(this.selectedHex);
-                        // this.selected.shipPiece.getHex().placeBuilding(colony);
+                        this.colonyBoards[this.currentPlayer].getPiece(this.selectedHex);
                         placeColony(this.colonies, this.selected.playerNo, this.selected.shipNo, [shipPosition[0], shipPosition[1]], this.onColoniesChanged.bind(this))
                     }
                     else {
-                        let tradeStation = this.tradeStationBoards[this.currentPlayer].getPiece(this.selectedHex);
-                        // this.selected.shipPiece.getHex().placeBuilding(tradeStation);
+                        this.tradeStationBoards[this.currentPlayer].getPiece(this.selectedHex);
                         placeTradeStation(this.tradeStations, this.selected.playerNo, this.selected.shipNo, [shipPosition[0], shipPosition[1]], this.onTradeStationsChanged.bind(this))
                     }
 
@@ -402,9 +393,9 @@ class Game {
     onTradeStationsChanged(data) {
         this.setTradeStations(JSON.parse(data.target.response));
         this.selected = null;
-        this.nextPlayer();
 
         this.lastMoves[this.lastMoves.length - 1].setBuildingPlacement(PIECE_TYPE.TRADE_STATION, this.tradeStations.length - 1);
+        window.setTimeout(this.nextPlayer.bind(this), 3000);
 
         if (this.onScoreCanChange)
             this.onScoreCanChange();
@@ -417,9 +408,9 @@ class Game {
     onColoniesChanged(data) {
         this.setColonies(JSON.parse(data.target.response));
         this.selected = null;
-        this.nextPlayer();
 
         this.lastMoves[this.lastMoves.length - 1].setBuildingPlacement(PIECE_TYPE.COLONY, this.colonies.length - 1);
+        window.setTimeout(this.nextPlayer.bind(this), 3000);
 
         if (this.onScoreCanChange)
             this.onScoreCanChange();
@@ -582,7 +573,8 @@ class Game {
      */
     botFinishedPlay() {
         this.botIsPlaying = false;
-        this.nextPlayer();
+        window.setTimeout(this.nextPlayer.bind(this), 3000);
+        //this.nextPlayer();
 
         if (this.onScoreCanChange)
             this.onScoreCanChange();
@@ -603,30 +595,38 @@ class Game {
             return;
 
         this.replayShips = JSON.parse(JSON.stringify(this.initialShips));
-        this.replayTradeStationBoards = [
-            new AuxBoard(this.scene, 4, this.components, PIECE_TYPE.TRADE_STATION),
-            new AuxBoard(this.scene, 4, this.components, PIECE_TYPE.TRADE_STATION)
+        this.replayColonyBoards = [
+            new AuxBoard(this.scene, 16, this.components, PIECE_TYPE.COLONY, [0.0, 0.0, 0.0], this.materials["red_player"]),
+            new AuxBoard(this.scene, 16, this.components, PIECE_TYPE.COLONY,
+                [(this.board.columns / 2 ) * 1.9, 0.0, (this.board.rows + 2) * 1.68], this.materials["blue_player"])
         ];
 
-        this.replayColonyBoards = [
-            new AuxBoard(this.scene, 16, this.components, PIECE_TYPE.COLONY),
-            new AuxBoard(this.scene, 16, this.components, PIECE_TYPE.COLONY)
+        this.replayTradeStationBoards = [
+            new AuxBoard(this.scene, 4, this.components, PIECE_TYPE.TRADE_STATION,
+                [(this.board.columns / 2 + 1), 0.0, 0.0], this.materials["red_player"]),
+            new AuxBoard(this.scene, 4, this.components, PIECE_TYPE.TRADE_STATION,
+                [(this.board.columns / 2 + 2), 0.0, (this.board.rows + 2) * 1.68], this.materials["blue_player"])
         ];
 
         this.board.resetHexes();
-        for (let player of this.replayShips) {
-            for (let ship of player) {
+        for (let i = 0; i < this.replayShips.length; i++) {
+            for (let ship of this.replayShips[i]) {
                 let selectedHex = this.board.getHex(ship[0], ship[1]);
                 let playerShipComponent = this.components['ship'].component;
+                let material;
 
-                let playerShip = new Piece(this.scene, playerShipComponent, selectedHex);
-                selectedHex.placeShip(playerShip);
+                if (i === 0)
+                    material = this.materials["red_player"];
+                else
+                    material = this.materials["blue_player"];
+
+                selectedHex.placeShip(new Ship(this.scene, playerShipComponent, material, selectedHex));
             }
         }
 
         this.stateBeforeReplay = this.gameState;
         this.gameState = GAMESTATE.REPLAY;
-        if (this.currentPlayer === 0) {
+        if (this.currentPlayer !== 0) {
             this.scene.nextCamera();
             window.setTimeout(this.replayMove.bind(this, 0), 1500);
         } else
@@ -641,7 +641,7 @@ class Game {
         let move = this.lastMoves[index];
 
         if (!move) {
-            if (this.lastMoves[this.lastMoves.length - 1].playerNo !== this.currentPlayer)
+            if (this.lastMoves[this.lastMoves.length - 1].playerNo === this.currentPlayer)
                 this.scene.nextCamera();
 
             this.initializeShips(this.ships, this.components);
