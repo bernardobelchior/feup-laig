@@ -32,7 +32,7 @@ Interface.prototype.init = function (application) {
         newGame: this.requestNewConfig,
         gameMode: GAMEMODE.HUMAN_VS_HUMAN,
         botDifficulty: BOT_DIFFICULTY.EASY,
-        theme: THEME.NORMAL,
+        theme: THEME.LEGACY,
         loadTheme: this.loadTheme,
         scene: this.scene
     };
@@ -96,7 +96,6 @@ Interface.prototype.addLightControls = function (i, id) {
 };
 
 Interface.prototype.loadTheme = function () {
-    console.log(this.theme);
     this.scene.loadTheme(this.theme);
 
-}
+};

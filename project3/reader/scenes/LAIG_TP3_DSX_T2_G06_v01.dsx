@@ -74,7 +74,7 @@
             <diffuse r="0.5" g="0.5" b="0.5" a="1"/>
             <specular r="0.5" g="0.5" b="0.5" a="1"/>
             <emission r="0" g="0" b="0" a="1"/>
-            <shininess value="200"/>
+            <shininess value="00"/>
         </material>
 
         <material id="default_tile">

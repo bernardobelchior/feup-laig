@@ -77,10 +77,14 @@ XMLscene.prototype.onGraphLoaded = function () {
 XMLscene.prototype.loadTheme = function(theme){
     if(theme == THEME.NORMAL){
         let filename=getUrlVars()['file'] || "LAIG_TP3_DSX_T2_G06_v01.dsx";
+        this.lights = [];
+        this.cameras = [];
         this.graph = new MySceneGraph(filename, this);
     }
     else {
         let filename=getUrlVars()['file'] || "LAIG_TP3_DSX_T2_G06_v02.dsx";
+        this.cameras = [];
+        this.lights = [];
         this.graph = new MySceneGraph(filename, this);
     }
 };
