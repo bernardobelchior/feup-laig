@@ -35,9 +35,6 @@ Hex.prototype.setPickingID = function (pickingID) {
 };
 
 Hex.prototype.placeShip = function (ship) {
-    if (this.ship !== null)
-        return;
-
     this.ship = ship;
     this.piecesWrapper.addChild(this.ship.component);
     this.piecesWrapper.updateTextures(this.scene.graph.textures);
@@ -54,6 +51,10 @@ Hex.prototype.removeShip = function () {
 Hex.prototype.getShip = function () {
     return this.ship;
 };
+
+Hex.prototype.setShip = function(ship){
+    this.ship = ship;
+}
 
 Hex.prototype.placeBuilding = function (building) {
     if (this.building !== null)

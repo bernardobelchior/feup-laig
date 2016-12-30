@@ -546,19 +546,16 @@ class Game {
         let newColonies = response[1];
 
         let lastMove = this.lastMoves[this.lastMoves.length - 1];
-        let building;
 
         if (newTradeStations[this.currentPlayer].length !== this.tradeStations[this.currentPlayer].length) {
             lastMove.setBuildingPlacement(PIECE_TYPE.TRADE_STATION, this.tradeStations[this.currentPlayer].length);
-            building = this.tradeStationBoards[this.currentPlayer].getPiece();
+            this.tradeStationBoards[this.currentPlayer].getPiece(this.board.getHex(shipPosition[0], shipPosition[1]));
         }
         else {
             lastMove.setBuildingPlacement(PIECE_TYPE.COLONY, this.colonies[this.currentPlayer].length);
-            building = this.colonyBoards[this.currentPlayer].getPiece();
+            this.colonyBoards[this.currentPlayer].getPiece(this.board.getHex(shipPosition[0], shipPosition[1]));
         }
 
-        if (building)
-            this.board.getHex(shipPosition[0], shipPosition[1]).placeBuilding(building);
 
         this.tradeStations = newTradeStations;
         this.colonies = newColonies;
