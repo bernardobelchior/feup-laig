@@ -10,6 +10,7 @@ Ship.prototype.constructor = Ship;
 
 Ship.prototype.move = function (selectedHex) {
     this.nextHex = selectedHex;
+    this.nextHex.setShip(this);
     let xi = this.x;
     let zi = this.z;
     let xf = selectedHex.x;
