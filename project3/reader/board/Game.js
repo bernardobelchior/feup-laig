@@ -29,10 +29,19 @@ class Game {
     startGame() {
         this.initialShips = JSON.parse(JSON.stringify(this.ships));
 
-        if (this.gameMode == GAMEMODE.CPU_VS_CPU)
+        /* Needed in order to use === or switches afterwards.
+         * For some reason, the value from the interface has not the correct type
+         * (Even though it is initialized with the GAMEMODE object/enum) */
+        if (this.gameMode == GAMEMODE.CPU_VS_CPU) {
+            this.gameMode = GAMEMODE.CPU_VS_CPU;
             this.gameState = GAMESTATE.BOT_PLAY;
-        else
+        } else {
+            if (this.gameMode == GAMEMODE.HUMAN_VS_CPU)
+                this.gameMode = GAMEMODE.HUMAN_VS_CPU;
+            else
+                this.gameMode = GAMEMODE.CPU_VS_CPU;
             this.gameState = GAMESTATE.NORMAL;
+        }
 
         this.running = true;
         this.timeSinceLastPlay = 0;
@@ -612,6 +621,7 @@ class Game {
 
             this.initializeShips(this.ships, this.components);
             this.replayPending = false;
+            this.updateGameState();
             this.nextPlayer();
             return;
         }
