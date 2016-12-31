@@ -460,6 +460,7 @@ class Game {
         this.currentPlayer = (this.currentPlayer + 1) % 2;
         this.updateGameState();
         this.timeSinceLastPlay = 0;
+        this.botIsPlaying = false;
 
         if (this.replayPending)
             this.startReplay();
@@ -497,7 +498,8 @@ class Game {
         if (this.gameState !== GAMESTATE.REPLAY)
             this.timeSinceLastPlay += deltaTime / 1000;
 
-        if (this.gameState === GAMESTATE.BOT_PLAY && !this.botIsPlaying) {
+        console.log(this.gameState);
+        if (this.gameState === GAMESTATE.BOT_PLAY && !this.botIsPlaying && !this.replayPending) {
             this.botIsPlaying = true;
             window.setTimeout(this.botPlay.bind(this), 3000);
         }
@@ -535,13 +537,14 @@ class Game {
         this.ships = newShips;
 
         if (this.botDifficulty[this.currentPlayer] === BOT_DIFFICULTY.EASY)
-            easyCPUPlaceBuilding(this.ships, this.currentPlayer, shipMoved, this.tradeStations, this.colonies, this.botPlacedBuilding.bind(this, newPosition));
+            window.setTimeout(easyCPUPlaceBuilding.bind(this), 1500, this.ships, this.currentPlayer, shipMoved, this.tradeStations, this.colonies, this.botPlacedBuilding.bind(this, newPosition));
         else
-            hardCPUPlaceBuilding(this.ships, this.currentPlayer, shipMoved, this.tradeStations, this.colonies, this.botPlacedBuilding.bind(this, newPosition));
+            window.setTimeout(hardCPUPlaceBuilding.bind(this), 1500, this.ships, this.currentPlayer, shipMoved, this.tradeStations, this.colonies, this.botPlacedBuilding.bind(this, newPosition));
     }
 
     /**
      * Function called when the bot has moved its ship and needs to select an action.
+     * @param shipPosition Ship position
      * @param data Action choice request response.
      */
     botPlacedBuilding(shipPosition, data) {
@@ -561,21 +564,17 @@ class Game {
             this.colonyBoards[this.currentPlayer].getPiece(this.board.getHex(shipPosition[0], shipPosition[1]));
         }
 
-
         this.tradeStations = newTradeStations;
         this.colonies = newColonies;
 
-
-        window.setTimeout(this.botFinishedPlay.bind(this), 2500);
+        window.setTimeout(this.botFinishedPlay.bind(this), 3500);
     }
 
     /**
      * Function called when the bot has finished its play.
      */
     botFinishedPlay() {
-        this.botIsPlaying = false;
-        window.setTimeout(this.nextPlayer.bind(this), 3000);
-        //this.nextPlayer();
+        window.setTimeout(this.nextPlayer.bind(this), 2000);
 
         if (this.onScoreCanChange)
             this.onScoreCanChange();
@@ -595,6 +594,8 @@ class Game {
         if (!this.running || !this.lastMoves.length || this.gameState === GAMESTATE.REPLAY)
             return;
 
+        this.stateBeforeReplay = this.gameState;
+        this.gameState = GAMESTATE.REPLAY;
         this.replayShips = JSON.parse(JSON.stringify(this.initialShips));
         this.colonyBoards[0].initializePieces(this.materials['red_player']);
         this.colonyBoards[1].initializePieces(this.materials['blue_player']);
@@ -618,8 +619,6 @@ class Game {
             }
         }
 
-        this.stateBeforeReplay = this.gameState;
-        this.gameState = GAMESTATE.REPLAY;
         if (this.currentPlayer === 0) {
             this.scene.nextCamera();
             window.setTimeout(this.replayMove.bind(this, 0), 1500);
