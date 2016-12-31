@@ -4,6 +4,8 @@
  * @param numPieces Maximum number of pieces the player can have
  * @param components Scene components
  * @param type Piece type
+ * @param position Board position
+ * @param material Material to use in the board's pieces.
  * @constructor
  */
 function AuxBoard(scene, numPieces, components, type, position, material) {
@@ -62,7 +64,7 @@ AuxBoard.prototype.getRemainingNo = function () {
  * Fills the auxiliary board with the pieces that can still be used by the player
  */
 AuxBoard.prototype.initializePieces = function (material) {
-    for (let i = 0; i < this.numPieces; i++)
+    for (let i = this.pieces.length; i < this.numPieces; i++)
         this.putPiece(material);
 };
 

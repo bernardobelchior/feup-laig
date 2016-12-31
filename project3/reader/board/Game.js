@@ -596,18 +596,11 @@ class Game {
             return;
 
         this.replayShips = JSON.parse(JSON.stringify(this.initialShips));
-        this.replayColonyBoards = [
-            new AuxBoard(this.scene, 16, this.components, PIECE_TYPE.COLONY, [0.0, 0.0, 0.0], this.materials["red_player"]),
-            new AuxBoard(this.scene, 16, this.components, PIECE_TYPE.COLONY,
-                [(this.board.columns / 2 ) * 1.9, 0.0, (this.board.rows + 2) * 1.68], this.materials["blue_player"])
-        ];
+        this.colonyBoards[0].initializePieces(this.materials['red_player']);
+        this.colonyBoards[1].initializePieces(this.materials['blue_player']);
 
-        this.replayTradeStationBoards = [
-            new AuxBoard(this.scene, 4, this.components, PIECE_TYPE.TRADE_STATION,
-                [(this.board.columns / 2 + 1), 0.0, 0.0], this.materials["red_player"]),
-            new AuxBoard(this.scene, 4, this.components, PIECE_TYPE.TRADE_STATION,
-                [(this.board.columns / 2 + 2), 0.0, (this.board.rows + 2) * 1.68], this.materials["blue_player"])
-        ];
+        this.tradeStationBoards[0].initializePieces(this.materials['red_player']);
+        this.tradeStationBoards[1].initializePieces(this.materials['blue_player']);
 
         this.board.resetHexes();
         for (let i = 0; i < this.replayShips.length; i++) {
@@ -665,9 +658,9 @@ class Game {
         let move = this.lastMoves[index];
 
         if (move.pieceType === PIECE_TYPE.TRADE_STATION)
-            this.replayTradeStationBoards[move.playerNo].getPiece(this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]));
+            this.tradeStationBoards[move.playerNo].getPiece(this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]));
         else
-            this.replayColonyBoards[move.playerNo].getPiece(this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]));
+            this.colonyBoards[move.playerNo].getPiece(this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]));
 
         window.setTimeout(this.replayMoveCamera.bind(this), 3500, index);
     }
