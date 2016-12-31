@@ -53,5 +53,7 @@ Building.prototype.onAnimationDone = function () {
     this.animation = null;
     this.hexagon.placeBuilding(this);
     this.originBoard.component.children.pop();
+    this.x = this.hexagon.x;
+    this.z = this.hexagon.z;
 };
 

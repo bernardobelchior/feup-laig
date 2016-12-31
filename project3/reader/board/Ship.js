@@ -45,6 +45,8 @@ Ship.prototype.onAnimationDone = function () {
     this.animation = null;
     this.setHex(this.nextHex);
     this.nextHex.placeShip(this);
+    this.x = this.hexagon.x;
+    this.z = this.hexagon.z;
 };
 
 /**
