@@ -498,7 +498,6 @@ class Game {
         if (this.gameState !== GAMESTATE.REPLAY)
             this.timeSinceLastPlay += deltaTime / 1000;
 
-        console.log(this.gameState);
         if (this.gameState === GAMESTATE.BOT_PLAY && !this.botIsPlaying && !this.replayPending) {
             this.botIsPlaying = true;
             window.setTimeout(this.botPlay.bind(this), 3000);
