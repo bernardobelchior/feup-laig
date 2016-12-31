@@ -16,7 +16,7 @@
     <!-- deve definir-se um objeto para raiz do grafo , assim -->
     <!-- como o comprimento dos tres eixos (cilindros) -->
 
-    <scene root="root" axis_length="1"/>
+    <scene root="root" axis_length="0"/>
 
     <views default="default">
         <perspective id="default" near="0.1" far="500" angle="22.91">
