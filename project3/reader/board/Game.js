@@ -354,13 +354,14 @@ class Game {
 
             let previousHex = this.board.getHex(lastMove.oldShipPosition[0], lastMove.oldShipPosition[1]);
 
+            let material = lastMove.playerNo === 0 ? this.materials["red_player"] : this.materials["blue_player"];
             switch (lastMove.pieceType) {
                 case PIECE_TYPE.TRADE_STATION:
-                    this.tradeStationBoards[lastMove.playerNo].putPiece();
+                    this.tradeStationBoards[lastMove.playerNo].putPiece(material);
                     this.tradeStations[lastMove.playerNo].pop();
                     break;
                 case PIECE_TYPE.COLONY:
-                    this.colonyBoards[lastMove.playerNo].putPiece();
+                    this.colonyBoards[lastMove.playerNo].putPiece(material);
                     this.colonies[lastMove.playerNo].pop();
                     break;
                 default:
