@@ -642,9 +642,10 @@ class Game {
         let move = this.lastMoves[index];
 
         if (!move) {
-            if (this.lastMoves[this.lastMoves.length - 1].playerNo === this.currentPlayer)
+            if (this.lastMoves[this.lastMoves.length - 1].playerNo !== this.currentPlayer)
                 this.scene.nextCamera();
 
+            this.board.resetHexes();
             this.initializeShips(this.ships, this.materials);
             this.replayPending = false;
             this.gameState = this.stateBeforeReplay;
@@ -655,7 +656,7 @@ class Game {
         let selectedHex = this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]);
         this.board.getHex(move.oldShipPosition[0], move.oldShipPosition[1]).getShip().move(selectedHex);
 
-        window.setTimeout(this.replayBuildingPlacement.bind(this), 2000, index);
+        window.setTimeout(this.replayBuildingPlacement.bind(this), 1000, index);
     }
 
     /**
@@ -670,10 +671,17 @@ class Game {
         else
             this.replayColonyBoards[move.playerNo].getPiece(this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]));
 
-        if (index !== this.lastMoves.length - 1)
-            this.scene.nextCamera();
+        window.setTimeout(this.replayMoveCamera.bind(this), 3500, index);
+    }
 
-        window.setTimeout(this.replayMove.bind(this), 3000, index + 1);
+    replayMoveCamera(index) {
+        if (index !== this.lastMoves.length - 1) {
+            this.scene.nextCamera();
+            window.setTimeout(this.replayMove.bind(this), 1500, index + 1);
+        }
+        else
+            window.setTimeout(this.replayMove.bind(this), 0, index + 1);
+
     }
 
     getTimeElapsed() {
