@@ -396,7 +396,7 @@ class Game {
         this.selected = null;
 
         this.lastMoves[this.lastMoves.length - 1].setBuildingPlacement(PIECE_TYPE.TRADE_STATION, this.tradeStations.length - 1);
-        window.setTimeout(this.nextPlayer.bind(this), 3000);
+        window.setTimeout(this.nextPlayer.bind(this), 3500);
 
         if (this.onScoreCanChange)
             this.onScoreCanChange();
@@ -411,7 +411,7 @@ class Game {
         this.selected = null;
 
         this.lastMoves[this.lastMoves.length - 1].setBuildingPlacement(PIECE_TYPE.COLONY, this.colonies.length - 1);
-        window.setTimeout(this.nextPlayer.bind(this), 3000);
+        window.setTimeout(this.nextPlayer.bind(this), 3500);
 
         if (this.onScoreCanChange)
             this.onScoreCanChange();
@@ -456,9 +456,9 @@ class Game {
      * Selects next player and calls the respective event handler.
      */
     nextPlayer() {
+        this.fullGameTime += this.timeSinceLastPlay;
         this.currentPlayer = (this.currentPlayer + 1) % 2;
         this.updateGameState();
-        this.fullGameTime += this.timeSinceLastPlay;
         this.timeSinceLastPlay = 0;
 
         if (this.replayPending)
@@ -627,7 +627,7 @@ class Game {
 
         this.stateBeforeReplay = this.gameState;
         this.gameState = GAMESTATE.REPLAY;
-        if (this.currentPlayer !== 0) {
+        if (this.currentPlayer === 0) {
             this.scene.nextCamera();
             window.setTimeout(this.replayMove.bind(this, 0), 1500);
         } else
@@ -645,10 +645,9 @@ class Game {
             if (this.lastMoves[this.lastMoves.length - 1].playerNo === this.currentPlayer)
                 this.scene.nextCamera();
 
-            this.initializeShips(this.ships, this.components);
+            this.initializeShips(this.ships, this.materials);
             this.replayPending = false;
             this.gameState = this.stateBeforeReplay;
-            this.nextPlayer();
             return;
         }
 
@@ -656,7 +655,7 @@ class Game {
         let selectedHex = this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]);
         this.board.getHex(move.oldShipPosition[0], move.oldShipPosition[1]).getShip().move(selectedHex);
 
-        window.setTimeout(this.replayBuildingPlacement.bind(this), 1000, index);
+        window.setTimeout(this.replayBuildingPlacement.bind(this), 2000, index);
     }
 
     /**
@@ -666,16 +665,15 @@ class Game {
     replayBuildingPlacement(index) {
         let move = this.lastMoves[index];
 
-        let piece;
         if (move.pieceType === PIECE_TYPE.TRADE_STATION)
-            piece = this.replayTradeStationBoards[move.playerNo].getPiece(this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]));
+            this.replayTradeStationBoards[move.playerNo].getPiece(this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]));
         else
-            piece = this.replayColonyBoards[move.playerNo].getPiece(this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]));
+            this.replayColonyBoards[move.playerNo].getPiece(this.board.getHex(move.newShipPosition[0], move.newShipPosition[1]));
 
         if (index !== this.lastMoves.length - 1)
             this.scene.nextCamera();
 
-        window.setTimeout(this.replayMove.bind(this), 2000, index + 1);
+        window.setTimeout(this.replayMove.bind(this), 3000, index + 1);
     }
 
     getTimeElapsed() {

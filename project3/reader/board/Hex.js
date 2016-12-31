@@ -84,7 +84,7 @@ Hex.prototype.getShip = function () {
  */
 Hex.prototype.setShip = function (ship) {
     this.ship = ship;
-}
+};
 
 /**
  * Places building
