@@ -645,8 +645,6 @@ class Game {
             if (this.lastMoves[this.lastMoves.length - 1].playerNo !== this.currentPlayer)
                 this.scene.nextCamera();
 
-            this.board.resetHexes();
-            this.initializeShips(this.ships, this.materials);
             this.replayPending = false;
             this.gameState = this.stateBeforeReplay;
             return;

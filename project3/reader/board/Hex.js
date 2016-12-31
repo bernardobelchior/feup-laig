@@ -97,7 +97,6 @@ Hex.prototype.placeBuilding = function (building) {
     this.building = building;
     this.piecesWrapper.addChild(this.building.component);
     this.piecesWrapper.translate(0.0, 0.5, 0.0);
-    this.ship.component.translate(0.0, -0.5, 0.0);
     this.piecesWrapper.updateTextures(this.scene.graph.textures);
 };
 
@@ -108,6 +107,7 @@ Hex.prototype.removeBuilding = function () {
     if (this.building === null)
         return;
 
+    this.piecesWrapper.translate(0, -0.5, 0);
     this.piecesWrapper.removeChild(this.building.component);
     this.building = null;
 };
